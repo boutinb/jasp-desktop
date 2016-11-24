@@ -75,8 +75,8 @@ void Engine::saveImage()
 
 	std::string name = _imageOptions.get("name", Json::nullValue).asString();
 	std::string type = _imageOptions.get("type", Json::nullValue).asString();
-	std::string height = _imageOptions.get("height", Json::nullValue).asString();
-	std::string width = _imageOptions.get("width", Json::nullValue).asString();
+	int height = _imageOptions.get("height", Json::nullValue).asInt();
+	int width = _imageOptions.get("width", Json::nullValue).asInt();
 	std::string result = rbridge_saveImage(name, type, height, width);
 
 	_status = complete;
