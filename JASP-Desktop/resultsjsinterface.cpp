@@ -271,7 +271,9 @@ void ResultsJsInterface::setGlobalJsValues()
 {
 	bool exactPValues = _mainWindow->_settings.value("exactPVals", 0).toBool();
 	QString exactPValueString = (exactPValues ? "true" : "false");	
-	QString numDecimals = _mainWindow->_settings.value("numDecimals").toString();
+	QString numDecimals = _mainWindow->_settings.value("numDecimals", 3).toString();
+	if (numDecimals.isEmpty())
+		numDecimals = "3";
 	QString tempFolder = "file:///" + tq(tempfiles_sessionDirName());
 
 	QString js = "window.globSet.pExact = " + exactPValueString;

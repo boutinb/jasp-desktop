@@ -1092,7 +1092,7 @@ void Column::_setRowCount(int rowCount)
 		truncate(this->rowCount() - rowCount);
 }
 
-Column::Ints::IntsStruct()
+Column::Ints::IntsStruct::IntsStruct()
 {
 }
 
@@ -1166,7 +1166,7 @@ int& Column::Ints::iterator::dereference() const
 	return _blockItr->second->Data[_currentPos].i;
 }
 
-Column::Doubles::DoublesStruct()
+Column::Doubles::DoublesStruct::DoublesStruct()
 {
 }
 
