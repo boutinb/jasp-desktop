@@ -21,7 +21,7 @@
 
 #include <QDialog>
 #include <QAbstractButton>
-#include <QWebView>
+#include <QWebEngineView>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -46,12 +46,12 @@ private slots:
 	void on_buttonBox_clicked(QAbstractButton *button);
 	void aboutPageLoaded(bool success);
 	void downloadFinished();
-	void linkClickedSlot(QUrl url);
 	void closeWindowHandler();
 
 private:
 	void checkForJaspUpdate();
 	Ui::AboutDialog *ui;
+	QWebEngineView *_aboutWebEngineView;
 	QNetworkAccessManager *m_network_manager;	// make the HTTP GET request
 	QNetworkReply *m_network_reply;
 	QByteArray *m_pBuffer;

@@ -71,8 +71,6 @@ void Engine::saveImage()
 
 	vector<string> tempFilesFromLastTime = tempfiles_retrieveList(_analysisId);
 
-	RCallback callback = boost::bind(&Engine::callback, this, _1, _2);
-
 	std::string name = _imageOptions.get("name", Json::nullValue).asString();
 	std::string type = _imageOptions.get("type", Json::nullValue).asString();
 
@@ -88,8 +86,6 @@ void Engine::saveImage()
 	_progress = -1;
 	sendResults();
 	_status = empty;
-
-	//tempfiles_deleteList(tempFilesFromLastTime);
 
 }
 

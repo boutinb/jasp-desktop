@@ -68,5 +68,6 @@
         <file>css/style.css</file>
         <file>css/bootstrap.min.css</file>
         <file>img/jasp-logo-black.svg</file>
+        <file>js/qwebchannel.js</file>
     </qresource>
 </RCC>

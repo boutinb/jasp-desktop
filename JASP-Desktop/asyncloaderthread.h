@@ -15,32 +15,16 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef MODULE_H
-#define MODULE_H
+#ifndef ASYNCLOADERTHREAD_H
+#define ASYNCLOADERTHREAD_H
 
-#include <QString>
-#include <map>
+#include <QThread>
 
-class Module
+class AsyncLoaderThread : public QThread
 {
 public:
-	static std::map<QString, Module> AllModules;
-	static const Module &getModule(QString name);
-	static bool isModuleName(QString name);
-
-	Module(QString name, int ribbonIndex = 0, bool released = true);
-	Module(QString name, QString displayName, int ribbonIndex, bool released = true);
-
-	QString name() const { return _name; }
-	QString displayName() const { return _displayName; }
-	int ribbonIndex() const { return _ribbonIndex; }
-	bool released() const { return _released; }
-
-private:
-	QString _name;
-	QString _displayName;
-	int _ribbonIndex;
-	bool _released;
+	AsyncLoaderThread();
+	~AsyncLoaderThread();
 };
 
-#endif // MODULE_H
+#endif // ASYNCLOADERTHREAD_H

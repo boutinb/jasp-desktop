@@ -15,32 +15,20 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef MODULE_H
-#define MODULE_H
+#ifndef CUSTOMWEBENGINEPAGE_H
+#define CUSTOMWEBENGINEPAGE_H
 
-#include <QString>
-#include <map>
+#include <QWebEnginePage>
+#include <QDesktopServices>
 
-class Module
+class CustomWebEnginePage : public QWebEnginePage
 {
+	Q_OBJECT
 public:
-	static std::map<QString, Module> AllModules;
-	static const Module &getModule(QString name);
-	static bool isModuleName(QString name);
+	explicit CustomWebEnginePage(QWidget* parent = 0);
 
-	Module(QString name, int ribbonIndex = 0, bool released = true);
-	Module(QString name, QString displayName, int ribbonIndex, bool released = true);
-
-	QString name() const { return _name; }
-	QString displayName() const { return _displayName; }
-	int ribbonIndex() const { return _ribbonIndex; }
-	bool released() const { return _released; }
-
-private:
-	QString _name;
-	QString _displayName;
-	int _ribbonIndex;
-	bool _released;
+protected:
+	virtual bool acceptNavigationRequest(const QUrl &url, NavigationType type, bool isMainFrame);
 };
 
-#endif // MODULE_H
+#endif // CUSTOMWEBENGINEPAGE_H

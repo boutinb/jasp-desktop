@@ -20,11 +20,11 @@
 #include "ui_aboutdialog.h"
 
 #include "qutils.h"
-#include <QWebFrame>
 #include <QMessageBox>
 #include <QFile>
 #include <QTextStream>
 #include <QDesktopServices>
+#include <QWebChannel>
 #include <QDebug>
 #include "appinfo.h"
 
@@ -33,38 +33,29 @@ AboutDialog::AboutDialog(QWidget *parent) :
 	ui(new Ui::AboutDialog)
 {
 	ui->setupUi(this);
-	
+
+	_aboutWebEngineView = new QWebEngineView(this);
+	_aboutWebEngineView->hide();
 	m_network_manager = new QNetworkAccessManager();
 	m_pBuffer = new QByteArray();
 	
 	setWindowFlags(Qt::Tool | Qt::WindowTitleHint | Qt::WindowCloseButtonHint | Qt::WindowMaximizeButtonHint | Qt::CustomizeWindowHint);
 	
 	//About core informataion with current version info
-	ui->aboutView->setUrl((QUrl(QString("qrc:///core/about.html"))));
+	_aboutWebEngineView->setUrl((QUrl(QString("qrc:///core/about.html"))));
+	QWebChannel* channel = new QWebChannel(this);
+	channel->registerObject(QStringLiteral("about"), this);
+	_aboutWebEngineView->page()->setWebChannel(channel);
 
-	connect(ui->aboutView, SIGNAL(loadFinished(bool)), this, SLOT(aboutPageLoaded(bool)));
-	connect(ui->aboutView, SIGNAL( linkClicked( QUrl ) ), this, SLOT( linkClickedSlot( QUrl ) ) );
+
+	connect(_aboutWebEngineView, SIGNAL(loadFinished(bool)), this, SLOT(aboutPageLoaded(bool)));
 	connect(this, SIGNAL(closeWindow()), this, SLOT(closeWindowHandler()));
-		
-	ui->aboutView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
-	ui->aboutView->page()->mainFrame()->addToJavaScriptWindowObject("about", this);
-	
-#ifdef QT_DEBUG
-	ui->aboutView->page()->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
-#else
-	ui->aboutView->page()->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, false);	
-#endif
-		
+
  }
 
 AboutDialog::~AboutDialog()
 {
 	delete ui;
-}
-
-void AboutDialog::linkClickedSlot( QUrl url )
-{
-	QDesktopServices::openUrl ( url );
 }
 
 void AboutDialog::on_buttonBox_clicked(QAbstractButton *button)
@@ -83,11 +74,16 @@ void AboutDialog::aboutPageLoaded(bool success)
 		version+="-Debug";
 #endif
 		QString builddate = tq(AppInfo::builddate);
-		ui->aboutView->page()->mainFrame()->evaluateJavaScript("window.setAppYear()");
-		ui->aboutView->page()->mainFrame()->evaluateJavaScript("window.setAppVersion('" + version +"')");
-		ui->aboutView->page()->mainFrame()->evaluateJavaScript("window.setAppBuildDate('" + builddate +"')");
-		ui->aboutView->page()->mainFrame()->evaluateJavaScript("window.showDownLoadButton(false,'')");		
-		checkForJaspUpdate();
+		_aboutWebEngineView->page()->runJavaScript("window.setAppYear()");
+		_aboutWebEngineView->page()->runJavaScript("window.setAppVersion('" + version + "')");
+		_aboutWebEngineView->page()->runJavaScript("window.setAppBuildDate('" + builddate +"')");
+		_aboutWebEngineView->page()->runJavaScript("window.showDownLoadButton(false,'')");
+		//checkForJaspUpdate();
+		//QString html = _aboutWebEngineView->page()->mainFrame()->toHtml();
+		QString html;
+		//_aboutWebEngineView->page()->toHtml([&html](const QString &result){ html.append(result); });
+		//ui->label_2_About->setText(html);
+		//ui->label_2_About->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::LinksAccessibleByMouse);
 	}
 }
 
@@ -110,9 +106,9 @@ void AboutDialog::downloadFinished()
 	QRegExp rx("JASPVersion:.+<\/div>");
 	rx.setCaseSensitivity(Qt::CaseInsensitive);
 		
-	ui->aboutView->page()->mainFrame()->evaluateJavaScript("window.showDownLoadButton(false,'')");
+	//TODO: ui->aboutView->page()->runJavaScript("window.showDownLoadButton(false,'')");
 
-	if  ((rx.indexIn(result, 0)) != -1)
+	/*TODO: if  ((rx.indexIn(result, 0)) != -1)
 	{
 		QString g = rx.cap(0);
 		rx.setPattern("JASPVersion:");
@@ -137,12 +133,12 @@ void AboutDialog::downloadFinished()
 		if (latest > cur )
 		{
 			QString display = "true";
-			ui->aboutView->page()->mainFrame()->evaluateJavaScript("window.setNewVersion('" + version +"')");
+			ui->aboutView->page()->runJavaScript("window.setNewVersion('" + version +"')");
 #ifndef __linux__
-			ui->aboutView->page()->mainFrame()->evaluateJavaScript("window.showDownLoadButton(true,'" + downloadfile + "')");
+			ui->aboutView->page()->runJavaScript("window.showDownLoadButton(true,'" + downloadfile + "')");
 #endif
 		}
-	}
+	} */
 	
 }
 
