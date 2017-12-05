@@ -145,7 +145,8 @@ SOURCES += \
     $$PWD/widgets/customwebengineview.cpp \
     $$PWD/resultsjsinterface.cpp \
     $$PWD/customwebenginepage.cpp \
-    $$PWD/asyncloaderthread.cpp
+    $$PWD/asyncloaderthread.cpp \
+    $$PWD/aboutdialogjsinterface.cpp
 
 
 HEADERS  += \
@@ -306,7 +307,8 @@ HEADERS  += \
     $$PWD/widgets/customwebengineview.h \
     $$PWD/resultsjsinterface.h \
     $$PWD/customwebenginepage.h \
-    $$PWD/asyncloaderthread.h
+    $$PWD/asyncloaderthread.h \
+    $$PWD/aboutdialogjsinterface.h
 
 FORMS += \
     $$PWD/aboutdialog.ui \

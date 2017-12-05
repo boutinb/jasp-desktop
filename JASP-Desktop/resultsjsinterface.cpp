@@ -45,7 +45,9 @@ ResultsJsInterface::ResultsJsInterface(QWidget *parent) : QObject(parent)
 
 	_webViewResults->setUrl(QUrl(QString("qrc:///core/index.html")));
 	connect(_webViewResults, SIGNAL(loadFinished(bool)), this, SLOT(resultsPageLoaded(bool)));
-	connect(_webViewResults, SIGNAL(scrollValueChanged()), this, SLOT(scrollValueChangedHandle()));
+// TODO: This signal does not exist anymore, the WebEngine does not support paintEvent anymore, and WebView used this function
+// to emit the scrollValuesChanged signal.
+//	connect(_webViewResults, SIGNAL(scrollValueChanged()), this, SLOT(scrollValueChangedHandle()));
 
 }
 

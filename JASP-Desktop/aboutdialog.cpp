@@ -20,12 +20,6 @@
 #include "ui_aboutdialog.h"
 
 #include "qutils.h"
-#include <QMessageBox>
-#include <QFile>
-#include <QTextStream>
-#include <QDesktopServices>
-#include <QWebChannel>
-#include <QDebug>
 #include "appinfo.h"
 
 AboutDialog::AboutDialog(QWidget *parent) :
@@ -34,33 +28,22 @@ AboutDialog::AboutDialog(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	_aboutWebEngineView = new QWebEngineView(this);
-	_aboutWebEngineView->hide();
+	m_aboutDialogJsInterface = new AboutDialogJsInterface(this);
+	
 	m_network_manager = new QNetworkAccessManager();
 	m_pBuffer = new QByteArray();
 	
 	setWindowFlags(Qt::Tool | Qt::WindowTitleHint | Qt::WindowCloseButtonHint | Qt::WindowMaximizeButtonHint | Qt::CustomizeWindowHint);
 	
 	//About core informataion with current version info
-	_aboutWebEngineView->setUrl((QUrl(QString("qrc:///core/about.html"))));
-	QWebChannel* channel = new QWebChannel(this);
-	channel->registerObject(QStringLiteral("about"), this);
-	_aboutWebEngineView->page()->setWebChannel(channel);
-
-
-	connect(_aboutWebEngineView, SIGNAL(loadFinished(bool)), this, SLOT(aboutPageLoaded(bool)));
-	connect(this, SIGNAL(closeWindow()), this, SLOT(closeWindowHandler()));
-
+	ui->aboutView->setUrl((QUrl(QString("qrc:///core/about.html"))));
+	
+	connect(ui->aboutView, SIGNAL(loadFinished(bool)), this, SLOT(aboutPageLoaded(bool)));
  }
 
 AboutDialog::~AboutDialog()
 {
 	delete ui;
-}
-
-void AboutDialog::on_buttonBox_clicked(QAbstractButton *button)
-{
-	this->close();
 }
 
 void AboutDialog::aboutPageLoaded(bool success)
@@ -74,16 +57,9 @@ void AboutDialog::aboutPageLoaded(bool success)
 		version+="-Debug";
 #endif
 		QString builddate = tq(AppInfo::builddate);
-		_aboutWebEngineView->page()->runJavaScript("window.setAppYear()");
-		_aboutWebEngineView->page()->runJavaScript("window.setAppVersion('" + version + "')");
-		_aboutWebEngineView->page()->runJavaScript("window.setAppBuildDate('" + builddate +"')");
-		_aboutWebEngineView->page()->runJavaScript("window.showDownLoadButton(false,'')");
-		//checkForJaspUpdate();
-		//QString html = _aboutWebEngineView->page()->mainFrame()->toHtml();
-		QString html;
-		//_aboutWebEngineView->page()->toHtml([&html](const QString &result){ html.append(result); });
-		//ui->label_2_About->setText(html);
-		//ui->label_2_About->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::LinksAccessibleByMouse);
+		
+		m_aboutDialogJsInterface->setAppInfo(version, builddate);
+		checkForJaspUpdate();
 	}
 }
 
@@ -106,9 +82,9 @@ void AboutDialog::downloadFinished()
 	QRegExp rx("JASPVersion:.+<\/div>");
 	rx.setCaseSensitivity(Qt::CaseInsensitive);
 		
-	//TODO: ui->aboutView->page()->runJavaScript("window.showDownLoadButton(false,'')");
+	//ui->aboutView->page()->runJavaScript("window.showDownLoadButton(false,'')");
 
-	/*TODO: if  ((rx.indexIn(result, 0)) != -1)
+	if  ((rx.indexIn(result, 0)) != -1)
 	{
 		QString g = rx.cap(0);
 		rx.setPattern("JASPVersion:");
@@ -120,9 +96,7 @@ void AboutDialog::downloadFinished()
 	
 #ifdef __APPLE__
 		downloadfile = "https://static.jasp-stats.org/JASP-" + version + ".dmg";
-#endif
-
-#ifdef __WIN32__
+#elif __WIN32__
 		downloadfile = "https://static.jasp-stats.org/JASP-" + version + "-Setup.exe";
 #endif
 
@@ -130,19 +104,13 @@ void AboutDialog::downloadFinished()
 		Version lv(version.toStdString());
 		long cur = cv.major*100000 + cv.minor*10000 + cv.revision*1000 + cv.build;
 		long latest = lv.major*100000 + lv.minor*10000 + lv.revision*1000 + lv.build;
-		if (latest > cur )
+		if (latest > cur)
 		{
-			QString display = "true";
-			ui->aboutView->page()->runJavaScript("window.setNewVersion('" + version +"')");
+			m_aboutDialogJsInterface->setNewVersion(version);
 #ifndef __linux__
-			ui->aboutView->page()->runJavaScript("window.showDownLoadButton(true,'" + downloadfile + "')");
+			m_aboutDialogJsInterface->showDownloadButton(downloadfile);
 #endif
 		}
-	} */
+	}
 	
-}
-
-void AboutDialog::closeWindowHandler()
-{
-	this->close();
 }

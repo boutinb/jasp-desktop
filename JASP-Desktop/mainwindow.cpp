@@ -1211,7 +1211,6 @@ void MainWindow::updateMenuEnabledDisabledStatus()
 
 void MainWindow::resultsPageLoaded(bool success, int ppi)
 {
-	// TODO: This is never called!!!
 	if (success)
 	{
 #ifdef __WIN32__

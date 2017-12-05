@@ -27,6 +27,10 @@
 #include <QNetworkReply>
 #include <QUrl>
 
+#include "aboutdialogjsinterface.h"
+
+class AboutDialogJsInterface;
+
 namespace Ui {
 class AboutDialog;
 }
@@ -34,27 +38,24 @@ class AboutDialog;
 class AboutDialog : public QDialog
 {
 	Q_OBJECT
-
+	friend class AboutDialogJsInterface;
 public:
 	explicit AboutDialog(QWidget *parent = 0);
-	~AboutDialog();
+	~AboutDialog();	
 	
-signals:
-	void closeWindow();
-
 private slots:
-	void on_buttonBox_clicked(QAbstractButton *button);
 	void aboutPageLoaded(bool success);
 	void downloadFinished();
-	void closeWindowHandler();
 
 private:
 	void checkForJaspUpdate();
 	Ui::AboutDialog *ui;
-	QWebEngineView *_aboutWebEngineView;
 	QNetworkAccessManager *m_network_manager;	// make the HTTP GET request
 	QNetworkReply *m_network_reply;
 	QByteArray *m_pBuffer;
+	
+	AboutDialogJsInterface *m_aboutDialogJsInterface;
+	
 };
 
 #endif // ABOUTDIALOG_H
