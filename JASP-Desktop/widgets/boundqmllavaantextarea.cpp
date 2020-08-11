@@ -32,7 +32,7 @@ BoundQMLLavaanTextArea::BoundQMLLavaanTextArea(JASPControlBase* item)
 	connect(form(), &AnalysisForm::dataSetChanged,	this, &BoundQMLTextArea::dataSetChangedHandler,	Qt::QueuedConnection	);
 
 	_model = new ListModelTermsAvailable(this);
-	_modelHasAllVariables = true;
+	_modelNeedsAllVariables = true;
 
 	int id = QFontDatabase::addApplicationFont(":/fonts/FiraCode-Retina.ttf");
 	if(QFontDatabase::applicationFontFamilies(id).size() > 0)

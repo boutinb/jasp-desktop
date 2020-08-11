@@ -61,7 +61,7 @@ Properties
 - `columns`: [optional, default: `1`] integer specifying how many columns the nested components should occupy (e.g., when set to 3, with three nested checkboxes, these three checkboxes will appear side by side on the same horizontal row)
 
 <details>
-	<summary>Examples</summary>
+        <summary>Examples</summary>
 
   ```qml
   CheckBox { name: "pearson"; label: qsTr("Pearson"); checked: true }
@@ -100,7 +100,7 @@ RadioButton properties:
 - `columns`: [optional, default: `1`] integer specifying how many columns the nested components should occupy (e.g., when set to 3, with three nested checkboxes, these three checkboxes will appear side by side on the same horizontal row)
 
 <details>
-	<summary>Examples</summary>
+        <summary>Examples</summary>
 
   ```qml
   RadioButtonGroup
@@ -149,7 +149,7 @@ Properties
 - `placeHolderText`: [optional, default: `<no choice>`] name used if an ampty value is added in the dropdown list
 
 <details>
-	<summary>Examples</summary>
+        <summary>Examples</summary>
 
   ```qml
   DropDown
@@ -191,7 +191,7 @@ Properties
 
 
 <details>
-	<summary>Examples</summary>
+        <summary>Examples</summary>
 
   ```qml
   Slider
@@ -221,7 +221,7 @@ Properties
 
 
 <details>
-	<summary>Examples</summary>
+        <summary>Examples</summary>
 
   ```qml
   DoubleField
@@ -262,7 +262,7 @@ Properties
 - `fieldWidth`: [optional, default: `40`] in pixels how wide should the field be
 
 <details>
-	<summary>Examples</summary>
+        <summary>Examples</summary>
 
   ```qml
   IntegerField
@@ -299,7 +299,7 @@ Properties
 - `decimals`: [optional, default: `0`] integer specifying how many decimals the user can enter
 
 <details>
-	<summary>Examples</summary>
+        <summary>Examples</summary>
 
   ```qml
   CIField { name: "estimatesPlotsCI"; label: qsTr("Confidence interval") }
@@ -329,7 +329,7 @@ Properties:
 - `fieldWidth`: [optional, default: `40`] in pixels how wide should the field be
 
 <details>
-	<summary>Examples</summary>
+        <summary>Examples</summary>
 
   ```qml
   TextField { name: "labelYAxis"; label: qsTr("Label y-axis"); fieldWidth: 200 }
@@ -343,10 +343,10 @@ For an input with text that can have many lines, use this component. As an `Ente
 Properties:
 - `title`: [optional, default: `""`] title displayed above the TextArea.
 - `textType`: [optional, default: `""`, values: `lavaan`, `JAGS`, `Rcode`, `model`, `source`]: this component is in fact often used in a specialized mode, specified by this property):<br>
-	* `lavaan`, `JAGS` and `Rcode`: the TextArea is used for Lavaan, JAGS or R code: it gets automatically the right syntax check
-	* `model`: the TextArea is used as R model.
-        * `source`: The TextArea can be then used as source for a VariablesList: all unique strings separated by a separator (per default a new line, but can be change via property `separator` will be then the terms of the VariablesList.<br>
-- `separtor`, `separators`: [optional, default: `"\n"`] string or array of strings used to split the string of a `source` TextArea
+  * `lavaan`, `JAGS` and `Rcode`: the TextArea is used for Lavaan, JAGS or R code: it gets automatically the right syntax check
+  * `model`: the TextArea is used as R model.
+  * `source`: The TextArea can be then used as source for a VariablesList: all unique strings separated by a separator (per default a new line, but can be change via property `separator` will be then the terms of the VariablesList.<br>
+- `separator`, `separators`: [optional, default: `"\n"`] string or array of strings used to split the string of a `source` TextArea
 
 ### Variable Specification
 Most analyses are performed on variables. JASP offers a few ways of visualizing these variables in the input form. The general idea is that you get a field of available variables (taken from the dataset) and then one or more fields that the variables can be dragged to. Variable fields should be wrapped in a `VariablesForm`. This makes it possible to automatically align multiple variable fields and add assign-buttons.
@@ -355,13 +355,20 @@ Most analyses are performed on variables. JASP offers a few ways of visualizing 
 Properties
 - `name`: identifier of the variables list, this is never send to R
 - `label`: [optional, default: `""`] text that will be shown above the variable field
-- `source`: [optional, default: `""`] this can be set to the `name` (or a list of names) of an `AssignedVariablesList`. If no source is specified, then all variables of the loaded file is used as source. To specify several sources, you need to use an array: `["source1", "source2"]`. If you have a `singleVariable` Variables List as source, it is possible to specify you want the `levels` of the variable. For this uses: `source: [{name: "splitby", use: "levels"}]`. If a VariablesList source is itself composed by several kinds of sources, you can discard one of them in this way: `source: [{ name: "modelTerms", discard: "covariates" }]`
+- `source`: [optional, default: `""`] this can be set to the `id` or the `name` (or a list of id or names) of one or more Variables Lists. If no source is specified, then all variables of the data file are used as source. To specify several sources, you need to use an array: `["source1", "source2"]`. If you want to specify what you want to read from the source, you can add extra attributes:<br>
+  * `use` attribute: if you want to read the levels of a `singleVariable` Variables List source, type: `source: [{name: "splitby", use: "levels"}]`. If you want only some variables with some types, type: `[{name: "source", use: "type=nominal|ordinal"}]`
+  * `discard` attribute: if a Variables List source is itself composed by several kinds of sources, you can discard one of them in this way: `source: [{ name: "modelTerms", discard: "covariates" }]`
+  * `condition` attribute: if a Variables List source has some components, and you want to retrieve the variables whose components have some specific values, type: `[ { name: "contrasts", condition: "contrast.currentValue == 'custom'" } ]` where `contrast` is the name of a DropDown component (added in the `contrasts` Variables List). In this example only variables with contrast having `custom` as value will be read from the source `contrasts`.
+  * `values` attribute: if you want to add specific values to the list, you can add them in this way `source: [ { values: ["one", "two"] }, "myvariables" ]`. Here the values `one` and `two` are prepend to the names of the variables of the Variables List `myvariables`. If you want to display a label (that can be translated) different from the value used in the analysis, use: `source: [ { values: [ { label: qsTr("One"), value: "one" }, { label: qsTr("Two"), value: "two" } ], "myvariables" ]` (qsTr is the function you need to use if you want the string to be translatable).
+  * if you want to display not the variable names of the source, but the values of some component of this list, use the syntax `name.component`. For example, if the source `myvariables` has a TextField named `field`, a Variables List with source `source: "myvariables.field"` will display all values of the TextField component in place of the variable names.<br>
+
+- `values`: [optional, default: `""`] this is a shortcut: in place of writing `source: [ values: ["one", "two"] ]`, type `values: ["one", "two"]`. If you want to display labels different from the values used by the analysis, use the same syntax as in the `source` property.
 - `width`: [optional, default: 2/5 of the VariablesForm width] in pixels how wide should the field be
 
 Note: `height` should be defined on `VariablesForm` itself.
 
 <details>
-	<summary>Examples</summary>
+        <summary>Examples</summary>
 
   ```qml
   VariablesForm
@@ -373,8 +380,15 @@ Note: `height` should be defined on `VariablesForm` itself.
   VariablesForm
   {
     height: 200
-    AvailableVariablesList { name: "postHocTestsAvailable"; source: "fixedFactors" }
+    AvailableVariablesList { name: "postHocTestsAvailable"; source: "fixedFactors"; rowComponent: CheckBox { name: "check" } }
     AssignedVariablesList {  name: "postHocTestsVariables" }
+  }
+
+   VariablesForm
+  {
+    height: 200
+    AvailableVariablesList { name: "checkedPostHocAvailable"; source: [ name: "postHocTestsVariables", condition: "check.checked" ] }
+    AssignedVariablesList { name: "checkedPostHoc" }
   }
   ```
   ![Image example](/Docs/development/img/qml-guide/availableVariablesList_example_1_1.png)
@@ -420,20 +434,20 @@ Properties
 
 
 <details>
-	<summary>Examples</summary>
+        <summary>Examples</summary>
 
   ```qml
-	VariablesForm
-	{
-		AvailableVariablesList { name: "allVariables" }
-		AssignedVariablesList
-		{
-			name: "dependent"
-			label: qsTr("Dependent Variable")
-			allowedColumns: ["scale"]
-			singleVariable: true
-		}
-	}
+        VariablesForm
+        {
+                AvailableVariablesList { name: "allVariables" }
+                AssignedVariablesList
+                {
+                        name: "dependent"
+                        label: qsTr("Dependent Variable")
+                        allowedColumns: ["scale"]
+                        singleVariable: true
+                }
+        }
   }
   ```
   ![Image example](/Docs/development/img/qml-guide/AssignedVariablesList_example_1.png)
@@ -472,7 +486,7 @@ Properties
 - `height`: [optional, default: `350`] in pixels how heigh should the field be
 
 <details>
-	<summary>Examples</summary>
+        <summary>Examples</summary>
 
   ```qml
   VariablesForm
@@ -583,7 +597,7 @@ Properties
 - `columns`: [optional, default: `1`] integer specifying how many columns the grouped components should occupy
 
 <details>
-	<summary>Examples</summary>
+        <summary>Examples</summary>
 
   ```qml
   Group
@@ -613,7 +627,7 @@ Properties
 - `columns`: [optional, default: `2`] integer specifying how many columns the grouped components should occupy
 
 <details>
-	<summary>Examples</summary>
+        <summary>Examples</summary>
 
   ```qml
   Section
@@ -704,7 +718,7 @@ In `AvailableVariablesList` we showed that through its `source` property, we can
 
 An example is enabling a checkbox if one of two different checkboxes is checked.
 <p><details>
-	<summary>Implementation</summary>
+        <summary>Implementation</summary>
 
   ```qml
   CheckBox { name: "checkboxA"; label: qsTr("Some label"), id: checkA}
@@ -720,7 +734,7 @@ Here we make use of a JavaScript expression to evaluate if either CheckBox A or 
 Another example would be setting the visibility of some textfield to invisible if a checkbox is not checked.
 
 <details>
-	<summary>Implementation</summary>
+        <summary>Implementation</summary>
 
   ```qml
   CheckBox
@@ -737,23 +751,23 @@ Another example would be setting the visibility of some textfield to invisible i
 
 Any property can be set with an expression. A title of a Section for example:
 <details>
-	<summary>Implementation</summary>
+        <summary>Implementation</summary>
 
   ```qml
 
-	DropDown
-	{
-		id: estimator
-		name: "estimator"
-		label: qsTr("Estimator")
-		values: ["EBICglasso", "cor", "pcor", "IsingFit", "IsingSampler", "huge", "adalasso", "mgm"]
-	}
+        DropDown
+        {
+                id: estimator
+                name: "estimator"
+                label: qsTr("Estimator")
+                values: ["EBICglasso", "cor", "pcor", "IsingFit", "IsingSampler", "huge", "adalasso", "mgm"]
+        }
 
-	Section
-	{
-		title: qsTr("Analysis Options - ") + estimator.currentText
+        Section
+        {
+                title: qsTr("Analysis Options - ") + estimator.currentText
                 ....
-	}
+        }
 
   ```
 
@@ -769,7 +783,7 @@ Read first the Guide to adding a module in JASP. In this way, when you edit your
 We can begin actual work on the QML file, first we have to tell the engine where to find our resources. To do so, we add a number of imports to the top of our file.
 
 <details>
-	<summary>Code</summary>
+        <summary>Code</summary>
 
   ```qml
   import QtQuick 2.11
@@ -785,7 +799,7 @@ We can begin actual work on the QML file, first we have to tell the engine where
 At this point we add a `Form` which will hold all our input components:
 
 <details>
-	<summary>Code</summary>
+        <summary>Code</summary>
 
   ```qml
   import QtQuick 2.11
@@ -805,7 +819,7 @@ At this point we add a `Form` which will hold all our input components:
 It's now a matter of mixing and matching the previously shown components to create a form to our liking. Of course, if something isn't quite possible, you can also use QML features that were not covered here.
 
 <details>
-	<summary>Code</summary>
+        <summary>Code</summary>
 
   ```qml
   import QtQuick 2.11

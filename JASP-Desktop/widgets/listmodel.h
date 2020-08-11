@@ -71,10 +71,9 @@ public:
 			void					addControlError(const QString& error) const;
 	virtual void					refresh();
 	virtual void					initTerms(const Terms &terms, const RowControlsOptions& allOptionsMap = RowControlsOptions());
+			void					setTerms(const QStringList& terms) { _terms = terms; }
 			Terms					getSourceTerms();
-			QMap<ListModel*, Terms> getSourceTermsPerModel();
 			ListModel*				getSourceModelOfTerm(const Term& term);
-	virtual void					readModelProperty(QMLListView* item);
 
 			void					setRowComponents(QList<QQmlComponent*> &rowComponents);
 	virtual void					setUpRowControls();
