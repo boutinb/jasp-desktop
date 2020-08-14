@@ -58,7 +58,8 @@ public:
 									modelUse;
 		QVector<SourceType>			discardModels;
 		ValueList					values;
-		bool						isValuesSource = false;
+		bool						isValuesSource = false,
+									isDataFileVariablesSource = false;
 		ListModel	*				model = nullptr;
 		QString						conditionExpression;
 		QVector<ConditionVariable>	conditionVariables;
@@ -67,10 +68,10 @@ public:
 
 		SourceType(
 				  const QString& _name
-				, const QString& _controlName
-				, const QString& _modelUse
-				, const ValueList& _values
-				, bool isValuesSource
+				, const QString& _controlName = ""
+				, const QString& _modelUse = ""
+				, const ValueList& _values = ValueList()
+				, bool isValuesSource = false
 				, const QVector<std::tuple<QString, QString, QString, ValueList, bool> >& _discardModels = QVector<std::tuple<QString, QString, QString, ValueList, bool> >()
 				, const QString& _conditionExpression = ""
 				, const QVector<QMap<QString, QVariant> >& _conditionVariables = QVector<QMap<QString, QVariant> >()
@@ -79,6 +80,8 @@ public:
 		SourceType(const ValueList& _values) : values(_values), isValuesSource(true) {}
 
 		QVector<SourceType> getDiscardModels(bool onlyNotNullModel = true)	const;
+
+		static SourceType* createDataFileVariablesSource();
 	};
 	
 	QMLListView(JASPControlBase* item);
@@ -94,7 +97,7 @@ public:
 
 	const QList<SourceType*>&	sourceModels()				const	{ return _sourceModels; }
 	QList<std::pair<SourceType*, Terms> >	getTermsPerSource();
-			bool				hasSource()					const	{ return _hasSource; }
+			bool				hasSource()					const	{ return _sourceModels.size() > 0; }
 
 			JASPControlWrapper*	getRowControl(const QString& key, const QString& name)		const;
 			bool				addRowControl(const QString& key, JASPControlWrapper* control);
@@ -113,7 +116,6 @@ protected:
 
 protected:
 	QList<SourceType*>	_sourceModels;
-	bool				_hasSource				= false;
 	bool				_needsSourceModels		= false;
 	int					_variableTypesAllowed;
 	bool				_hasRowComponents		= false;

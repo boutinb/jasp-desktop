@@ -44,7 +44,7 @@ Analyses::Analyses()
 
 	connect(this,					&Analyses::requestComputedColumnDestruction,	this,	&Analyses::dataSetChanged			, Qt::QueuedConnection	);
 	connect(DataSetPackage::pkg(),	&DataSetPackage::dataSetChanged,				this,	&Analyses::dataSetChanged									);
-	connect(DataSetPackage::pkg(),	&DataSetPackage::columnDataTypeChanged,			this,	&Analyses::dataSetColumnsChanged							);
+	connect(DataSetPackage::pkg(),	&DataSetPackage::columnDataTypeChanged,			this,	&Analyses::dataSetColumnsTypeChanged						);
 	connect(DataSetPackage::pkg(),	&DataSetPackage::labelChanged,					this,	&Analyses::dataSetChanged									);
 }
 
@@ -502,7 +502,7 @@ void Analyses::refreshAnalysesUsingColumns(	QStringList				changedColumnsQ,
 		{
 			if (analysesToRebind.find(a) == analysesToRebind.end())
 				// rebind already refreshes the available models together with the assigned models in the right way
-				a->refreshAvailableVariablesModels();
+				a->refreshAvailableVariables();
 		});
 
 
@@ -770,7 +770,7 @@ void Analyses::setChangedAnalysisTitle()
 
 void Analyses::refreshAvailableVariables()
 {
-	applyToAll([](Analysis * a) { a->refreshAvailableVariablesModels();	});
+	applyToAll([](Analysis * a) { a->refreshAvailableVariables();	});
 }
 
 void Analyses::duplicateAnalysis(size_t id)

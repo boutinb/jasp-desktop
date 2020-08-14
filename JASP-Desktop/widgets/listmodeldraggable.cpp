@@ -23,8 +23,11 @@ ListModelDraggable::ListModelDraggable(QMLListView* listView)
 	: ListModel(listView)
 	, _copyTermsWhenDropped(false)	
 {
-	_allowAnalysisOwnComputedColumns = listView->getItemProperty("allowAnalysisOwnComputedColumns").toBool();
-	_addNewAvailableTermsToAssignedModel = listView->getItemProperty("addAvailableVariablesToAssigned").toBool();
+	if (listView)
+	{
+		_allowAnalysisOwnComputedColumns = listView->getItemProperty("allowAnalysisOwnComputedColumns").toBool();
+		_addNewAvailableTermsToAssignedModel = listView->getItemProperty("addAvailableVariablesToAssigned").toBool();
+	}
 }
 
 ListModelDraggable::~ListModelDraggable()
@@ -120,6 +123,9 @@ Terms ListModelDraggable::canAddTerms(const Terms& terms) const
 
 bool ListModelDraggable::isAllowed(const Term &term) const
 {
+	if (!listView() || !listView()->form())
+		return false;
+
 	if (!_allowAnalysisOwnComputedColumns)
 	{
 		if (listView()->form()->isOwnComputedColumn(term.asQString()))

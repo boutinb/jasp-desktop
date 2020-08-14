@@ -20,6 +20,7 @@ import JASP		1.0
 
 VariablesList
 {
-	listViewType:	JASP.AssignedVariables
-	dropMode:		JASP.DropInsert
+	listViewType		: JASP.AssignedVariables
+	dropMode			: JASP.DropInsert
+	hasDataFileAsSource	: false
 }

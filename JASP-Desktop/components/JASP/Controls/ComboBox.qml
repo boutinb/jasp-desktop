@@ -4,7 +4,7 @@ import QtQuick.Layouts	1.3
 import JASP				1.0
 
 
-JASPControl
+JASPControlWithSource
 {
 	id:					comboBox
 	controlType:		JASPControlBase.ComboBox
@@ -13,6 +13,7 @@ JASPControl
 	background:			useExternalBorder ? externalControlBackground : control.background
 	innerControl:		control
 	title:				label
+	listControl:		popupView
 
 	property alias	control:				control
 	property alias	controlLabel:			controlLabel
@@ -25,14 +26,10 @@ JASPControl
 	property string currentColumnType:		"" // When the values come from column names, this property gives the column type of the current selected column
 	property alias	currentIndex:			control.currentIndex
 	property alias	indexDefaultValue:		control.currentIndex
-	property alias	model:					control.model
 	property alias	fieldWidth:				control.modelWidth
 	property string	textRole:				"label"
 	property string	valueRole:				"value"
 	property bool	showVariableTypeIcon:	false
-	property var	values:					undefined
-	property var	source:					undefined // Do not set a default: if nothing is set, it gets all variables per default.
-	property alias	syncModels:				comboBox.source
 	property bool	addEmptyValue:			false
 	property string	placeholderText:		qsTr("<no choice>")
 	property bool	isDirectModel:			false
@@ -103,6 +100,7 @@ JASPControl
 	ComboBox
 	{
 						id:				control
+						model:			comboBox.model
 						anchors.left:	!rectangleLabel.visible || comboBox.setLabelAbove ? comboBox.left : rectangleLabel.right
 						anchors.leftMargin: !rectangleLabel.visible || comboBox.setLabelAbove ? 0 : jaspTheme.labelSpacing
 						anchors.top:	rectangleLabel.visible && comboBox.setLabelAbove ? rectangleLabel.bottom: comboBox.top

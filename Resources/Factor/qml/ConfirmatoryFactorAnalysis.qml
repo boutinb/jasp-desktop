@@ -102,7 +102,7 @@ Form
 			{
 				id: rescov
 				preferredHeight: jaspTheme.smallDefaultVariablesFormHeight
-				AvailableVariablesList {name: "observedvars";	syncModels: factors.name	}
+				AvailableVariablesList {name: "observedvars";	source: factors.name	}
 				AssignedPairsVariablesList { name: "rescov" }
 			}
 		}
@@ -143,7 +143,7 @@ Form
 			name: "groupvar";
 			showVariableTypeIcon: true;
 			addEmptyValue: true;
-		} // No model or syncModels: it takes all variables per default
+		} // No model or source: it takes all variables per default
 		DropDown
 		{
 			label: qsTr("Invariance testing")

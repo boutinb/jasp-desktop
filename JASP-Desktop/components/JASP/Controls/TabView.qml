@@ -23,7 +23,7 @@ import QtQuick.Layouts	1.3
 import JASP.Widgets		1.0
 import JASP				1.0
 
-JASPControl
+JASPControlWithSource
 {
 	id						: tabView
 	controlType				: JASPControlBase.TabView
@@ -33,17 +33,8 @@ JASPControl
 	useControlMouseArea		: false
 	shouldStealHover		: false
 	innerControl			: itemTabBar
+	listControl				: itemRepeater
 
-	property var	model
-	property var	values
-	property string title
-	property alias	label				: tabView.title
-	property alias	count				: itemRepeater.count
-	property string	optionKey			: "value"
-	property var	source
-	property var	sourceModel
-	property alias	syncModels			: tabView.source
-	property var	defaultValues		: []
 	property bool	addItemManually		: !source
 	property bool	showAddIcon			: addItemManually
 	property bool	showRemoveIcon		: addItemManually

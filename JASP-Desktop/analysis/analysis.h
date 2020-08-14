@@ -200,7 +200,7 @@ public slots:
 	void					setTitleQ(QString title);
 	void					setTitle(std::string title) { setTitleQ(tq(title)); }
 	void					setHasVolatileNotes(bool hasVolatileNotes);
-	void					refreshAvailableVariablesModels();
+	void					refreshAvailableVariables();
 	void					emitDuplicationSignals();
 	void					showDependenciesOnQMLForObject(QString uniqueName); //uniqueName is basically "name" in meta in results.
 

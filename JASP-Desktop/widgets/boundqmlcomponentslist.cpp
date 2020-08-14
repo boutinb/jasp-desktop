@@ -109,7 +109,7 @@ Option* BoundQMLComponentsList::createOption()
 	OptionsTable* result = new OptionsTable(templote);
 	std::vector<Options*> allOptions;
 
-	if (hasSource())
+//	if (hasSource())
 	{
 		Terms initTerms = _termsModel->getSourceTerms();
 		for (const Term& term : initTerms)
@@ -130,7 +130,7 @@ Option* BoundQMLComponentsList::createOption()
 			allOptions.push_back(row);
 		}
 	}
-	else
+/*	else
 	{
 		QString			defaultName			= getItemProperty("newItemName").toString();
 		QVariant		defaultValuesVar	= getItemProperty("defaultValues");
@@ -176,6 +176,7 @@ Option* BoundQMLComponentsList::createOption()
 			allOptions.push_back(row);
 		}
 	}
+*/
 	result->connectOptions(allOptions);
 
 	return result;

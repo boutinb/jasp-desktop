@@ -90,12 +90,6 @@ void AnalysisForm::refreshAnalysis()
 	_analysis->refresh();
 }
 
-void AnalysisForm::runAnalysis()
-{
-	_analysis->run();
-	refreshTableViewModels();
-}
-
 void AnalysisForm::itemChange(QQuickItem::ItemChange change, const QQuickItem::ItemChangeData &value)
 {
 	if (change == ItemChange::ItemSceneChange && !value.window)
@@ -172,18 +166,12 @@ void AnalysisForm::_addControlWrapper(JASPControlWrapper* controlWrapper)
 	case JASPControlBase::ControlType::VariablesListView:
 	{
 		QMLListView* listView = dynamic_cast<QMLListView*>(controlWrapper);
-
-		if (listView->model())
+		if (listView && listView->model())
 		{
 			_modelMap[controlWrapper->name()] = listView->model();
 
 			ListModelTermsAvailable* availableModel = dynamic_cast<ListModelTermsAvailable*>(listView->model());
-
-			if (availableModel)
-			{
-				if (!listView->hasSource())	_allAvailableVariablesModels.push_back(availableModel);
-				else						_allAvailableVariablesModelsWithSource.push_back(availableModel);
-			}
+			if (availableModel)	_allAvailableVariablesModels.push_back(availableModel);
 		}
 		break;
 	}
@@ -224,6 +212,8 @@ void AnalysisForm::_setUpControls()
 {
 	//Todo: remove anything that thinks we aren't using jaspResults
 	_analysis->setUsesJaspResults(QQmlProperty(this, "usesJaspResults").read().toBool());
+
+	_dataFileVariablesModel = new ListModelTermsAvailable(nullptr);
 
 	_orderExpanders();
 	_setUpRelatedModels();
@@ -300,6 +290,17 @@ void AnalysisForm::_setUpItems()
 	}
 
 	emit helpMDChanged(); //Because we just got info on our lovely children in _orderedControls
+}
+
+void AnalysisForm::_resetAllVariablesModel()
+{
+	if (DataSetPackage::pkg() && DataSetPackage::pkg()->hasDataSet())
+	{
+		std::vector<std::string> columnNames = DataSetPackage::pkg()->getColumnNames();
+		_dataFileVariablesModel->initTerms(columnNames);
+
+		emit _dataFileVariablesModel->modelChanged();
+	}
 }
 
 void AnalysisForm::_orderExpanders()
@@ -401,37 +402,6 @@ void AnalysisForm::setInfo(QString info)
 	emit infoChanged();
 }
 
-void AnalysisForm::_setAllAvailableVariablesModel(bool refreshAssigned)
-{
-	if (_allAvailableVariablesModels.size() == 0)
-		return;
-
-	std::vector<std::string> columnNames = DataSetPackage::pkg()->getColumnNames();
-
-
-	for (ListModelTermsAvailable* model : _allAvailableVariablesModels)
-	{
-		model->initTerms(columnNames);
-
-		if (refreshAssigned)
-		{
-			emit model->allAvailableTermsChanged(nullptr, nullptr);
-			QMLListViewTermsAvailable* qmlAvailableListView = dynamic_cast<QMLListViewTermsAvailable*>(model->listView());
-			if (qmlAvailableListView)
-			{
-				const QList<ListModelAssignedInterface*>& assignedModels = qmlAvailableListView->assignedModel();	
-				for (ListModelAssignedInterface* modelAssign : assignedModels)
-					modelAssign->refresh();
-			}
-		}
-	}
-
-	if (refreshAssigned)
-		for (ListModelTermsAvailable * model : _allAvailableVariablesModelsWithSource)
-			model->resetTermsFromSourceModels(true);
-
-}
-
 QString AnalysisForm::_getControlLabel(JASPControlBase* control)
 {
 	QString label = control->property("label").toString();
@@ -493,8 +463,8 @@ void AnalysisForm::bindTo()
 	QVector<ListModelAvailableInterface*> availableModelsToBeReset;
 
 	_options->blockSignals(true);
-	
-	_setAllAvailableVariablesModel();	
+
+	_resetAllVariablesModel();
 	
 	for (JASPControlWrapper* control : _dependsOrderedCtrls)
 	{
@@ -752,22 +722,15 @@ void AnalysisForm::_formCompletedHandler()
 
 void AnalysisForm::dataSetChangedHandler()
 {
-	if (!_removed && DataSetPackage::pkg() && DataSetPackage::pkg()->hasDataSet())
-	{
-		_setAllAvailableVariablesModel(true);
-		emit dataSetChanged();
-	}
+	_resetAllVariablesModel();
+
+	emit dataSetChanged();
 }
 
-void AnalysisForm::dataSetColumnsChangedHandler()
+void AnalysisForm::refreshAllModels()
 {
-	if (!_removed && DataSetPackage::pkg() && DataSetPackage::pkg()->hasDataSet())
-	{
-		for (ListModel* model : _modelMap.values())
-			model->refresh();
-
-		emit dataSetChanged();
-	}
+	for (ListModel* model : _modelMap.values())
+		model->refresh();
 }
 
 void AnalysisForm::setControlIsDependency(QString controlName, bool isDependency)

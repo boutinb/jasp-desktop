@@ -90,7 +90,7 @@ Form
             height: 120
             AvailableVariablesList {
 				name: "observedvars"
-				syncModels: factors.name
+				source: factors.name
             }
 			AssignedPairsVariablesList {
                 title: qsTr("Residual Covariances")
@@ -123,7 +123,7 @@ Form
             name: "groupvar"; 
             showVariableTypeIcon: true; 
             addEmptyValue: true;
-        } // No model or syncModels: it takes all variables per default
+		} // No model or source: it takes all variables per default
         DropDown {
             label: qsTr("Invariance testing")
             name: "invariance"

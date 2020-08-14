@@ -76,7 +76,7 @@ public:
 public slots:
 				void			runScriptRequestDone(const QString& result, const QString& requestId);
 				void			dataSetChangedHandler();
-				void			dataSetColumnsChangedHandler();
+				void			refreshAllModels();
 				void			replaceVariableNameInListModels(const std::string & oldName, const std::string & newName);
 				void			setInfo(QString info);
 
@@ -107,6 +107,7 @@ public:
 	void					clearFormErrors();
 	QMLExpander			*	nextExpander(QMLExpander* expander)		{ return _nextExpanderMap[expander]; }
 	BoundQMLItem		*	getBoundItem(Option* option)			{ return _optionControlMap[option]; }
+	ListModelTermsAvailable* getDataFileVariablesModel()			{ return _dataFileVariablesModel; }
 
 	Options				*	options() { return _options; }
 	void					addControl(JASPControlBase* control);
@@ -115,14 +116,13 @@ public:
     Q_INVOKABLE void exportResults();
 	Q_INVOKABLE void addFormError(const QString& message);
 	Q_INVOKABLE void refreshAnalysis();
-	Q_INVOKABLE void runAnalysis();
 
 	void		addControlError(JASPControlBase* control, QString message, bool temporary = false, bool warning = false);
 	void		clearControlError(JASPControlBase* control);
 	void		cleanUpForm();
 	void		addControlErrorSet(JASPControlBase* control, bool add);
 	void		addControlWarningSet(JASPControlBase* control, bool add);
-	void		refreshAvailableVariablesModels() { _setAllAvailableVariablesModel(true); }
+	void		refreshAvailableVariables() { _resetAllVariablesModel(); }
 
 	QQuickItem*	errorMessagesItem()		{ return _formErrorMessagesItem;	}
 	GENERIC_SET_FUNCTION(ErrorMessagesItem, _formErrorMessagesItem, errorMessagesItemChanged, QQuickItem*)
@@ -140,15 +140,12 @@ public:
 	QString		helpMD()			const;
 	QString		metaHelpMD()		const;
 
-protected:
-	void		_setAllAvailableVariablesModel(bool refreshAssigned = false);
-
-
 private:
 	void		_addControlWrapper(JASPControlWrapper* controlWrapper);
 	void		_setUpControls();
 	void		_setUpRelatedModels();
 	void		_setUpItems();
+	void		_resetAllVariablesModel();
 	void		_orderExpanders();
 	void		_setErrorMessages();
 	QString		_getControlLabel(JASPControlBase* boundControl);
@@ -182,8 +179,7 @@ protected:
 	
 private:
 	QQuickItem								*	_formErrorMessagesItem	= nullptr;
-	std::vector<ListModelTermsAvailable*>		_allAvailableVariablesModels,
-												_allAvailableVariablesModelsWithSource;
+	std::vector<ListModelTermsAvailable*>		_allAvailableVariablesModels;
 	QList<QString>								_formErrorMessages;
 	long										_lastAddedErrorTimestamp = 0;
 	QQmlComponent*								_controlErrorMessageComponent = nullptr;
@@ -193,6 +189,7 @@ private:
 	QList<QString>								_computedColumns;
 	bool										_runOnChange = true;
 	QString										_info;
+	ListModelTermsAvailable*					_dataFileVariablesModel = nullptr;
 };
 
 #endif // ANALYSISFORM_H

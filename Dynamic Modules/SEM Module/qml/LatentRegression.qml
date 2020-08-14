@@ -117,7 +117,7 @@ Form {
             name: "groupvar"; 
             showVariableTypeIcon: true; 
             addEmptyValue: true 
-        } // No model or syncModels: it takes all variables per default
+		} // No model or source: it takes all variables per default
         ComboBox {
             label.text: qsTr("Invariance testing")
             name: "invariance"

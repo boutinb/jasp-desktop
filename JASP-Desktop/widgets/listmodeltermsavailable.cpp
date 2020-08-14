@@ -61,6 +61,8 @@ void ListModelTermsAvailable::resetTermsFromSourceModels(bool updateAssigned)
 
 	endResetModel();
 
+	emit modelChanged();
+
 	if (updateAssigned)
 		emit allAvailableTermsChanged(&_tempAddedTerms, &_tempRemovedTerms);
 }

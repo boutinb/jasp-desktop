@@ -32,7 +32,6 @@ const QString QMLListView::_defaultKey = "_JASPDefaultKey";
 QMLListView::QMLListView(JASPControlBase *item)
 	: QObject(item)	  
 {
-	_hasSource = !getItemProperty("source").isNull() || !getItemProperty("values").isNull(); // sourceModels are only known after setup is called, but the method hasSource() is needed before in AnalysisForm
 	_hasRowComponents = item->rowComponentsCount() > 0;
 	_optionKeyName = getItemProperty("optionKey").toString().toStdString();
 }
@@ -150,6 +149,8 @@ QMLListView::ValueList QMLListView::_readValues(const QVariant& values)
 
 void QMLListView::setupSources()
 {
+	if (!form()) return;
+
 	for (SourceType* sourceType : _sourceModels)
 	{
 		if (sourceType->isValuesSource)
@@ -160,12 +161,13 @@ void QMLListView::setupSources()
 
 	QVariant valuesVar = getItemProperty("values");
 	QVariant sourcesVar = getItemProperty("source");
-
-	if ((!sourcesVar.isValid() || sourcesVar.isNull()) && (!valuesVar.isValid() || valuesVar.isNull()))
-		return;
+	bool hasDataFileAsSource = getItemProperty("hasDataFileAsSource").toBool();
 
 	if (valuesVar.isValid() && !valuesVar.isNull())
 		_sourceModels.append(new SourceType(_readValues(valuesVar)));
+
+	if (hasDataFileAsSource)
+		_sourceModels.append(SourceType::createDataFileVariablesSource());
 
 	QList<QVariant> sources = _getListVariant(sourcesVar);
 	
@@ -233,15 +235,9 @@ void QMLListView::setupSources()
 		for (SourceType* sourceItem : _sourceModels)
 		{
 			ListModel* sourceModel = nullptr;
-			if (!sourceItem->isValuesSource)
-			{
-				if (form())
-					sourceModel = form()->getModel(sourceItem->name);
-				else
-					Log::log() << "Cannot use a source property outside of an Anlysis Form" << std::endl;
-			}
-			else
-				sourceModel = new ListModelLabelValueTerms(this, sourceItem->values);
+			if (sourceItem->isValuesSource)					sourceModel = new ListModelLabelValueTerms(this, sourceItem->values);
+			else if (sourceItem->isDataFileVariablesSource)	sourceModel = form()->getDataFileVariablesModel();
+			else											sourceModel = form()->getModel(sourceItem->name);
 
 			if (sourceModel)
 			{
@@ -329,8 +325,7 @@ void QMLListView::setUp()
 	_setAllowedVariables();
 
 	ListModel* listModel = model();
-	if (!listModel)
-		return;
+	if (!listModel)	return;
 
 	listModel->setRowComponents(item()->getRowComponents());
 	setupSources();
@@ -546,6 +541,16 @@ QMLListView::SourceType::SourceType(
 					);
 		if (!conditionVariable["component"].toString().isEmpty()) usedControls.insert(conditionVariable["component"].toString());
 	}
+}
+
+QMLListView::SourceType *QMLListView::SourceType::createDataFileVariablesSource()
+{
+	static const QString _allAvailablesSourceName = "_DataFileVariables";
+
+	SourceType* result = new SourceType(_allAvailablesSourceName);
+
+	result->isDataFileVariablesSource = true;
+	return result;
 }
 
 QVector<QMLListView::SourceType> QMLListView::SourceType::getDiscardModels(bool onlyNotNullModel) const

@@ -38,7 +38,6 @@ JASPControl
 
 	property var	source
 	property string factorsSource	: ""
-	property alias	syncModels		: tableView.source
 	property string	modelType
 	property string	itemType		: "string"
 	property string filter			: "rep(TRUE, rowcount)"	//Used by ListModelFilteredDataEntry

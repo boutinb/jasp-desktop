@@ -28,9 +28,10 @@ ListModelInteractionAvailable::ListModelInteractionAvailable(QMLListView* listVi
 
 void ListModelInteractionAvailable::resetTermsFromSourceModels(bool updateAssigned)
 {
+	if (!listView()) return;
+
 	const QList<QMLListView::SourceType*>& sourceItems = listView()->sourceModels();
-	if (sourceItems.size() == 0)
-		return;
+	if (sourceItems.size() == 0) return;
 	
 	beginResetModel();
 	Terms termsAvailable;

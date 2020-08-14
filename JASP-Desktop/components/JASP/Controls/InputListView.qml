@@ -29,11 +29,11 @@ JASPGridViewControl
 
 				property var	inputComponent		: textField
 				property bool	enableRowComponents	: true
-				property var	defaultValues	: []
-				property int	minRows	: 0
-				property bool	addVirtual		: true
-				property string placeHolder		: qsTr("New Value")
-	readonly	property string deleteIcon		: "cross.png"
+				property var	defaultValues		: []
+				property int	minRows				: 0
+				property bool	addVirtual			: true
+				property string placeHolder			: qsTr("New Value")
+	readonly	property string deleteIcon			: "cross.png"
 
 	signal itemChanged(int index, var name);
 	signal itemRemoved(int index);

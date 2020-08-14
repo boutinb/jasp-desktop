@@ -21,7 +21,7 @@ import QtQuick		2.11
 import JASP.Widgets 1.0
 import JASP			1.0
 
-JASPControl
+JASPControlWithSource
 {
 	id						: jaspGridControl
 	controlType				: JASPControlBase.VariablesListView
@@ -31,26 +31,16 @@ JASPControl
 	useControlMouseArea		: false
 	shouldStealHover		: false
 	innerControl			: itemGrid
+	listControl				: itemRepeater
 
-	property var	model
-	property var	values
-	property string title
-	property alias	label				: jaspGridControl.title
-	property alias	count				: itemRepeater.count
-	property string	optionKey			: "value"
 	property alias	columns				: itemGrid.columns
 	property alias	rows				: itemGrid.rows
-	property var	source
-	property var	sourceModel
-	property alias	syncModels			: jaspGridControl.source
-
 	property alias	itemGrid			: itemGrid
 	property alias	itemRectangle		: itemRectangle
 	property alias	itemScrollbar		: itemScrollbar
 	property alias	itemTitle			: itemTitle
 	property alias	rowSpacing			: itemGrid.rowSpacing
 	property alias	columnSpacing		: itemGrid.columnSpacing
-
 	property var	itemComponent
 
 	Text

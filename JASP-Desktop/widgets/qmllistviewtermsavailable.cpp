@@ -40,12 +40,15 @@ void QMLListViewTermsAvailable::setUp()
 
 void QMLListViewTermsAvailable::addAssignedModel(ListModelAssignedInterface *model)
 {
+	if (!model) return;
+
 	_assignedModels.push_back(model);
 
 	connect(model, &ListModelDraggable::destroyed, this, &QMLListViewTermsAvailable::removeAssignedModel);
 
-	 if (!_availableModel->areTermsVariables())		 model->listView()->setTermsAreNotVariables();
-	 if (_availableModel->areTermsInteractions())	 model->listView()->setTermsAreInteractions();
+	if (!model->listView()) return;
+	if (!_availableModel->areTermsVariables())		 model->listView()->setTermsAreNotVariables();
+	if (_availableModel->areTermsInteractions())	 model->listView()->setTermsAreInteractions();
 }
 
 void QMLListViewTermsAvailable::removeAssignedModel(ListModelDraggable* model)
@@ -58,7 +61,8 @@ void QMLListViewTermsAvailable::setTermsAreNotVariables()
 	QMLListView::setTermsAreNotVariables();
 
 	for (ListModelAssignedInterface* model : _assignedModels)
-		model->listView()->setTermsAreNotVariables();
+		if (model->listView())
+			model->listView()->setTermsAreNotVariables();
 }
 
 void QMLListViewTermsAvailable::setTermsAreInteractions()
@@ -66,5 +70,6 @@ void QMLListViewTermsAvailable::setTermsAreInteractions()
 	QMLListView::setTermsAreInteractions();
 
 	for (ListModelAssignedInterface* model : _assignedModels)
-		model->listView()->setTermsAreInteractions();
+		if (model->listView())
+			model->listView()->setTermsAreInteractions();
 }

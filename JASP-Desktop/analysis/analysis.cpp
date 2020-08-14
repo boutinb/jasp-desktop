@@ -303,9 +303,10 @@ void Analysis::initialized(AnalysisForm* form, bool isNewAnalysis)
 						_analysisForm	= form;
 	if(!_isDuplicate)	_status			= isNewAnalysis ? Empty : Complete;
 	
-	connect(Analyses::analyses(),	&Analyses::dataSetChanged,			_analysisForm,	&AnalysisForm::dataSetChangedHandler		);
-	connect(Analyses::analyses(),	&Analyses::dataSetColumnsChanged,	_analysisForm,	&AnalysisForm::dataSetColumnsChangedHandler	);
-	connect(_analysisForm,			&AnalysisForm::helpMDChanged,		this,			&Analysis::helpMDChanged					);
+	connect(Analyses::analyses(),	&Analyses::dataSetChanged,				_analysisForm,	&AnalysisForm::dataSetChangedHandler	);
+	connect(Analyses::analyses(),	&Analyses::dataSetColumnsChanged,		_analysisForm,	&AnalysisForm::dataSetChangedHandler	);
+	connect(Analyses::analyses(),	&Analyses::dataSetColumnsTypeChanged,	_analysisForm,	&AnalysisForm::refreshAllModels );
+	connect(_analysisForm,			&AnalysisForm::helpMDChanged,		this,			&Analysis::helpMDChanged				);
 }
 
 
@@ -574,10 +575,10 @@ void Analysis::emitDuplicationSignals()
 	emit titleChanged();
 }
 
-void Analysis::refreshAvailableVariablesModels()
+void Analysis::refreshAvailableVariables()
 {
 	if(form() != nullptr)
-		form()->refreshAvailableVariablesModels();
+		form()->refreshAvailableVariables();
 }
 
 QString	Analysis::fullHelpPath(QString helpFileName)

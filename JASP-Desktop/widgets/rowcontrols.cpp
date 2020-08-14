@@ -38,6 +38,8 @@ RowControls::RowControls(ListModel* parent
 void RowControls::init(int row, const Term& key, bool isNew)
 {
 	QMLListView* listView = _parentModel->listView();
+	if (!listView) return;
+
 	int col = 0;
 	for (QQmlComponent* comp : _rowComponents)
 	{

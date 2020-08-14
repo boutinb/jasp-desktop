@@ -19,8 +19,9 @@ RowLayout         1.0 RowLayout.qml
 Group	           1.0 GroupBox.qml
 GroupBox            1.0 GroupBox.qml
 IntegerField         1.0 IntegerField.qml
-JASPControl           1.0 JASPControl.qml
-TabView                1.0 TabView.qml
+TabView               1.0 TabView.qml
+JASPControl            1.0 JASPControl.qml
+JASPControlWithSource   1.0 JASPControlWithSource.qml
 JASPGridControl         1.0 JASPGridControl.qml
 JASPGridViewControl      1.0 JASPGridViewControl.qml
 JASPDataView              1.0 JASPDataView.qml
@@ -33,7 +34,7 @@ RadioButtonGroup                1.0 RadioButtonGroup.qml
 RepeatedMeasuresFactorsList      1.0 RepeatedMeasuresFactorsList.qml
 InputListView                     1.0 InputListView.qml
 ComponentsList                   1.0 ComponentsList.qml
-FileSelector			 	   1.0 FileSelector.qml
+FileSelector                    1.0 FileSelector.qml
 Slider                        1.0 Slider.qml
 Switch                       1.0 Switch.qml
 TableView                   1.0 TableView.qml

@@ -29,7 +29,7 @@ ListModel::ListModel(QMLListView* listView)
 	: QAbstractTableModel(listView)
 	, _listView(listView)
 {
-	setInfoProvider(listView->form());
+	if (listView)	setInfoProvider(listView->form());
 	_areTermsVariables = true;
 }
 
@@ -77,7 +77,7 @@ void ListModel::_initTerms(const Terms &terms, const RowControlsOptions& allOpti
 	_rowControlsOptions = allOptionsMap;
 	endResetModel();
 
-	if (setupControlConnections)
+	if (setupControlConnections && listView())
 		for (QMLListView::SourceType* sourceType : listView()->sourceModels())
 			_connectSourceControls(sourceType->model, sourceType->usedControls);
 }
@@ -111,6 +111,8 @@ Terms ListModel::getSourceTerms()
 	Terms termsAvailable;
 	Terms termsToCombine;
 	Terms termsToBeCombinedWith;
+
+	if (!listView()) return termsAvailable;
 
 	for (const std::pair<QMLListView::SourceType *, Terms>& source : listView()->getTermsPerSource())
 	{
@@ -149,6 +151,7 @@ Terms ListModel::getSourceTerms()
 ListModel *ListModel::getSourceModelOfTerm(const Term &term)
 {
 	ListModel* result = nullptr;
+	if (!listView()) return result;
 
 	for (const std::pair<QMLListView::SourceType *, Terms>& source : listView()->getTermsPerSource())
 	{

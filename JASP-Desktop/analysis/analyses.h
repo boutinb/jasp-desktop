@@ -160,6 +160,7 @@ signals:
 	void emptyQMLCache();
 	void dataSetChanged();
 	void dataSetColumnsChanged();
+	void dataSetColumnsTypeChanged();
 	void somethingModified();
     void analysesExportResults();
 	bool developerMode();

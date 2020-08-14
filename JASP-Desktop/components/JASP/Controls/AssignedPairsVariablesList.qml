@@ -25,4 +25,5 @@ VariablesList
 	showElementBorder		: true
 	columns					: 2
 	showVariableTypeIcon	: false
+	hasDataFileAsSource		: false
 }
