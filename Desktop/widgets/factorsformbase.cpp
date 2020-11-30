@@ -43,7 +43,7 @@ void FactorsFormBase::setUpModel()
 
 	_availableVariablesListName = property("availableVariablesListName").toString();
 	QVariant availableListVariant = property("availableVariablesList");
-	_availableVariablesListItem = dynamic_cast<JASPControl*>(qobject_cast<QQuickItem *>(availableListVariant.value<QObject *>()));
+	_availableVariablesListItem = dynamic_cast<JASPListControl*>(qobject_cast<QQuickItem *>(availableListVariant.value<QObject *>()));
 	_initNumberFactors = property("initNumberFactors").toInt();
 
 	QQuickItem::connect(this, SIGNAL(titleChanged(int, QString)), _factorsModel, SLOT(titleChangedSlot(int, QString)));
@@ -142,8 +142,7 @@ void FactorsFormBase::addListViewSlot(JASPListControl *listView)
 	_availableVariablesListItem->setProperty("dropKeys", names);
 	setProperty("dropKeys", _availableVariablesListName);
 	
-	JASPListControl* availableListView = dynamic_cast<JASPListControl*>(_availableVariablesListItem);
-	form()->addListView(listView, availableListView);
+	form()->addListView(listView, _availableVariablesListItem);
 	
 	connect(listView->model(), &ListModel::termsChanged, this, &FactorsFormBase::termsChangedHandler);
 }

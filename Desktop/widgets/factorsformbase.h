@@ -48,7 +48,7 @@ private:
 	ListModelFactorsForm*	_factorsModel				= nullptr;
 	OptionsTable*			_boundTo					= nullptr;
 	QString					_availableVariablesListName;
-	JASPControl*			_availableVariablesListItem	= nullptr;
+	JASPListControl*		_availableVariablesListItem	= nullptr;
 	int						_initNumberFactors			= 1;
 };
 
