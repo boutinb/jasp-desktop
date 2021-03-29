@@ -81,6 +81,8 @@ void FileReader::openEntry(const string &archivePath, const string &entryPath)
 	boost::filesystem::path pathArchive = archivePath;
 	#endif
 
+	string entryPathEx = pathArchive.stem().string() + "/" + entryPath;
+
 	if ((_archiveExists = boost::filesystem::exists(pathArchive)))
 	{
 		_archive = archive_read_new();
@@ -102,7 +104,8 @@ void FileReader::openEntry(const string &archivePath, const string &entryPath)
 				//#ifdef _WIN32
 				//if (wstring(archive_entry_pathname_w(entry)) == pathEntry.native())
 				//#else
-				if (string(archive_entry_pathname(entry)) == entryPath)//pathEntry.native())
+				string entry_pathname = archive_entry_pathname(entry);
+				if (entry_pathname == entryPath || entry_pathname == entryPathEx)//pathEntry.native())
 				//#endif
 				{
 					
@@ -293,6 +296,7 @@ vector<string> FileReader::getEntryPaths(const string &archivePath, const string
 	#else
 	boost::filesystem::path pathArchive = archivePath;
 	#endif
+	string entryBaseDirectoryEx = pathArchive.stem().string() + "/" + entryBaseDirectory;
 
 	bool archiveExists = boost::filesystem::exists(pathArchive);
 
@@ -314,7 +318,7 @@ vector<string> FileReader::getEntryPaths(const string &archivePath, const string
 			while (archive_read_next_header(a, &entry) == ARCHIVE_OK)
 			{
 				string entryPath = string(archive_entry_pathname(entry));
-				if (entryBaseDirectory.empty() || boost::starts_with(entryPath, entryBaseDirectory))
+				if (entryBaseDirectory.empty() || boost::starts_with(entryPath, entryBaseDirectory) || boost::starts_with(entryPath, entryBaseDirectoryEx))
 					files.push_back(entryPath);
 			}
 		}
