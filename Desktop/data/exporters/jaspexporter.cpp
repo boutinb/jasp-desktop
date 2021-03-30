@@ -60,8 +60,18 @@ void JASPExporter::saveDataSet(const std::string &path, boost::function<void(int
 	if (errorCode != ARCHIVE_OK)
 		throw std::runtime_error("File could not be opened.");
 
-	saveDataArchive(a, progressCallback);
-	saveJASPArchive(a, progressCallback);
+#ifdef _WIN32
+	boost::filesystem::path pathArchive = boost::nowide::widen(path);
+#else
+	boost::filesystem::path pathArchive = path;
+#endif
+	std::string rootPath = pathArchive.stem().string();
+	if (rootPath.size() >= 5 && rootPath.compare(rootPath.size() - 5, 5, ".jasp") == 0)
+		rootPath = rootPath.substr(0, rootPath.size() - 5);
+	rootPath += "/";
+
+	saveDataArchive(a, rootPath, progressCallback);
+	saveJASPArchive(a, rootPath, progressCallback);
 
 	errorCode = archive_write_close(a);
 	if (errorCode != ARCHIVE_OK)
@@ -73,11 +83,11 @@ void JASPExporter::saveDataSet(const std::string &path, boost::function<void(int
 }
 
 
-void JASPExporter::saveDataArchive(archive *a, boost::function<void(int)> progressCallback)
+void JASPExporter::saveDataArchive(archive *a, const std::string& rootPath, boost::function<void(int)> progressCallback)
 {
 	DataSetPackage * package = DataSetPackage::pkg();
 
-	createJARContents(a);
+	createJARContents(a, rootPath);
 
 	struct archive_entry *entry;
 
@@ -147,7 +157,7 @@ void JASPExporter::saveDataArchive(archive *a, boost::function<void(int)> progre
 	std::string metaDataString	= metaData.toStyledString();
 	size_t sizeOfMetaData		= metaDataString.size();
 	entry						= archive_entry_new();
-	std::string dd2				= std::string("metadata.json");
+	std::string dd2				= rootPath + std::string("metadata.json");
 
 	archive_entry_set_pathname(entry, dd2.c_str());
 	archive_entry_set_size(entry, int(sizeOfMetaData));
@@ -165,7 +175,7 @@ void JASPExporter::saveDataArchive(archive *a, boost::function<void(int)> progre
 	size_t		sizeOflabelData = labelDataString.size();
 
 	entry = archive_entry_new();
-	std::string dd9 = std::string("xdata.json");
+	std::string dd9 = rootPath + std::string("xdata.json");
 	archive_entry_set_pathname(entry, dd9.c_str());
 	archive_entry_set_size(entry, int(sizeOflabelData));
 	archive_entry_set_filetype(entry, AE_IFREG);
@@ -179,7 +189,7 @@ void JASPExporter::saveDataArchive(archive *a, boost::function<void(int)> progre
 
 	//Create new entry for archive NOTE: must be done before data is added
 	entry = archive_entry_new();
-	std::string dd = std::string("data.bin");
+	std::string dd = rootPath + std::string("data.bin");
 	archive_entry_set_pathname(entry, dd.c_str());
 	archive_entry_set_size(entry, int(dataSize));
 	archive_entry_set_filetype(entry, AE_IFREG);
@@ -213,7 +223,7 @@ void JASPExporter::saveDataArchive(archive *a, boost::function<void(int)> progre
 	std::string html = package->analysesHTML();
 	size_t htmlSize = html.size();
 	entry = archive_entry_new();
-	std::string dd3 = std::string("index.html");
+	std::string dd3 = rootPath + std::string("index.html");
 	archive_entry_set_pathname(entry, dd3.c_str());
 	archive_entry_set_size(entry, int(htmlSize));
 	archive_entry_set_filetype(entry, AE_IFREG);
@@ -228,7 +238,7 @@ void JASPExporter::saveDataArchive(archive *a, boost::function<void(int)> progre
 
 }
 
-void JASPExporter::saveJASPArchive(archive *a, boost::function<void(int)>)
+void JASPExporter::saveJASPArchive(archive *a, const std::string& rootPath, boost::function<void(int)>)
 {
 	if (DataSetPackage::pkg()->hasAnalyses())
 	{
@@ -241,7 +251,7 @@ void JASPExporter::saveJASPArchive(archive *a, boost::function<void(int)>)
 		size_t sizeOfAnalysesString = analysesString.size();
 
 		entry = archive_entry_new();
-		std::string dd4 = std::string("analyses.json");
+		std::string dd4 = rootPath + std::string("analyses.json");
 		archive_entry_set_pathname(entry, dd4.c_str());
 		archive_entry_set_size(entry, int(sizeOfAnalysesString));
 		archive_entry_set_filetype(entry, AE_IFREG);
@@ -270,7 +280,7 @@ void JASPExporter::saveJASPArchive(archive *a, boost::function<void(int)>)
 					int imageSize = fileInfo.size();
 
 					entry = archive_entry_new();
-					std::string dd4 = paths[j];
+					std::string dd4 = rootPath + paths[j];
 					archive_entry_set_pathname(entry, dd4.c_str());
 					archive_entry_set_size(entry, imageSize);
 					archive_entry_set_filetype(entry, AE_IFREG);
@@ -297,7 +307,7 @@ void JASPExporter::saveJASPArchive(archive *a, boost::function<void(int)>)
 	}
 }
 
-void JASPExporter::createJARContents(archive *a)
+void JASPExporter::createJARContents(archive *a, const std::string& rootPath)
 {
 	struct archive_entry *entry = archive_entry_new();
 
@@ -313,7 +323,7 @@ void JASPExporter::createJARContents(archive *a)
 	size_t manifestSize		= tmp.size();
 	const char* manifest	= tmp.c_str();
 
-	std::string f1 = std::string("META-INF/MANIFEST.MF");
+	std::string f1 = rootPath + std::string("META-INF/MANIFEST.MF");
 	archive_entry_set_pathname(entry, f1.c_str());
 	archive_entry_set_size(entry, int(manifestSize));
 	archive_entry_set_filetype(entry, AE_IFREG);
