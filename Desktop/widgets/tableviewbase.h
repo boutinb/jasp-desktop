@@ -55,7 +55,6 @@ public:
 	const Json::Value&			boundValue()								override	{ return _boundControl->boundValue();				}
 	Json::Value					createJson()								override	{ return _boundControl->createJson();				}
 	void						setBoundValue(const Json::Value& value, bool emitChange = true) override	{ return _boundControl->setBoundValue(value, emitChange);	}
-	std::vector<std::string>	usedVariables()								override	{ return _boundControl->usedVariables();			}
 
 	ListModel*					model()									const	override { return _tableModel; }
 	ListModelTableViewBase*		tableModel()							const			 { return _tableModel; }
@@ -84,7 +83,7 @@ public:
 	QStringList					columnNames()							const				{ return _columnNames;					}
 	QStringList					rowNames()								const				{ return _rowNames;						}
 	bool						updateSource()							const				{ return _updateSource;					}
-
+	std::vector<std::string>	usedVariables()							const override;
 
 	Q_INVOKABLE void addColumn(int col = -1, bool left = true);
 	Q_INVOKABLE void removeColumn(int col);

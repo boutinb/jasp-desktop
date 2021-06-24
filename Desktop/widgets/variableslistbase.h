@@ -52,7 +52,6 @@ public:
 	void						resetBoundValue()							override	{ return _boundControl->resetBoundValue();				}
 	Json::Value					createJson()								override	{ return _boundControl->createJson();				}
 	void						setBoundValue(const Json::Value& value, bool emitChange = true) override	{ return _boundControl->setBoundValue(value, emitChange);	}
-	std::vector<std::string>	usedVariables()								override	{ return _boundControl->usedVariables();			}
 
 	ListViewType				listViewType()						const				{ return _listViewType;								}
 	BoundControl*				boundControl()								override	{ return _boundControl;								}
