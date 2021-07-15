@@ -24,7 +24,11 @@ const char * Term::separator =
 #ifdef _WIN32
 		" * ";
 #else
-		" \xE2\x88\x97 ";
+		" \xEF\xB9\xA1 ";
+//		" \xEF\xBC\x8A ";
+//		" \x2A ";
+//		" \u2009\u273B\u2009 ";
+//		" \xE2\x88\x97 ";
 #endif
 
 
