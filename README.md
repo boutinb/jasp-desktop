@@ -53,7 +53,7 @@ Head on over to our [issue tracker](http://github.com/jasp-stats/jasp-issues/iss
   - [Logging](Docs/user-guide/logging-howto.md)
   
 #### Building
-  - [Guide to Building JASP](Docs/development/jasp-building-guide.md)
+  - [Guide to Building JASP](Docs/development/jasp-cmake-building-guide.md)
   - [Rebasing your Repository](Docs/development/git-guide.md)
   - [Nightly versions of JASP here](http://static.jasp-stats.org/Nightlies/) (built fresh every night)
 
