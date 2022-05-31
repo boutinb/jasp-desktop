@@ -36,5 +36,5 @@ if (result == "succes") {
 # Todo, I can do this using CMake like I do on Windows
 if (Sys.info()["sysname"] == "Darwin") { 
 	source('@MODULES_BINARY_PATH@/symlinkTools.R')
-	convertAbsoluteSymlinksToRelative('@MODULES_BINARY_PATH@', '@MODULES_RENV_CACHE_PATH@')
+	convertAbsoluteSymlinksToRelative('@MODULES_BINARY_PATH@', '@MODULES_RENV_CACHE_PATH@', "../")
 }
