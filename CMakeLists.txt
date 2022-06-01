@@ -112,6 +112,7 @@ if(WIN32)
 endif()
 
 add_subdirectory(Common)
+add_subdirectory(QMLForm)
 
 if(NOT WIN32)
   add_subdirectory(R-Interface)
