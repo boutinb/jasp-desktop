@@ -169,11 +169,11 @@ void DUP_AnalysisForm::addColumnControl(DUP_JASPControl* control, bool isCompute
 {
 	if (isComputed)
 	{
-		connect(control, &DUP_JASPControl::requestComputedColumnCreation, _analysis, &Analysis::requestComputedColumnCreationHandler);
-		connect(control, &DUP_JASPControl::requestComputedColumnDestruction, _analysis, &Analysis::requestComputedColumnDestructionHandler);
+		connect(control, &DUP_JASPControl::requestComputedColumnCreation, _analysis, &AnalysisInterface::requestComputedColumnCreationHandler);
+		connect(control, &DUP_JASPControl::requestComputedColumnDestruction, _analysis, &AnalysisInterface::requestComputedColumnDestructionHandler);
 	}
 	else
-		connect(control, &DUP_JASPControl::requestColumnCreation, _analysis, &Analysis::requestColumnCreationHandler);
+		connect(control, &DUP_JASPControl::requestColumnCreation, _analysis, &AnalysisInterface::requestColumnCreationHandler);
 }
 
 void DUP_AnalysisForm::_setUpControls()
@@ -675,7 +675,7 @@ void DUP_AnalysisForm::blockValueChangeSignal(bool block, bool notifyOnceUnblock
 				while(_waitingRScripts.size() > 0)
 				{
 					const auto & front = _waitingRScripts.front();
-					emit _analysis->sendRScript(_analysis, std::get<0>(front), std::get<1>(front), std::get<2>(front));
+					emit _analysis->sendRScript(std::get<0>(front), std::get<1>(front), std::get<2>(front));
 					_waitingRScripts.pop();
 				}
 			else //Otherwise just clean it up
@@ -881,8 +881,8 @@ QString DUP_AnalysisForm::helpMD() const
 	
 	QString md = markdown.join("");
 	
-	if(_analysis && _analysis->dynamicModule())
-		_analysis->dynamicModule()->preprocessMarkdownHelp(md);
+	if(_analysis)
+		_analysis->preprocessMarkdownHelp(md);
 	
 	return md;
 }
