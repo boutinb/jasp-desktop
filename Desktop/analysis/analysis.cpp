@@ -28,7 +28,7 @@
 #include "utilities/settings.h"
 
 Analysis::Analysis(size_t id, Modules::AnalysisEntry * analysisEntry, std::string title, std::string moduleVersion, Json::Value *data) :
-	  QObject(Analyses::analyses()),
+	  IAnalysis(Analyses::analyses()),
 	  _id(id),
 	  _name(analysisEntry->function()),
 	  _qml(analysisEntry->qml().empty() ? _name : analysisEntry->qml()),
@@ -46,11 +46,11 @@ Analysis::Analysis(size_t id, Modules::AnalysisEntry * analysisEntry, std::strin
 		_optionsDotJASP = *data; //Same story as other constructor
 
 	_codedReferenceToAnalysisEntry = analysisEntry->codedReference(); //We need to store this to be able to find the right analysisEntry after reloading the entries of a dynamic module (destroys analysisEntries). Or replacing the entry if a different version of the module gets loaded of course.
-	setHelpFile(dynamicModule()->helpFolderPath() + tq(analysisEntry->function()));
+	_helpFile = dynamicModule()->helpFolderPath() + tq(analysisEntry->function());
 }
 
 Analysis::Analysis(size_t id, Analysis * duplicateMe)
-	: QObject(			Analyses::analyses()		)
+	: IAnalysis(		Analyses::analyses()	)
 	, _status(			duplicateMe->_status		)
 	, _boundValues(		duplicateMe->boundValues()	)
 	, _optionsDotJASP(	duplicateMe->_optionsDotJASP)
@@ -115,9 +115,18 @@ bool Analysis::checkAnalysisEntry()
 	}
 }
 
-QString Analysis::helpMD() const
+void Analysis::setTitle(const std::string& title)
 {
-	return _analysisForm ? _analysisForm->helpMD() : "";
+	if (_title != title)
+	{
+		_title = title;
+		if(_title == "")
+			_title = _titleDefault;
+
+		_results["title"] = _title;
+
+		emit titleChanged();
+	}
 }
 
 void Analysis::abort()
@@ -153,6 +162,7 @@ void Analysis::setResults(const Json::Value & results, Status status, const Json
 
 void Analysis::reload()
 {
+	clearOptions();
 	Analyses::analyses()->reload(this, true);
 }
 
@@ -288,9 +298,11 @@ void Analysis::initialized(AnalysisForm* form, bool isNewAnalysis)
 	if(!_isDuplicate && isNewAnalysis)
 		_status = Empty;
 	
-	connect(_analysisForm,			&AnalysisForm::helpMDChanged,		this,			&Analysis::helpMDChanged					);
 	connect(this,					&Analysis::rSourceChanged,			_analysisForm,	&AnalysisForm::rSourceChanged				);
 	connect(this,					&Analysis::refreshTableViewModels,	_analysisForm,	&AnalysisForm::refreshTableViewModels		);
+	connect(this, 					&Analysis::titleChanged,			_analysisForm,	&AnalysisForm::titleChanged					);
+	connect(this,					&Analysis::needsRefreshChanged,		_analysisForm,	&AnalysisForm::needsRefreshChanged			);
+
 }
 
 
@@ -547,19 +559,17 @@ void Analysis::boundValueChangedHandler()
 	run();
 }
 
-ComputedColumn *Analysis::requestComputedColumnCreationHandler(const std::string& columnName)
+void Analysis::requestComputedColumnCreationHandler(const std::string& columnName)
 {
 	ComputedColumn *result = requestComputedColumnCreation(columnName, this);
 
 	if (result)
 		addOwnComputedColumn(columnName);
-
-	return result;
 }
 
 void Analysis::requestComputedColumnDestructionHandler(const std::string& columnName)
 {
-	requestComputedColumnDestruction(columnName);
+	emit requestComputedColumnDestruction(columnName);
 
 	removeOwnComputedColumn(columnName);
 }
@@ -636,42 +646,6 @@ Json::Value Analysis::createAnalysisRequestJson()
 	return json;
 }
 
-void Analysis::setName(std::string name)
-{
-	if (_name == name)
-		return;
-
-	_name = name;
-	emit nameChanged();
-}
-
-void Analysis::setHelpFile(QString helpFile)
-{
-	if (_helpFile == helpFile)
-		return;
-
-	_helpFile = helpFile;
-	emit helpFileChanged();
-}
-
-void Analysis::setTitleQ(QString title)
-{
-	//Log::log() << "void Analysis::setTitleQ('" << title << "')" << std::endl;
-	
-	std::string strippedTitle	= title.simplified().toStdString();
-
-	if(strippedTitle == "")
-		strippedTitle = _titleDefault;
-
-	if (_title == strippedTitle && strippedTitle == title.toStdString())
-		return;
-
-	_results["title"] = strippedTitle;
-	_title = strippedTitle;
-	
-	emit titleChanged();
-}
-
 void Analysis::emitDuplicationSignals()
 {
 	emit resultsChangedSignal(this);
@@ -693,15 +667,6 @@ void Analysis::showDependenciesOnQMLForObject(QString uniqueName)
 {
 	_showDepsName = uniqueName.toStdString();
 	processResultsForDependenciesToBeShown();
-}
-
-void Analysis::setOptionsBound(bool optionsBound)
-{
-	if (_optionsBound == optionsBound)
-		return;
-
-	_optionsBound = optionsBound;
-	emit optionsBoundChanged(_optionsBound);
 }
 
 bool Analysis::processResultsForDependenciesToBeShownMetaTraverser(const Json::Value & array)
@@ -1078,17 +1043,6 @@ bool Analysis::isWaitingForModule()
 	return isDynamicModule() && (!moduleData() || !moduleData()->dynamicModule()->readyForUse());
 }
 
-
-void Analysis::setHasVolatileNotes(bool hasVolatileNotes)
-{
-	if (_hasVolatileNotes == hasVolatileNotes)
-		return;
-
-	_hasVolatileNotes = hasVolatileNotes;
-	emit hasVolatileNotesChanged(_hasVolatileNotes);
-}
-
-
 void Analysis::setUserData(Json::Value userData)
 {
 	_userData = userData;
@@ -1105,7 +1059,7 @@ void Analysis::setUserData(Json::Value userData)
 		return false;
 	};
 
-	setHasVolatileNotes(checkForVolatileNotes(_userData));
+	if (_analysisForm) _analysisForm->setHasVolatileNotes(checkForVolatileNotes(_userData));
 }
 
 void Analysis::setRSources(const Json::Value &rSources)

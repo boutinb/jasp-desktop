@@ -32,6 +32,7 @@
 #include "data/datasetpackage.h"
 #include "utilities/qutils.h"
 #include "modules/upgrader/upgradechange.h"
+#include "ianalysis.h"
 
 class ComputedColumn;
 class DataSet;
@@ -43,17 +44,9 @@ class AnalysisForm;
 /// Analysis and AnalysisForm together handle most of the interaction between the user and (eventually) R
 /// If R should do something with an analysis the status will change to either `Empty` or one of `SaveImg, EditImg or RewriteImgs` and `EngineSync` will notice.
 /// Any commands for the Engine are then issued through EngineSync/EngineRepresentation
-class Analysis : public QObject
+class Analysis : public IAnalysis
 {
 	Q_OBJECT
-	Q_PROPERTY(QString	name				READ nameQ											NOTIFY nameChanged				)
-	Q_PROPERTY(QString	title				READ titleQ				WRITE setTitleQ				NOTIFY titleChanged				)
-	Q_PROPERTY(QString	helpFile			READ helpFile										NOTIFY helpFileChanged			)
-	Q_PROPERTY(QString	helpMD				READ helpMD											NOTIFY helpMDChanged			)
-	Q_PROPERTY(bool		needsRefresh		READ needsRefresh									NOTIFY needsRefreshChanged		)
-	///Volatile notes are coupled with results elements and might disappear when the name changes. Some attempt is made to salvage them on a refresh when needsRefresh is true!
-	Q_PROPERTY(bool		hasVolatileNotes	READ hasVolatileNotes	WRITE setHasVolatileNotes	NOTIFY hasVolatileNotesChanged	)
-	Q_PROPERTY(bool		optionsBound		READ optionsBound		WRITE setOptionsBound		NOTIFY optionsBoundChanged		)
 
 	friend class Analyses;
 
@@ -73,21 +66,21 @@ public:
 	virtual ~Analysis();
 
 	void				clearOptions();
-	const Json::Value&	optionsFromJASPFile()		const	{ return _optionsDotJASP;	}
+	const Json::Value&	optionsFromJASPFile()		const	override	{ return _optionsDotJASP;	}
 
-	const Json::Value&	boundValues()				const	{ return _boundValues;		}
-	const Json::Value&	boundValue(const std::string& name, const QVector<JASPControl::ParentKey>& parentKeys = {});
+	const Json::Value&	boundValues()				const	override	{ return _boundValues;		}
+	const Json::Value&	boundValue(const std::string& name, const QVector<JASPControl::ParentKey>& parentKeys = {}) override;
 	
-	bool				setBoundValue(const std::string& name, const Json::Value& value, const Json::Value& meta, const QVector<JASPControl::ParentKey>& parentKeys = {});
+	bool				setBoundValue(const std::string& name, const Json::Value& value, const Json::Value& meta, const QVector<JASPControl::ParentKey>& parentKeys = {}) override;
 	bool				setBoundValues(const Json::Value& boundValues);
 
 	Q_INVOKABLE	QString	fullHelpPath(QString helpFileName);
 	Q_INVOKABLE void	duplicateMe();
 
-	bool needsRefresh()			const;
-	bool wasUpgraded()			const { return _wasUpgraded; }
+	bool needsRefresh()								const	override;
+	bool wasUpgraded()								const	override	{ return _wasUpgraded; }
 	bool isWaitingForModule();
-	bool isDynamicModule()		const { return bool(_dynamicModule); }
+	bool isDynamicModule()							const				{ return bool(_dynamicModule); }
 	void setResults(		const Json::Value & results, analysisResultStatus	status, const Json::Value & progress = Json::nullValue) { setResults(results, analysisResultsStatusToAnalysisStatus(status), progress); }
 	void setResults(		const Json::Value & results, Status					status, const Json::Value & progress = Json::nullValue);
 	void imageSaved(		const Json::Value & results);
@@ -112,39 +105,36 @@ public:
 	bool		checkAnalysisEntry();
 
 	//getters
-	const	Json::Value		&	results()			const	{ return _results;							}
-	const	Json::Value		&	userData()			const	{ return _userData;							}
-	const	std::string		&	name()				const	{ return _name;								}
-	const	QString				nameQ()				const	{ return tq(_name);							}
-	const	std::string		&	qml()				const	{ return _qml;								}
-	const	Version			&	version()			const	{ return _version;							}
-	const	std::string		&	title()				const	{ return _title;							}
-			QString				titleQ()			const	{ return tq(_title);						}
-	const	std::string		&	rfile()				const	{ return _rfile;							}
-	const	std::string			module()			const	{ return _moduleData->dynamicModule()->name();	}
-			size_t				id()				const	{ return _id;								}
-			Status				status()			const	{ return _status;							}
-			QString				statusQ()			const	{ return tq(statusToString(_status));		}
-			int					revision()			const	{ return _revision;							}
-			bool				isRefreshBlocked()	const	{ return _refreshBlocked;					}
-			QString				helpFile()			const	{ return _helpFile;							}
-	const	Json::Value		&	imgOptions()		const	{ return _imgOptions;						}
-	const	Json::Value		&	imgResults()		const	{ return _imgResults;						}
-	Modules::DynamicModule	*	dynamicModule()		const	{ return _dynamicModule;					}
-			AnalysisForm	*	form()				const	{ return _analysisForm;						}
-			bool				isDuplicate()		const	{ return _isDuplicate;						}
-			bool				hasVolatileNotes()	const	{ return _hasVolatileNotes;					}
-			bool				utilityRunAllowed() const	{ return  isSaveImg() || isEditImg() || isRewriteImgs();									}
-			bool				shouldRun()					{ return !isWaitingForModule() && ( utilityRunAllowed() || isEmpty() ) && optionsBound();	}
-	const	Json::Value		&	resultsMeta()		const	{ return _resultsMeta;						}
-	const	Json::Value			optionsMeta()		const	{ return _boundValues.get(".meta", Json::nullValue);	}
-			QString				helpMD()			const;
-			bool				optionsBound()		const	{ return _optionsBound;	}
+	const	Json::Value		&	results()			const				{ return _results;							}
+	const	Json::Value		&	userData()			const				{ return _userData;							}
+	const	std::string		&	name()				const	override	{ return _name;								}
+	const	std::string		&	qml()				const				{ return _qml;								}
+	const	Version			&	version()			const				{ return _version;							}
+	const	std::string		&	title()				const	override	{ return _title;							}
+	const	std::string		&	rfile()				const				{ return _rfile;							}
+	const	std::string		&	module()			const	override	{ return _moduleData->dynamicModule()->name();	}
+			size_t				id()				const				{ return _id;								}
+			Status				status()			const				{ return _status;							}
+			QString				statusQ()			const				{ return tq(statusToString(_status));		}
+			int					revision()			const				{ return _revision;							}
+			bool				isRefreshBlocked()	const				{ return _refreshBlocked;					}
+	Q_INVOKABLE QString			helpFile()			const				{ return _helpFile;							}
+	const	Json::Value		&	imgOptions()		const				{ return _imgOptions;						}
+	const	Json::Value		&	imgResults()		const				{ return _imgResults;						}
+	Modules::DynamicModule	*	dynamicModule()		const				{ return _dynamicModule;					}
+			AnalysisForm	*	form()				const				{ return _analysisForm;						}
+			bool				isDuplicate()		const	override	{ return _isDuplicate;						}
+			bool				utilityRunAllowed() const				{ return  isSaveImg() || isEditImg() || isRewriteImgs();									}
+			bool				shouldRun()								{ return !isWaitingForModule() && ( utilityRunAllowed() || isEmpty() ) && form();	}
+	const	Json::Value		&	resultsMeta()		const	override	{ return _resultsMeta;						}
+	const	Json::Value			optionsMeta()		const				{ return _boundValues.get(".meta", Json::nullValue);	}
+			void				setTitle(const std::string& title)	override;
 
-			void		run();
-			void		refresh();
-			void		reload();
-			void        exportResults();
+
+			void		run()								override;
+			void		refresh()							override;
+			void		reload()							override;
+			void        exportResults()						override;
 			void		remove();
 
 			Json::Value asJSON(bool withRSources = false)	const;
@@ -163,7 +153,7 @@ public:
 	bool isFinished()		const { return status() == Complete || status() == ValidationError || status() == FatalError; }
 
 
-	void initialized(AnalysisForm* form, bool isNewAnalysis);
+	void initialized(AnalysisForm* form, bool isNewAnalysis)	override;
 
 	performType				desiredPerformTypeFromAnalysisStatus() const;
 	std::string				qmlFormPath() const;
@@ -174,19 +164,16 @@ public:
 	void					setUpgradeMsgs(const Modules::UpgradeMsgs & msgs);
 	std::string				upgradeMsgsForOption(const std::string & name)		const;
 
-	const QList<std::string>	& computedColumns()								const	{ return _computedColumns; }
-	const Json::Value			& getRSource(const std::string& name)			const	{ return _rSources.count(name) > 0 ? _rSources.at(name) : Json::Value::null; }
+	const QList<std::string>	& computedColumns()								const			{ return _computedColumns; }
+	const Json::Value			& getRSource(const std::string& name)			const override	{ return _rSources.count(name) > 0 ? _rSources.at(name) : Json::Value::null; }
 	Json::Value				rSources()											const;
+	bool					isOwnComputedColumn(const std::string& col)			const override	{ return _computedColumns.contains(col); }
+	void					preprocessMarkdownHelp(QString & md)				const			{ if (_dynamicModule) _dynamicModule->preprocessMarkdownHelp(md);}
 
 signals:
-	void				nameChanged();
-	void				helpFileChanged();
-	void				helpMDChanged();
 	void				titleChanged();
 	void				needsRefreshChanged();
-	void				hasVolatileNotesChanged(bool hasVolatileNotes);
 
-	void				sendRScript(			Analysis * analysis, QString script, QString controlName, bool whiteListedVersion);
 	void				statusChanged(			Analysis * analysis);
 	void				imageSavedSignal(		Analysis * analysis);
 	void				imageEditedSignal(		Analysis * analysis);
@@ -204,24 +191,14 @@ signals:
 
 
 
-
-	void optionsBoundChanged(bool optionsBound);
-
 public slots:
-	void					setName(std::string name);
-	void					setNameQ(QString name) { setName(name.toStdString()); }
-	void					setHelpFile(QString helpFile);
-	void					setTitleQ(QString title);
-	void					setTitle(std::string title) { setTitleQ(tq(title)); }
-	void					setHasVolatileNotes(bool hasVolatileNotes);
 	void					setDynamicModule(Modules::DynamicModule * module);
 	void					emitDuplicationSignals();
 	void					showDependenciesOnQMLForObject(QString uniqueName); //uniqueName is basically "name" in meta in results.
-	void					setOptionsBound(bool optionsBound);
-	void					boundValueChangedHandler();
-	ComputedColumn *		requestComputedColumnCreationHandler(const std::string& columnName);
-	void					requestColumnCreationHandler(const std::string&columnName, columnType colType)	{ requestColumnCreation(columnName, this, colType); }
-	void					requestComputedColumnDestructionHandler(const std::string& columnName);
+	void					boundValueChangedHandler()	override;
+	void					requestComputedColumnCreationHandler(const std::string& columnName)				override;
+	void					requestColumnCreationHandler(const std::string&columnName, columnType colType)	override { requestColumnCreation(columnName, this, colType); }
+	void					requestComputedColumnDestructionHandler(const std::string& columnName)			override;
 
 
 protected:
@@ -273,9 +250,7 @@ private:
 							_moduleVersion		= "";
 	bool					_isDuplicate		= false,
 							_wasUpgraded		= false,
-							_hasVolatileNotes	= false,
-							_tryToFixNotes		= false,
-							_optionsBound		= false;
+							_tryToFixNotes		= false;
 	Version					_version;
 	int						_revision		= 0;
 

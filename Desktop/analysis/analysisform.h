@@ -22,15 +22,16 @@
 #include <QMap>
 #include <QQuickItem>
 
+#include "analysis/ianalysis.h"
 #include "boundcontrol.h"
 #include "analysis/variableinfo.h"
-#include "analysis.h"
 #include "widgets/listmodel.h"
 #include "widgets/listmodeltermsavailable.h"
 #include "gui/messageforwarder.h"
 #include "utilities/qutils.h"
 
 #include <queue>
+
 
 class ListModelTermsAssigned;
 class JASPControl;
@@ -48,6 +49,7 @@ class ColumnsModel;
 class AnalysisForm : public QQuickItem, public VariableInfoProvider
 {
 	Q_OBJECT
+	Q_PROPERTY(QString		title				READ title				WRITE setTitle				NOTIFY titleChanged				)
 	Q_PROPERTY(QString		errors				READ errors											NOTIFY errorsChanged			)
 	Q_PROPERTY(QString		warnings			READ warnings										NOTIFY warningsChanged			)
 	Q_PROPERTY(bool			needsRefresh		READ needsRefresh									NOTIFY needsRefreshChanged		)
@@ -57,10 +59,10 @@ class AnalysisForm : public QQuickItem, public VariableInfoProvider
 	Q_PROPERTY(QString		helpMD				READ helpMD											NOTIFY helpMDChanged			)
 	Q_PROPERTY(QVariant		analysis			READ analysis			WRITE setAnalysis			NOTIFY analysisChanged			)
 
+
 public:
 	explicit					AnalysisForm(QQuickItem * = nullptr);
 				void			bindTo();
-				void			unbind();
 
 				void			runRScript(QString script, QString controlName, bool whiteListedVersion);
 				
@@ -72,16 +74,21 @@ public:
 				bool			runOnChange()	{ return _runOnChange; }
 				void			setRunOnChange(bool change);
 				void			blockValueChangeSignal(bool block, bool notifyOnceUnblocked = true);
+				QString			title()				const	{ return _analysis ? tq(_analysis->title()) : "";		}
+				bool			hasVolatileNotes()	const	{ return _hasVolatileNotes;								}
+				bool			wasUpgraded()		const	{ return _analysis ? _analysis->wasUpgraded() : false;	}
 
 public slots:
 				void			runScriptRequestDone(const QString& result, const QString& requestId);
 				void			setInfo(QString info);
 				void			setAnalysis(QVariant analysis);
 				void			boundValueChangedHandler(JASPControl* control);
+				void			setTitle(QString title);
+
 
 signals:
 				void			sendRScript(QString script, int key);
-				void			formChanged(Analysis* analysis);
+				void			formChanged(IAnalysis* analysis);
 				void			formCompleted();
 				void			refreshTableViewModels();
 				void			errorMessagesItemChanged();
@@ -95,6 +102,7 @@ signals:
 				void			warningsChanged();
 				void			analysisChanged();
 				void			rSourceChanged(const QString& name);
+				void			titleChanged();
 
 protected:
 				QVariant		requestInfo(const Term &term, VariableInfo::InfoType info)	const override;
@@ -121,26 +129,27 @@ public:
 	void		cleanUpForm();
 	bool		hasError();
 
-	bool		isOwnComputedColumn(const std::string& col)			const	{ return _analysis ? _analysis->computedColumns().contains(col) : false; }
+	bool		isOwnComputedColumn(const std::string& col)			const	{ return _analysis ? _analysis->isOwnComputedColumn(col) : false; }
 
-	bool		needsRefresh()		const;
-	bool		hasVolatileNotes()	const;
+	bool		needsRefresh()				const;
 
-	QString		info()				const { return _info; }
-	QString		helpMD()			const;
-	QString		metaHelpMD()		const;
-	QString		errors()			const {	return msgsListToString(_formErrors);	}
-	QString		warnings()			const { return msgsListToString(_formWarnings);	}
-	QVariant	analysis()			const { return QVariant::fromValue(_analysis);	}
-	Analysis*	analysisObj()		const { return _analysis;						}
+	QString		info()						const { return _info; }
+	QString		helpMD()					const;
+	QString		metaHelpMD()				const;
+	QString		errors()					const {	return msgsListToString(_formErrors);	}
+	QString		warnings()					const { return msgsListToString(_formWarnings);	}
+	QVariant	analysis()					const { return QVariant::fromValue(_analysis);	}
 
 	std::vector<std::vector<std::string> >	getValuesFromRSource(const QString& sourceID, const QStringList& searchPath);
 	void		addColumnControl(JASPControl* control, bool isComputed);
 
+	const Json::Value& boundValue(const std::string& name, const QVector<JASPControl::ParentKey>& parentKeys) { return _analysis ? _analysis->boundValue(name, parentKeys) : Json::Value::null; }
 	bool		setBoundValue(const std::string& name, const Json::Value& value, const Json::Value& meta, const QVector<JASPControl::ParentKey>& parentKeys = {});
 	std::set<std::string> usedVariables();
 
 	void		sortControls(QList<JASPControl*>& controls);
+	void		setHasVolatileNotes(bool hasVolatileNotes);
+
 
 protected:
 	QString		msgsListToString(const QStringList & list) const;
@@ -165,7 +174,7 @@ private slots:
 	   void		knownIssuesUpdated();
 
 protected:
-	Analysis								*	_analysis			= nullptr;
+	IAnalysis								*	_analysis			= nullptr;
 	QMap<QString, JASPControl* >				_controls;
 
 	///Ordered on dependencies within QML, aka an assigned variables list depends on the available list it is connected to.
@@ -186,6 +195,7 @@ private:
 	QList<QQuickItem*>							_controlErrorMessageCache;
 	bool										_runOnChange	= true,
 												_formCompleted = false,
+												_hasVolatileNotes	= false,
 												_initialized = false;
 	QString										_info;
 	int											_signalValueChangedBlocked = 0;

@@ -69,7 +69,7 @@ AnalysisForm
 		Rectangle
 		{
 			id:				oldFileMessagesBox
-			visible:		myAnalysis !== null && myAnalysis.needsRefresh && myAnalysis.hasVolatileNotes //Ill leave the text as is for now to avoid having to go back to the po again
+			visible:		needsRefresh && hasVolatileNotes //Ill leave the text as is for now to avoid having to go back to the po again
 			color:			jaspTheme.controlWarningBackgroundColor
 			width:			form.implicitWidth
 			height:			visible ? oldAnalysisText.height : 0
@@ -86,7 +86,7 @@ AnalysisForm
 				width:				parent.width - 10 * jaspTheme.uiScale
 				verticalAlignment:	Text.AlignVCenter
 				text:				qsTr("This analysis was created with an older version of JASP (or a dynamic module)") + //I do not want to bother with formatting strings here to be honest
-									( myAnalysis !== null && !myAnalysis.hasVolatileNotes ?
+									( !hasVolatileNotes ?
 										qsTr(", refreshing could give a slightly different result.") :
 										qsTr(", to keep your notes where they are it is highly recommended to first refresh your analyses!"))
 

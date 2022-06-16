@@ -13,6 +13,7 @@ DropArea
 
 	property alias		myIndex:				draggableItem.myIndex
 	property alias		myAnalysis:				loader.myAnalysis
+    property alias      myAnalysisForm:         loader.item
 	property alias		formQmlUrl:				loader.formQmlUrl
 	property alias		backgroundFlickable:	loader.backgroundFlickable
 
@@ -261,8 +262,8 @@ DropArea
 					Text
 					{
 						id:				analysisTitle
-						text:			loader.myAnalysis != null ? loader.myAnalysis.title : "?"
-						font:			jaspTheme.fontLabel
+                        text:			myAnalysisForm != null ? myAnalysisForm.title : "?"
+                        font:			jaspTheme.fontLabel
 						color:			jaspTheme.textEnabled
 						visible:		!analysisTitleInput.visible
 						elide:			Text.ElideMiddle
@@ -307,8 +308,8 @@ DropArea
 
 						function stopEditing(storeChangedValue)
 						{
-							if(storeChangedValue && loader.myAnalysis != null)
-								loader.myAnalysis.title = text;
+                            if(storeChangedValue && myAnalysisForm != null)
+                                myAnalysisForm.title = text;
 
 							visible = false;
 						}
@@ -363,10 +364,10 @@ DropArea
 					opacity:			editButton.opacity
 					//visible:			expanderButton.expanded || hovered || mouseArea.containsMouse
 					enabled:			expanderButton.expanded
-					onClicked:			if(preferencesModel.generateMarkdown || !helpModel.pageExists(loader.myAnalysis.helpFile))
+					onClicked:			if(preferencesModel.generateMarkdown || !helpModel.pageExists(loader.myAnalysis.helpFile()))
 										{
-											if(helpModel.markdown !== myAnalysis.helpMD)
-												helpModel.markdown = Qt.binding(function(){ return myAnalysis.helpMD; });
+											if(helpModel.markdown !== myAnalysisForm.helpMD)
+												helpModel.markdown = Qt.binding(function(){ return myAnalysisForm.helpMD; });
 											else
 												helpModel.visible  = false;
 											
