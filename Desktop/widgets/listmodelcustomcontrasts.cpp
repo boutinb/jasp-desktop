@@ -39,9 +39,9 @@ ListModelCustomContrasts::ListModelCustomContrasts(TableViewBase *parent) : List
 
 	connect(this, &ListModelCustomContrasts::variableCountChanged,		_tableView, &TableViewBase::variableCountChanged);
 	connect(listView(), SIGNAL(scaleFactorChanged()),					this,		SLOT(scaleFactorChanged()));
-	connect(ColumnsModel::singleton(), &ColumnsModel::labelsChanged,	this,		&ListModelCustomContrasts::sourceLabelsChanged);
-	connect(ColumnsModel::singleton(), &ColumnsModel::labelsReordered,	this,		&ListModelCustomContrasts::sourceLabelsReordered);
-	connect(ColumnsModel::singleton(), &ColumnsModel::columnsChanged,	this,		&ListModelCustomContrasts::sourceColumnsChanged);
+	connect(VariableInfo::info(), &VariableInfo::labelsChanged,			this,		&ListModelCustomContrasts::sourceLabelsChanged);
+	connect(VariableInfo::info(), &VariableInfo::labelsReordered,		this,		&ListModelCustomContrasts::sourceLabelsReordered);
+	connect(VariableInfo::info(), &VariableInfo::columnsChanged,		this,		&ListModelCustomContrasts::sourceColumnsChanged);
 }
 
 void ListModelCustomContrasts::sourceTermsReset()
@@ -69,7 +69,7 @@ void ListModelCustomContrasts::getVariablesAndLabels(QStringList& variables, QVe
 			labels = _factors[newVariable];
 		else
 		{
-			columnType colType = columnType(requestInfo(newVariable, VariableInfo::VariableType).toInt());
+			columnType colType = columnType(requestInfo(VariableInfo::VariableType, newVariable).toInt());
 			if (colType == columnType::scale)
 			{
 				if (_scaleFactor == 0)
@@ -82,7 +82,7 @@ void ListModelCustomContrasts::getVariablesAndLabels(QStringList& variables, QVe
 				}
 			}
 			else
-				labels = requestInfo(newVariable, VariableInfo::Labels).toStringList();
+				labels = requestInfo(VariableInfo::Labels, newVariable).toStringList();
 		}
 
 		QVector<QVector<QVariant> > copyAllLabels = allLabels;
@@ -368,7 +368,7 @@ void ListModelCustomContrasts::scaleFactorChanged()
 	QVector<QString> scaleVariables;
 	for (const QString& variable : _tableTerms.variables)
 	{
-		if (requestInfo(variable, VariableInfo::VariableType).toInt() == int(columnType::scale))
+		if (requestInfo(VariableInfo::VariableType, variable).toInt() == int(columnType::scale))
 			scaleVariables.push_back(variable);
 	}
 
