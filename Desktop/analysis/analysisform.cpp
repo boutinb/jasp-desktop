@@ -765,6 +765,9 @@ std::vector<std::vector<string> > AnalysisForm::_getValuesFromJson(const Json::V
 		else return {};
 	};
 
+	if (jsonValues.isNull())
+		return {}; // {{}} has size 1!
+
 	if (!jsonValues.isArray() && !jsonValues.isObject())
 		return {getValueFromJson(jsonValues)};
 
