@@ -20,7 +20,7 @@
 #include "utilities/qutils.h"
 #include <sstream>
 
-const char * Term::separator =
+const char* Term::separator =
 #ifdef _WIN32
 		" * ";
 #else
