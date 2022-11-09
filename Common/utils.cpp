@@ -68,24 +68,16 @@ Utils::FileType Utils::getTypeFromFileName(const std::string &path)
 
 long Utils::currentMillis()
 {
-	long result = currentSeconds() * 1000;
 	std::timespec ts;
 	std::timespec_get(&ts, TIME_UTC);
-	result += (ts.tv_nsec / 1000000);
-	return result;
-//	ptime epoch(boost::gregorian::date(1970,1,1));
-//	ptime t = microsec_clock::local_time();
-//	time_duration elapsed = t - epoch;
-
-//	return elapsed.total_milliseconds();
+	return ts.tv_sec * 1000 + (ts.tv_nsec / 1000000);
 }
 
 long Utils::currentSeconds()
 {
-	time_t now;
-	time(&now);
-
-	return now;
+	std::timespec ts;
+	std::timespec_get(&ts, TIME_UTC);
+	return ts.tv_sec;
 }
 
 long Utils::getFileModificationTime(const std::string &filename)
