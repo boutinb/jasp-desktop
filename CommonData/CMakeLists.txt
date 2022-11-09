@@ -23,8 +23,7 @@ endif()
 target_include_directories(
   CommonData
   PUBLIC # JASP
-         ${PROJECT_SOURCE_DIR}/Common
-         jaspColumnEncoder
+         ${PROJECT_SOURCE_DIR}/jaspLibs/Common
          # R
          ${R_INCLUDE_PATH}
          ${R_HOME_PATH}/include

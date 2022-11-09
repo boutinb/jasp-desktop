@@ -111,9 +111,8 @@ if(WIN32)
   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 endif()
 
-add_subdirectory(Common)
+add_subdirectory(jaspLibs)
 add_subdirectory(CommonData)
-add_subdirectory(QMLComponents)
 
 if(NOT WIN32)
   add_subdirectory(R-Interface)
