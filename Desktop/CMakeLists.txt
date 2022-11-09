@@ -78,6 +78,7 @@ target_include_directories(
   JASP
   PUBLIC 	${CMAKE_CURRENT_LIST_DIR}
                         ${PROJECT_SOURCE_DIR}/Common
+                        ${PROJECT_SOURCE_DIR}/CommonData
                         ${PROJECT_SOURCE_DIR}/QMLComponents
                         ${PROJECT_SOURCE_DIR}/Common/jaspColumnEncoder
 			# ReadStat
@@ -93,6 +94,7 @@ target_include_directories(
 target_link_libraries(
   JASP
   PUBLIC Common
+         CommonData
          QMLComponents
          Qt::Core
          Qt::Gui

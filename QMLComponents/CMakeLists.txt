@@ -22,9 +22,8 @@ message(STATUS "appdirs.h is successfully generated...")
 target_include_directories(
   QMLComponents
   PUBLIC # JASP
-          ${PROJECT_SOURCE_DIR}/Common
-          ${PROJECT_SOURCE_DIR}/Common/jaspColumnEncoder
-          ${Boost_INCLUDE_DIRS}
+  ${PROJECT_SOURCE_DIR}/Common/jaspColumnEncoder
+  ${PROJECT_SOURCE_DIR}/Common
          )
 target_link_libraries(
   QMLComponents
@@ -42,11 +41,6 @@ target_link_libraries(
          Qt::QuickTemplates2
          $<$<NOT:$<BOOL:${FLATPAK_USED}>>:Qt::Core5Compat>
          $<$<BOOL:${FLATPAK_USED}>:/app/lib/$ENV{FLATPAK_ARCH}-linux-gnu/libQt6Core5Compat.so>
-		 # Boost
-         Boost::system
-         Boost::date_time
-         Boost::timer
-         Boost::chrono
      )
 
  file(GLOB_RECURSE QML_RESOURCE_FILES "${CMAKE_CURRENT_LIST_DIR}/components/*")

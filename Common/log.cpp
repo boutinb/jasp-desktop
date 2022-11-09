@@ -9,8 +9,6 @@
 
 #include <fstream>
 #include "utils.h"
-#include <boost/iostreams/stream.hpp>
-#include <boost/iostreams/device/null.hpp>
 #include <codecvt>
 #include <fstream>
 
@@ -162,19 +160,22 @@ std::ostream & Log::log(bool addTimestamp)
 	default:				//Gcc is stupid and is not aware that the next three cases cover all
 #endif
 #endif
+/*	case logType::null:
+	{
+		static boost::iostreams::stream<boost::iostreams::null_sink> nullstream((boost::iostreams::null_sink())); //https://stackoverflow.com/questions/8243743/is-there-a-null-stdostream-implementation-in-c-or-libraries
+		return nullstream;
+	} */
+	case logType::file:
+	{
+		if (addTimestamp) _logFile << Log::getTimestamp() << ": ";
+		return _logFile;
+	}
 	case logType::cout:
+	default:
 	{
 		if (addTimestamp) std::cout << ( _engineNo < 0 ? std::string("Desktop:\t") : "Engine#" + std::to_string(_engineNo) + ":\t");
 		return std::cout;
 	}
-	case logType::null:
-	{
-		static boost::iostreams::stream<boost::iostreams::null_sink> nullstream((boost::iostreams::null_sink())); //https://stackoverflow.com/questions/8243743/is-there-a-null-stdostream-implementation-in-c-or-libraries
-		return nullstream;
-	}
-	case logType::file:
-		if (addTimestamp) _logFile << Log::getTimestamp() << ": ";
-		return _logFile;
 	}
 }
 

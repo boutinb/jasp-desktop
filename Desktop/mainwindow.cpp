@@ -39,7 +39,7 @@
 #include "tempfiles.h"
 #include "processinfo.h"
 #include "sharedmemory.h"
-
+#include "columnutils.h"
 #include "mainwindow.h"
 
 #include "analysisform.h"
@@ -189,7 +189,7 @@ MainWindow::MainWindow(QApplication * application) : QObject(application), _appl
 
 	QString missingvaluestring = _settings.value("MissingValueList", "").toString();
 	if (missingvaluestring != "")
-		Utils::setEmptyValues(fromQstringToStdVector(missingvaluestring, "|"));
+		ColumnUtils::setEmptyValues(fromQstringToStdVector(missingvaluestring, "|"));
 
 	_engineSync->start(_preferences->plotPPI());
 

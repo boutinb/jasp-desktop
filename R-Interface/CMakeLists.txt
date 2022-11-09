@@ -141,6 +141,7 @@ if(WIN32)
     PUBLIC # JASP
            ${CMAKE_CURRENT_LIST_DIR}
            ${PROJECT_SOURCE_DIR}/../Common
+           ${PROJECT_SOURCE_DIR}/../CommonData
            ${PROJECT_SOURCE_DIR}/../Common/jaspColumnEncoder
            # R
            ${R_INCLUDE_PATH}
@@ -184,6 +185,7 @@ else()
     R-Interface
     PUBLIC # JASP
            ${PROJECT_SOURCE_DIR}/Common
+           ${PROJECT_SOURCE_DIR}/CommonData
            ${PROJECT_SOURCE_DIR}/Common/jaspColumnEncoder
            ${PROJECT_SOURCE_DIR}/Common/jaspColumnEncoder/json
            #$<$<PLATFORM_ID:Linux>:${_PKGCONFIG_LIB_JSONCPP_INCLUDEDIR}>

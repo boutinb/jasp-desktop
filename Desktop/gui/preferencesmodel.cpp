@@ -10,6 +10,7 @@
 #include "modules/ribbonmodel.h"
 #include "utilities/appdirs.h"
 #include "enginedefinitions.h"
+#include "columnutils.h"
 #include <QQuickWindow>
 
 using namespace std;
@@ -422,8 +423,8 @@ void PreferencesModel::setThresholdScale(int newThresholdScale)
 
 void PreferencesModel::updateUtilsMissingValues()
 {
-	Utils::_currentEmptyValues = fq(missingValues());
-	Utils::processEmptyValues();
+	ColumnUtils::_currentEmptyValues = fq(missingValues());
+	ColumnUtils::processEmptyValues();
 }
 
 void PreferencesModel::_loadDatabaseFont()
@@ -514,7 +515,7 @@ void PreferencesModel::resetRememberedModules(bool setToRemember)
 
 void PreferencesModel::dataLabelNAChangedSlot(QString dataLabelNA)
 {
-	Utils::emptyValue = fq(dataLabelNA);
+	ColumnUtils::emptyValue = fq(dataLabelNA);
 }
 
 void PreferencesModel::onGuiQtTextRenderChanged(bool newGuiQtTextRenderSetting)
