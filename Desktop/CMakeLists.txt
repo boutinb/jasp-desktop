@@ -80,7 +80,6 @@ target_include_directories(
                         ${PROJECT_SOURCE_DIR}/Common
                         ${PROJECT_SOURCE_DIR}/CommonData
                         ${PROJECT_SOURCE_DIR}/QMLComponents
-                        ${PROJECT_SOURCE_DIR}/Common/jaspColumnEncoder
 			# ReadStat
 			$<$<PLATFORM_ID:Windows>:${RTOOLS_LIBREADSTAT_H}>
 			${LIBREADSTAT_INCLUDE_DIRS}

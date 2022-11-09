@@ -24,7 +24,6 @@ target_include_directories(
   CommonData
   PUBLIC # JASP
          ${PROJECT_SOURCE_DIR}/Common
-         jaspColumnEncoder
          # R
          ${R_INCLUDE_PATH}
          ${R_HOME_PATH}/include

@@ -22,7 +22,6 @@ message(STATUS "appdirs.h is successfully generated...")
 target_include_directories(
   QMLComponents
   PUBLIC # JASP
-  ${PROJECT_SOURCE_DIR}/Common/jaspColumnEncoder
   ${PROJECT_SOURCE_DIR}/Common
          )
 target_link_libraries(

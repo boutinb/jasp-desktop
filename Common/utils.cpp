@@ -21,6 +21,7 @@
 #ifdef _WIN32
 #include <windows.h>
 #include <fileapi.h>
+#include <winternl.h>
 #else
 #include <sys/stat.h>
 #include <utime.h>
@@ -91,15 +92,18 @@ long Utils::getFileModificationTime(const std::string &filename)
 
 	FILETIME modTime;
 
-	bool success = GetFileTime(file, NULL, NULL, &modTime);
+	bool success = GetFileTime(file, NULL, NULL, &fileTime);
 	CloseHandle(file);
 
 	if (success)
 	{
-		ptime pt = from_ftime<ptime>(modTime);
-		ptime epoch(boost::gregorian::date(1970,1,1));
+		LARGE_INTEGER li;
+		ULONG         seconds;
+		li.QuadPart = fileTime->dwHighDateTime;
+		li.QuadPart = (li.QuadPart << 32) | fileTime->dwLowDateTime;
+		RtlTimeToSecondsSince1970(&li, &seconds);
 
-		return (pt - epoch).total_seconds();
+		return seconds;
 	}
 	else
 	{

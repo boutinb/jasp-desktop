@@ -27,13 +27,10 @@ endif()
 target_include_directories(
   Common
   PUBLIC # JASP
-         jaspColumnEncoder
          # R
          ${R_INCLUDE_PATH}
          ${R_HOME_PATH}/include
          ${RCPP_PATH}/include
-         #
-		# $<$<PLATFORM_ID:Linux>:${_PKGCONFIG_LIB_JSONCPP_INCLUDEDIR}>
 	)
 
 target_link_libraries(
@@ -42,13 +39,6 @@ target_link_libraries(
          #$<$<BOOL:${USE_CONAN}>:jsoncpp::jsoncpp>
 		 #$<$<PLATFORM_ID:Linux>:${_PKGCONFIG_LIB_JSONCPP_LIBRARIES}>
 		 #$<$<PLATFORM_ID:Linux>:${_PKGCONFIG_LIB_JSONCPP_LINK_LIBRARIES}>
-         #
-         #LibArchive::LibArchive
-         # Boost
-         #Boost::system
-         #Boost::date_time
-         #Boost::timer
-         #Boost::chrono
          #
          $<$<BOOL:${JASP_USES_QT_HERE}>:Qt::Core>)
 
