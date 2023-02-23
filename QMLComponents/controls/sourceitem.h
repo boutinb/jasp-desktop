@@ -83,7 +83,7 @@ public:
 
 
 private:
-	static QString							_readSourceName(const QString& sourceNameExt, QString& sourceControl, QString& sourceUse);
+	static QString							_readSourceName(const QString& sourceNameExt, QString& sourceControl);
 	static QString							_readRSourceName(const QString& sourceNameExt, QString& sourceUse);
 	static QMap<QString, QVariant>			_readSource(JASPListControl* _listControl, const QVariant& source, JASPListControl::LabelValueMap& sourceValues, QVector<SourceItem*>& rSources, QAbstractItemModel*& _nativeModel);
 	static JASPListControl::LabelValueMap	_readValues(JASPListControl* _listControl, const QVariant& _values);

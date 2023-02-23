@@ -235,14 +235,11 @@ QList<QVariant> SourceItem::getListVariant(QVariant var)
 	return listVar;
 }
 
-QString SourceItem::_readSourceName(const QString& sourceNameExt, QString& sourceControl, QString& sourceUse)
+QString SourceItem::_readSourceName(const QString& sourceNameExt, QString& sourceControl)
 {
 	QStringList nameSplit = sourceNameExt.split(".");
 	if (nameSplit.length() > 1)
-	{
 		sourceControl = nameSplit[1];
-		sourceUse = "control=" + nameSplit[1];
-	}
 
 	return nameSplit[0];
 }
@@ -264,11 +261,11 @@ QString SourceItem::_readRSourceName(const QString& sourceNameExt, QString& sour
 QMap<QString, QVariant> SourceItem::_readSource(JASPListControl* listControl, const QVariant& source, JASPListControl::LabelValueMap& sourceValues, QVector<SourceItem*>& rSources, QAbstractItemModel*& nativeModel)
 {
 	QMap<QString, QVariant> map;
-	QString sourceName, sourceControl, sourceUse;
+	QString sourceName, sourceControlName, sourceUse;
 
 	JASPControl* sourceItem = source.value<JASPControl*>();
 	if (sourceItem)										sourceName = sourceItem->name();
-	else if (source.typeId() == QMetaType::QString)	sourceName = _readSourceName(source.toString(), sourceControl, sourceUse);
+	else if (source.typeId() == QMetaType::QString)	sourceName = _readSourceName(source.toString(), sourceControlName);
 	else if (source.canConvert<QMap<QString, QVariant> >())
 	{
 		map = source.toMap();
@@ -279,14 +276,7 @@ QMap<QString, QVariant> SourceItem::_readSource(JASPListControl* listControl, co
 		}
 
 		if (map.contains("name"))
-			sourceName = _readSourceName(map["name"].toString(), sourceControl, sourceUse);
-
-		if (map.contains("use"))
-		{
-			if (!sourceUse.isEmpty())
-				sourceUse += ",";
-			sourceUse += map["use"].toString();
-		}
+			sourceName = _readSourceName(map["name"].toString(), sourceControlName);
 
 		if (map.contains("values"))
 		{
@@ -307,6 +297,17 @@ QMap<QString, QVariant> SourceItem::_readSource(JASPListControl* listControl, co
 	else
 		nativeModel = source.value<QAbstractItemModel*>();
 
+	sourceUse = map["use"].toString();
+
+	if (map.contains("controlName"))
+		sourceControlName = map["controlName"].toString();
+	else if (!sourceUse.isEmpty())
+	{
+		QStringList sourceUseList = sourceUse.split(",");
+		for (const QString& elt : sourceUseList)
+			if (elt.startsWith("control="))
+				sourceControlName = elt.sliced(8);
+	}
 
 	if (nativeModel)
 	{
@@ -328,8 +329,16 @@ QMap<QString, QVariant> SourceItem::_readSource(JASPListControl* listControl, co
 			}
 		}
 	}
+
+	if (!sourceControlName.isEmpty())
+	{
+		map["controlName"] = sourceControlName;
+		if (!sourceUse.isEmpty())
+			sourceUse += ",";
+		sourceUse += "control=" + sourceControlName;
+	}
+
 	map["name"]			= sourceName;
-	map["controlName"]	= sourceControl;
 	map["use"]			= sourceUse;
 	return map;
 }
