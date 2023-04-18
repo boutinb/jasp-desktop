@@ -327,17 +327,14 @@ void Analysis::createForm(QQuickItem* parentItem)
 
 	if (_analysisForm)
 	{
-		connect(this,					&Analysis::rSourceChanged,			_analysisForm,	&AnalysisForm::rSourceChanged				);
-		connect(this,					&Analysis::refreshTableViewModels,	_analysisForm,	&AnalysisForm::refreshTableViewModels		);
-		connect(this, 					&Analysis::titleChanged,			_analysisForm,	&AnalysisForm::titleChanged					);
-		connect(this,					&Analysis::needsRefreshChanged,		_analysisForm,	&AnalysisForm::needsRefreshChanged			);
-		connect(this,					&Analysis::boundValuesChanged,		_analysisForm,	&AnalysisForm::setRSyntaxText,		Qt::QueuedConnection	);
-		connect(this,					&Analysis::boundValuesChanged,		this,			&Analysis::setRSyntaxTextInResult,	Qt::QueuedConnection	);
+		connect(this,					&Analysis::rSourceChanged,				_analysisForm,	&AnalysisForm::rSourceChanged				);
+		connect(this,					&Analysis::refreshTableViewModels,		_analysisForm,	&AnalysisForm::refreshTableViewModels		);
+		connect(this, 					&Analysis::titleChanged,				_analysisForm,	&AnalysisForm::titleChanged					);
+		connect(this,					&Analysis::needsRefreshChanged,			_analysisForm,	&AnalysisForm::needsRefreshChanged			);
+		connect(_analysisForm,			&AnalysisForm::analysisInitialized,		this,			&Analysis::_setRSyntaxTextInResult,		Qt::QueuedConnection	);
 
 		_analysisForm->setShowRButton(_moduleData->hasWrapper());
 		_analysisForm->setDeveloperMode(_dynamicModule->isDevMod());
-
-		emit analysisInitialized();
 	}
 }
 
@@ -1014,9 +1011,16 @@ void Analysis::analysisQMLFileChanged()
 		Log::log() << "Form (" << form() << ") wasn't complete " << ( form() ? std::to_string(form()->formCompleted()) : " because there was no form...") << " yet, and also did not have a QML error set yet, so ignoring it." << std::endl;
 }
 
+void Analysis::_setRSyntaxTextInResult()
+{
+	connect(this, &Analysis::boundValuesChanged,	this,	&Analysis::setRSyntaxTextInResult,	Qt::QueuedConnection);
+	setRSyntaxTextInResult();
+}
+
+
 void Analysis::setRSyntaxTextInResult()
 {
-	if (!form() || !_moduleData->hasWrapper()) return;
+	if (!form() || !_moduleData->hasWrapper() || !form()->initialized()) return;
 
 	bool generateRSyntax = Settings::value(Settings::SHOW_RSYNTAX_IN_RESULTS).toBool();
 	ResultsJsInterface::singleton()->setRSyntax(id(), generateRSyntax ? form()->generateRSyntax(true) : "");

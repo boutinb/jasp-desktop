@@ -182,7 +182,6 @@ signals:
 	void					emptyQMLCache();
 
 	void					createFormWhenYouHaveAMoment(QQuickItem* parent = nullptr);
-	void					analysisInitialized();
 
 public slots:
 	void					setDynamicModule(	Modules::DynamicModule * module);
@@ -194,6 +193,9 @@ public slots:
 	void					requestComputedColumnDestructionHandler(const std::string & columnName)						override;
 	void					analysisQMLFileChanged();
 	void					setRSyntaxTextInResult();
+
+protected slots:
+	void					_setRSyntaxTextInResult();
 
 protected:
 	void					abort();
