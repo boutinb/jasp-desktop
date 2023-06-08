@@ -68,6 +68,16 @@ void DataSetView::setModel(QAbstractItemModel * model)
 		connect(_model, &QAbstractItemModel::modelAboutToBeReset,	this, &DataSetView::modelAboutToBeReset		);
 		connect(_model, &QAbstractItemModel::modelReset,			this, &DataSetView::modelWasReset			);
 
+
+		connect(_model, &QAbstractItemModel::columnsAboutToBeInserted,	this, &DataSetView::columnsAboutToBeInserted	);
+		connect(_model, &QAbstractItemModel::columnsAboutToBeRemoved,	this, &DataSetView::columnsAboutToBeRemoved		);
+		connect(_model, &QAbstractItemModel::rowsAboutToBeInserted,		this, &DataSetView::rowsAboutToBeInserted		);
+		connect(_model, &QAbstractItemModel::rowsAboutToBeRemoved,		this, &DataSetView::rowsAboutToBeRemoved		);
+		connect(_model, &QAbstractItemModel::columnsInserted,			this, &DataSetView::columnsInserted				);
+		connect(_model, &QAbstractItemModel::columnsRemoved,			this, &DataSetView::columnsRemoved				);
+		connect(_model, &QAbstractItemModel::rowsInserted,				this, &DataSetView::rowsInserted				);
+		connect(_model, &QAbstractItemModel::rowsRemoved,				this, &DataSetView::rowsRemoved					);
+
 		_selectionModel->setModel(_model);
 		emit selectionModelChanged(); //Or maybe it hasn't?
 
@@ -148,6 +158,7 @@ void DataSetView::modelDataChanged(const QModelIndex &topLeft, const QModelIndex
 					QQmlContext* context = itemCon->context;
 					if (roles.contains(int(DataSetPackage::specialRoles::selected)))
 						context->setContextProperty("itemSelected",	_model->data(_model->index(row, col), _roleNameToRole["selected"]));
+
 					if (roles.contains(Qt::DisplayRole))
 						context->setContextProperty("itemText", _model->data(_model->index(row, col)));
 				}
@@ -1243,17 +1254,18 @@ void DataSetView::columnInsertAfter(int col)
 	columnInsertBefore(col + 1);
 }
 
-void DataSetView::columnDelete(int col)
+void DataSetView::columnsDelete()
 {
-	if(_model->columnCount() <= 1)
+	if(_model->columnCount() <= 1 || (!_selectionStart.isValid() && !_selectionEnd.isValid()))
 		return;
 
-	if(col == -1)
-		col = _selectionEnd.isValid() ? _selectionEnd.column()
-									  : _selectionStart.isValid() ? _selectionStart.column()
-																  : _model->columnCount();
+	int columnA	= _selectionStart.isValid() ? _selectionStart.column()	: _selectionEnd.column(),
+		columnB	= _selectionEnd.isValid()	? _selectionEnd.column()	: _selectionStart.column();
 
-	_model->removeColumn(col);
+	if(columnA > columnB)
+		std::swap(columnA, columnB);
+
+	_model->removeColumns(columnA, 1 + (columnB - columnA));
 }
 
 void DataSetView::rowSelect(int row)
@@ -1280,17 +1292,66 @@ void DataSetView::rowInsertAfter(int row)
 	rowInsertBefore(row + 1);
 }
 
-void DataSetView::rowDelete(int row)
+void DataSetView::rowsDelete()
 {
-	if(_model->rowCount() <= 1)
+	if(_model->rowCount() <= 1 || (!_selectionStart.isValid() && !_selectionEnd.isValid()))
 		return;
 
-	if(row == -1)
-		row = _selectionEnd.isValid() ? _selectionEnd.row()
-									  : _selectionStart.isValid() ? _selectionStart.row()
-																  : _model->rowCount() - 1;
-	
-	_model->removeRow(row);
+	int rowA	= _selectionStart.isValid() ? _selectionStart.row()	: _selectionEnd.row(),
+		rowB	= _selectionEnd.isValid()	? _selectionEnd.row()	: _selectionStart.row();
+
+	if(rowA > rowB)
+		std::swap(rowA, rowB);
+
+	_model->removeRows(rowA, 1 + (rowB - rowA));
+}
+
+void DataSetView::columnsAboutToBeInserted(const QModelIndex & parent, int first, int last)
+{
+	//temp:
+	modelAboutToBeReset();
+}
+
+void DataSetView::columnsAboutToBeRemoved(const QModelIndex & parent, int first, int last)
+{
+	//temp:
+	modelAboutToBeReset();
+}
+
+void DataSetView::rowsAboutToBeInserted(const QModelIndex & parent, int first, int last)
+{
+	//temp:
+	modelAboutToBeReset();
+}
+
+void DataSetView::rowsAboutToBeRemoved(const QModelIndex & parent, int first, int last)
+{
+	//temp:
+	modelAboutToBeReset();
+}
+
+void DataSetView::columnsInserted(const QModelIndex & parent, int first, int last)
+{
+	//temp:
+	modelWasReset();
+}
+
+void DataSetView::columnsRemoved(const QModelIndex & parent, int first, int last)
+{
+	//temp:
+	modelWasReset();
+}
+
+void DataSetView::rowsInserted(const QModelIndex & parent, int first, int last)
+{
+	//temp:
+	modelWasReset();
+}
+
+void DataSetView::rowsRemoved(const QModelIndex & parent, int first, int last)
+{
+	//temp:
+	modelWasReset();
 }
 
 void DataSetView::setEditDelegate(QQmlComponent *editDelegate)

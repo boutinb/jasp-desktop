@@ -562,8 +562,8 @@ void MainWindow::loadQML()
 	connect(_ribbonModel, &RibbonModel::dataInsertColumnAfter,		DataSetView::lastInstancedDataSetView(),	&DataSetView::columnInsertAfter);
 	connect(_ribbonModel, &RibbonModel::dataInsertRowBefore,		DataSetView::lastInstancedDataSetView(),	&DataSetView::rowInsertBefore);
 	connect(_ribbonModel, &RibbonModel::dataInsertRowAfter,			DataSetView::lastInstancedDataSetView(),	&DataSetView::rowInsertAfter);
-	connect(_ribbonModel, &RibbonModel::dataRemoveColumn,			DataSetView::lastInstancedDataSetView(),	&DataSetView::columnDelete);
-	connect(_ribbonModel, &RibbonModel::dataRemoveRow,				DataSetView::lastInstancedDataSetView(),	&DataSetView::rowDelete);
+	connect(_ribbonModel, &RibbonModel::dataRemoveColumn,			DataSetView::lastInstancedDataSetView(),	&DataSetView::columnsDelete);
+	connect(_ribbonModel, &RibbonModel::dataRemoveRow,				DataSetView::lastInstancedDataSetView(),	&DataSetView::rowsDelete);
 
 	Log::log() << "QML Initialized!"  << std::endl;
 

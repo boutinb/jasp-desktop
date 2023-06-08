@@ -80,6 +80,8 @@ public:
 	double					viewportW()							const	{ return _viewportW;				}
 	double					viewportH()							const	{ return _viewportH;				}
 
+	QModelIndex				selectionTopLeft()					const;
+
 	QQmlComponent		*	itemDelegate()						const	{ return _itemDelegate;				}
 	QQmlComponent		*	rowNumberDelegate()					const	{ return _rowNumberDelegate;		}
 	QQmlComponent		*	columnHeaderDelegate()				const	{ return _columnHeaderDelegate;		}
@@ -177,7 +179,7 @@ public slots:
 	void		pollSelectScroll(	QModelIndex mouseIndex		);
 	void		setEditing(bool shiftSelectActive);
 	bool		relaxForSelectScroll();
-	QModelIndex selectionTopLeft() const;
+
 
 	void		cut(	bool includeHeader = false) { _copy(includeHeader, true);  }
 	void		copy(	bool includeHeader = false) { _copy(includeHeader, false); }
@@ -186,11 +188,22 @@ public slots:
 	void		columnSelect(		int col = -1);
 	void		columnInsertBefore(	int col = -1);
 	void		columnInsertAfter(	int col = -1);
-	void		columnDelete(		int col = -1);
+	void		columnsDelete();
 	void		rowSelect(			int row = -1);
 	void		rowInsertBefore(	int row = -1);
 	void		rowInsertAfter(		int row = -1);
-	void		rowDelete(			int row = -1);
+	void		rowsDelete();
+
+	void		columnsAboutToBeInserted(	const QModelIndex &parent, int first, int last);
+	void		columnsAboutToBeRemoved(	const QModelIndex &parent, int first, int last);
+	void		rowsAboutToBeInserted(		const QModelIndex &parent, int first, int last);
+	void		rowsAboutToBeRemoved(		const QModelIndex &parent, int first, int last);
+	void		columnsInserted(			const QModelIndex &parent, int first, int last);
+	void		columnsRemoved(				const QModelIndex &parent, int first, int last);
+	void		rowsInserted(				const QModelIndex &parent, int first, int last);
+	void		rowsRemoved(				const QModelIndex &parent, int first, int last);
+
+
 
 	void		selectAll();
 

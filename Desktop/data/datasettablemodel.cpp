@@ -18,7 +18,7 @@
 
 #include "datasettablemodel.h"
 #include "utilities/qutils.h"
-
+#include "log.h"
 
 DataSetTableModel::DataSetTableModel(bool showInactive) 
 : DataSetTableProxy(DataSetPackage::pkg()->dataSubModel()), _showInactive(showInactive)
@@ -130,22 +130,25 @@ bool DataSetTableModel::insertColumns(int column, int count, const QModelIndex &
 
 bool DataSetTableModel::removeRows(int row, int count, const QModelIndex &)
 {
-	if(rowCount() - count < 1)
+	Log::log() << "DataSetTableModel::removeRows(" << row << ", " << count << ") rowCount: " << rowCount() << std::endl;
+	if(rowCount() <= count)
 		return false;
 
-	for(int r=row; r<row+count; r++)
-		rowDelete(r);
+	for(int r=row+count; r>row; r--)
+		rowDelete(row-1);
 
 	return true;
 }
 
 bool DataSetTableModel::removeColumns(int column, int count, const QModelIndex &)
 {
-	if(columnCount() - count < 1)
+	Log::log() << "DataSetTableModel::removeColumns(" << column << ", " << count << ") columnCount: " << columnCount() << std::endl;
+
+	if(columnCount() <= count)
 		return false;
 
-	for(int c=column; c<column+count; c++)
-		columnDelete(c);
+	for(int c=column+count; c>column; c--)
+		columnDelete(column-1);
 
 	return true;
 }

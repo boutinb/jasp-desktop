@@ -1843,25 +1843,30 @@ void DataSetPackage::pasteSpreadsheet(size_t row, size_t col, const std::vector<
 
 void DataSetPackage::columnInsert(size_t column)
 {
-	Log::log() << "DataSetPackage::columnInsert(" << column << ")" << std::endl;
-	setSynchingExternally(false); //Don't synch with external file after editing
-	beginSynchingData(false);
-	
 	if(column > dataColumnCount())
 		column = dataColumnCount(); //the column will be created if necessary but only if it is in a logical place. So the end of the vector
+
+	setSynchingExternally(false); //Don't synch with external file after editing
+	beginInsertColumns(indexForSubNode(_dataSet->dataNode()), column, column);
+	
 
 	_dataSet->insertColumn(column);
 	setColumnName(column, freeNewColumnName(column));
 	_dataSet->column(column)->setDefaultValues(columnType::scale);
 
 	stringvec changed({getColumnName(column)});
-	endSynchingDataChangedColumns(changed, true, false);
+	endInsertColumns();
+
+	strstrmap		changeNameColumns;
+	stringvec		missingColumns;
+
+	emit datasetChanged(tq(changed), tq(missingColumns), tq(changeNameColumns), true, false);
 }
 
 void DataSetPackage::columnDelete(size_t column)
 {
 	setSynchingExternally(false); //Don't synch with external file after editing
-	beginSynchingData(false);
+	beginRemoveColumns(indexForSubNode(_dataSet->dataNode()), column, column);
 
 	stringvec	changed;
 	strstrmap	changeNameColumns;
@@ -1869,17 +1874,20 @@ void DataSetPackage::columnDelete(size_t column)
 
 	_dataSet->removeColumn(column);
 
-	endSynchingData(changed, missingColumns, changeNameColumns, false, true, false);
+	endRemoveColumns();
+	emit datasetChanged(tq(changed), tq(missingColumns), tq(changeNameColumns), false, true);
 }
 
 void DataSetPackage::rowInsert(size_t row)
 {
-	setSynchingExternally(false); //Don't synch with external file after editing
-	beginSynchingData(false);
-	stringvec changed;
 
 	if(row > dataRowCount())
 		row = dataRowCount();
+
+	setSynchingExternally(false); //Don't synch with external file after editing
+	beginInsertRows(indexForSubNode(_dataSet->dataNode()), row, row);
+	stringvec changed;
+
 
 	dataSet()->beginBatchedToDB();
 
@@ -1895,10 +1903,12 @@ void DataSetPackage::rowInsert(size_t row)
 	dataSet()->incRevision();
 	dataSet()->endBatchedToDB();
 
+	endInsertRows();
+
 	strstrmap		changeNameColumns;
 	stringvec		missingColumns;
 
-	endSynchingData(changed, missingColumns, changeNameColumns, true, false, false);
+	emit datasetChanged(tq(changed), tq(missingColumns), tq(changeNameColumns), true, false);
 }
 
 
@@ -1906,7 +1916,7 @@ void DataSetPackage::rowInsert(size_t row)
 void DataSetPackage::rowDelete(size_t row)
 {
 	setSynchingExternally(false); //Don't synch with external file after editing
-	beginSynchingData(false);
+	beginRemoveRows(indexForSubNode(_dataSet->dataNode()), row, row);
 	stringvec changed;
 
 	dataSet()->beginBatchedToDB();
@@ -1926,7 +1936,8 @@ void DataSetPackage::rowDelete(size_t row)
 	strstrmap		changeNameColumns;
 	stringvec		missingColumns;
 
-	endSynchingData(changed, missingColumns, changeNameColumns, true, false, false);
+	endRemoveRows();
+	emit datasetChanged(tq(changed), tq(missingColumns), tq(changeNameColumns), true, false);
 }
 
 void DataSetPackage::storeInEmptyValues(const std::string & columnName, const intstrmap & emptyValues)
