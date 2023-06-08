@@ -277,6 +277,7 @@ public:
 				void						databaseStopSynching();
 				bool						synchingExternally() const;
 				void						checkComputedColumnDependenciesForAnalysis(Analysis * analysis);
+				std::string					freeNewColumnName(size_t startHere);
 
 signals:
 				void				datasetChanged(	QStringList				changedColumns,
@@ -284,7 +285,6 @@ signals:
 													QMap<QString, QString>	changeNameColumns,
 													bool					rowCountChanged,
 													bool					hasNewColumns);
-
 				void				columnsFilteredCountChanged();
 				void				badDataEntered(const QModelIndex index);
 				void				allFiltersReset();
@@ -312,6 +312,7 @@ signals:
 				void				askUserForExternalDataFile();
 				void				checkForDependentColumnsToBeSent(QString columnName);
 
+
 public slots:
 				void				refresh()																		{ beginResetModel(); endResetModel(); }
 				void				refreshColumn(						QString columnName);
@@ -331,7 +332,6 @@ public slots:
 private:
 				bool				isThisTheSameThreadAsEngineSync();
 				bool				setAllowFilterOnLabel(const QModelIndex & index, bool newAllowValue);
-				std::string			freeNewColumnName(size_t startHere);
 				QModelIndex			lastCurrentCell();
 
 

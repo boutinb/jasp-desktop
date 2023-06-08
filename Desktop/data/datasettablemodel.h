@@ -56,6 +56,7 @@ public:
 	size_t					getMaximumColumnWidthInCharacters(int index) const			{ return DataSetPackage::pkg()->getMaximumColumnWidthInCharacters(index);			}
 	bool					synchingData()							const				{ return DataSetPackage::pkg()->synchingData();										}
 
+	void					resetModelOneCell();
 	void					pasteSpreadsheet(size_t row, size_t col, const std::vector<std::vector<QString>> & cells, QStringList newColNames = QStringList());
 	void					columnInsert(	size_t column	);
 	void					columnDelete(	size_t column	);
