@@ -150,6 +150,13 @@ bool DataSetTableModel::removeColumns(int column, int count, const QModelIndex &
 	return true;
 }
 
+void DataSetTableModel::setColumnComputed(int column, bool R)
+{
+	beginResetModel();
+	DataSetPackage::pkg()->dataSet()->column(mapToSource(index(0, column)).column())->setCodeType(R ? computedColumnType::rCode : computedColumnType::constructorCode);
+	endResetModel();
+}
+
 void DataSetTableModel::resetModelOneCell()
 {
 	setData(index(0,0), "");

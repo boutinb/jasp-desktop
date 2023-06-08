@@ -1236,22 +1236,46 @@ void DataSetView::columnSelect(int col)
 	setSelectionEnd(_model->index(_model->rowCount() - 1, col));
 }
 
-void DataSetView::columnInsertBefore(int col)
+int DataSetView::columnInsertBefore(int col)
 {
 	if(col == -1)
 		col = _selectionStart.isValid() ? _selectionStart.column() : 0;
 	
 	_model->insertColumn(col);
+
+	return col;
 }
 
-void DataSetView::columnInsertAfter(int col)
+int DataSetView::columnInsertAfter(int col)
 {
 	if(col == -1)
 		col = _selectionEnd.isValid() ? _selectionEnd.column()
 									  : _selectionStart.isValid() ? _selectionStart.column()
 																  : _model->columnCount();
 	
-	columnInsertBefore(col + 1);
+	return columnInsertBefore(col + 1);
+}
+
+void DataSetView::columnComputedInsertAfter(int col, bool R)
+{
+	col = columnInsertAfter(col);
+
+	DataSetTableModel * m = qobject_cast<DataSetTableModel*>(_model);
+	if(m)
+		m->setColumnComputed(col, R);
+	else
+		throw std::runtime_error("columnComputedInsertAfter failed because _model is not DataSetTableModel");
+}
+
+void DataSetView::columnComputedInsertBefore(int col, bool R)
+{
+	col = columnInsertBefore(col);
+
+	DataSetTableModel * m = qobject_cast<DataSetTableModel*>(_model);
+	if(m)
+		m->setColumnComputed(col, R);
+	else
+		throw std::runtime_error("columnComputedInsertBefore failed because _model is not DataSetTableModel");
 }
 
 void DataSetView::columnsDelete()

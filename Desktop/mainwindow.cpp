@@ -555,15 +555,16 @@ void MainWindow::loadQML()
 
 	
 	//To make sure we connect to the "main datasetview":
-	connect(_preferences, &PreferencesModel::uiScaleChanged,		DataSetView::lastInstancedDataSetView(),	&DataSetView::viewportChanged, Qt::QueuedConnection);
-	connect(_preferences, &PreferencesModel::interfaceFontChanged,	DataSetView::lastInstancedDataSetView(),	&DataSetView::viewportChanged, Qt::QueuedConnection);
-	
-	connect(_ribbonModel, &RibbonModel::dataInsertColumnBefore,		DataSetView::lastInstancedDataSetView(),	&DataSetView::columnInsertBefore);
-	connect(_ribbonModel, &RibbonModel::dataInsertColumnAfter,		DataSetView::lastInstancedDataSetView(),	&DataSetView::columnInsertAfter);
-	connect(_ribbonModel, &RibbonModel::dataInsertRowBefore,		DataSetView::lastInstancedDataSetView(),	&DataSetView::rowInsertBefore);
-	connect(_ribbonModel, &RibbonModel::dataInsertRowAfter,			DataSetView::lastInstancedDataSetView(),	&DataSetView::rowInsertAfter);
-	connect(_ribbonModel, &RibbonModel::dataRemoveColumn,			DataSetView::lastInstancedDataSetView(),	&DataSetView::columnsDelete);
-	connect(_ribbonModel, &RibbonModel::dataRemoveRow,				DataSetView::lastInstancedDataSetView(),	&DataSetView::rowsDelete);
+	connect(_preferences, &PreferencesModel::uiScaleChanged,			DataSetView::lastInstancedDataSetView(),	&DataSetView::viewportChanged, Qt::QueuedConnection);
+	connect(_preferences, &PreferencesModel::interfaceFontChanged,		DataSetView::lastInstancedDataSetView(),	&DataSetView::viewportChanged, Qt::QueuedConnection);
+	connect(_ribbonModel, &RibbonModel::dataInsertComputedColumnBefore,	DataSetView::lastInstancedDataSetView(),	&DataSetView::columnComputedInsertBefore);
+	connect(_ribbonModel, &RibbonModel::dataInsertComputedColumnAfter,	DataSetView::lastInstancedDataSetView(),	&DataSetView::columnComputedInsertAfter);
+	connect(_ribbonModel, &RibbonModel::dataInsertColumnBefore,			DataSetView::lastInstancedDataSetView(),	&DataSetView::columnInsertBefore);
+	connect(_ribbonModel, &RibbonModel::dataInsertColumnAfter,			DataSetView::lastInstancedDataSetView(),	&DataSetView::columnInsertAfter);
+	connect(_ribbonModel, &RibbonModel::dataInsertRowBefore,			DataSetView::lastInstancedDataSetView(),	&DataSetView::rowInsertBefore);
+	connect(_ribbonModel, &RibbonModel::dataInsertRowAfter,				DataSetView::lastInstancedDataSetView(),	&DataSetView::rowInsertAfter);
+	connect(_ribbonModel, &RibbonModel::dataRemoveColumn,				DataSetView::lastInstancedDataSetView(),	&DataSetView::columnsDelete);
+	connect(_ribbonModel, &RibbonModel::dataRemoveRow,					DataSetView::lastInstancedDataSetView(),	&DataSetView::rowsDelete);
 
 	Log::log() << "QML Initialized!"  << std::endl;
 

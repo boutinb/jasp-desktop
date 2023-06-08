@@ -110,6 +110,8 @@ signals:
 				void stopExternalEdit();
 				void resizeData();
 				void finishCurrentEdit();
+				void dataInsertComputedColumnBefore(int, bool);
+				void dataInsertComputedColumnAfter(int,  bool);
 				void dataInsertColumnBefore(int);
 				void dataInsertColumnAfter(int);
 				void dataInsertRowBefore(int);

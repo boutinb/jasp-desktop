@@ -185,13 +185,16 @@ public slots:
 	void		copy(	bool includeHeader = false) { _copy(includeHeader, false); }
 	void		paste(	bool includeHeader = false);
 
-	void		columnSelect(		int col = -1);
-	void		columnInsertBefore(	int col = -1);
-	void		columnInsertAfter(	int col = -1);
+	void		columnSelect(				int col = -1);
+	int			columnInsertBefore(			int col = -1);
+	int			columnInsertAfter(			int col = -1);
+	void		columnComputedInsertAfter(	int col = -1,	bool R=true);
+	void		columnComputedInsertBefore(	int col = -1,	bool R=true);
+
 	void		columnsDelete();
-	void		rowSelect(			int row = -1);
-	void		rowInsertBefore(	int row = -1);
-	void		rowInsertAfter(		int row = -1);
+	void		rowSelect(					int row = -1);
+	void		rowInsertBefore(			int row = -1);
+	void		rowInsertAfter(				int row = -1);
 	void		rowsDelete();
 
 	void		columnsAboutToBeInserted(	const QModelIndex &parent, int first, int last);
