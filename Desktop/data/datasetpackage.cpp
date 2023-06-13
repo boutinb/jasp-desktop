@@ -32,6 +32,9 @@
 #include "utilities/settings.h"
 #include "modules/ribbonmodel.h"
 
+//Im having problems getting the proxy models to play nicely with beginRemoveRows etc
+//So just reset the whole thing as that is what happens in datasetview
+#define ROUGH_RESET
 
 DataSetPackage * DataSetPackage::_singleton = nullptr;
 
@@ -1847,7 +1850,12 @@ bool DataSetPackage::insertColumns(int column, int count, const QModelIndex & ap
 		column = dataColumnCount(); //the column will be created if necessary but only if it is in a logical place. So the end of the vector
 
 	setSynchingExternally(false); //Don't synch with external file after editing
+#ifdef ROUGH_RESET
+	beginResetModel();
+#else
 	beginInsertColumns(indexForSubNode(_dataSet->dataNode()), column, column + count - 1);
+#endif
+
 	stringvec changed;
 
 	for(int c = column; c<column+count; c++)
@@ -1859,8 +1867,11 @@ bool DataSetPackage::insertColumns(int column, int count, const QModelIndex & ap
 
 		changed.push_back(name);
 	}
-
+#ifdef ROUGH_RESET
+	endResetModel();
+#else
 	endInsertColumns();
+#endif
 
 	strstrmap		changeNameColumns;
 	stringvec		missingColumns;
@@ -1873,7 +1884,11 @@ bool DataSetPackage::insertColumns(int column, int count, const QModelIndex & ap
 bool DataSetPackage::removeColumns(int column, int count, const QModelIndex & aparent)
 {
 	setSynchingExternally(false); //Don't synch with external file after editing
+#ifdef ROUGH_RESET
+	beginResetModel();
+#else
 	beginRemoveColumns(indexForSubNode(_dataSet->dataNode()), column, column + count - 1);
+#endif
 
 	stringvec	changed;
 	strstrmap	changeNameColumns;
@@ -1884,8 +1899,11 @@ bool DataSetPackage::removeColumns(int column, int count, const QModelIndex & ap
 		missingColumns.push_back(getColumnName(c - 1));
 		_dataSet->removeColumn(c - 1);
 	}
-
+#ifdef ROUGH_RESET
+	endResetModel();
+#else
 	endRemoveColumns();
+#endif
 	emit datasetChanged(tq(changed), tq(missingColumns), tq(changeNameColumns), false, true);
 
 	return true;
@@ -1897,7 +1915,11 @@ bool DataSetPackage::insertRows(int row, int count, const QModelIndex & aparent)
 		row = dataRowCount();
 
 	setSynchingExternally(false); //Don't synch with external file after editing
+#ifdef ROUGH_RESET
+	beginResetModel();
+#else
 	beginInsertRows(indexForSubNode(_dataSet->dataNode()), row, row + count - 1);
+#endif
 	stringvec changed;
 
 
@@ -1915,9 +1937,11 @@ bool DataSetPackage::insertRows(int row, int count, const QModelIndex & aparent)
 	dataSet()->setRowCount(dataSet()->rowCount() + count);
 	dataSet()->incRevision();
 	dataSet()->endBatchedToDB();
-
+#ifdef ROUGH_RESET
+	endResetModel();
+#else
 	endInsertRows();
-
+#endif
 	strstrmap		changeNameColumns;
 	stringvec		missingColumns;
 
@@ -1929,7 +1953,11 @@ bool DataSetPackage::insertRows(int row, int count, const QModelIndex & aparent)
 bool DataSetPackage::removeRows(int row, int count, const QModelIndex & aparent)
 {
 	setSynchingExternally(false); //Don't synch with external file after editing
+#ifdef ROUGH_RESET
+	beginResetModel();
+#else
 	beginRemoveRows(indexForSubNode(_dataSet->dataNode()), row, row + count - 1);
+#endif
 	stringvec changed;
 
 	dataSet()->beginBatchedToDB();
@@ -1949,8 +1977,11 @@ bool DataSetPackage::removeRows(int row, int count, const QModelIndex & aparent)
 
 	strstrmap		changeNameColumns;
 	stringvec		missingColumns;
-
+#ifdef ROUGH_RESET
+	endResetModel();
+#else
 	endRemoveRows();
+#endif
 	emit datasetChanged(tq(changed), tq(missingColumns), tq(changeNameColumns), true, false);
 
 	return true;

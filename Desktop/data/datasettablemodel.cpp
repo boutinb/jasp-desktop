@@ -91,7 +91,7 @@ void DataSetTableModel::pasteSpreadsheet(size_t row, size_t col, const std::vect
 void DataSetTableModel::setColumnComputed(int column, bool R)
 {
 	beginResetModel();
-	int sourceColumn = column; //The mapping isnt made yet and I think insertColumn returns the actual columnIndex in datasetpackage not in filterproxy //mapToSource(index(0, column)).column();
+	int sourceColumn = std::min(DataSetPackage::pkg()->dataColumnCount()-1, column); //The mapping isnt made yet and I think insertColumn returns the actual columnIndex in datasetpackage not in filterproxy //mapToSource(index(0, column)).column();
 	DataSetPackage::pkg()->dataSet()->column(sourceColumn)->setCodeType(R ? computedColumnType::rCode : computedColumnType::constructorCode);
 	endResetModel();
 }
