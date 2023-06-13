@@ -51,9 +51,9 @@ DataSetPackage::DataSetPackage(QObject * parent) : QAbstractItemModel(parent)
 	connect(this, &DataSetPackage::currentFileChanged,	this, &DataSetPackage::nameChanged);
 	connect(this, &DataSetPackage::dataModeChanged,		this, &DataSetPackage::logDataModeChanged);
 
-	_dataSubModel	= new SubNodeModel(_dataSet->dataNode());
-	_filterSubModel = new SubNodeModel(_dataSet->filtersNode());
-	_labelsSubModel = new SubNodeModel();
+	_dataSubModel	= new SubNodeModel("data",		_dataSet->dataNode());
+	_filterSubModel = new SubNodeModel("filters",	_dataSet->filtersNode());
+	_labelsSubModel = new SubNodeModel("labels");
 	
 	connect(&_databaseIntervalSyncher, &QTimer::timeout, this, &DataSetPackage::synchingIntervalPassed);
 }
@@ -980,7 +980,7 @@ void DataSetPackage::resetAllFilters()
 
 	emit allFiltersReset();
 	emit columnsFilteredCountChanged();
-	emit headerDataChanged(Qt::Horizontal, 0, columnCount());
+	//this is only used in conjunction with a reset so dont do: emit headerDataChanged(Qt::Horizontal, 0, columnCount());
 }
 
 bool DataSetPackage::setColumnType(int columnIndex, columnType newColumnType)
@@ -1841,51 +1841,63 @@ void DataSetPackage::pasteSpreadsheet(size_t row, size_t col, const std::vector<
 	if(isLoaded()) setModified(true);
 }
 
-void DataSetPackage::columnInsert(size_t column)
+bool DataSetPackage::insertColumns(int column, int count, const QModelIndex & aparent)
 {
 	if(column > dataColumnCount())
 		column = dataColumnCount(); //the column will be created if necessary but only if it is in a logical place. So the end of the vector
 
 	setSynchingExternally(false); //Don't synch with external file after editing
-	beginInsertColumns(indexForSubNode(_dataSet->dataNode()), column, column);
-	
+	beginInsertColumns(indexForSubNode(_dataSet->dataNode()), column, column + count - 1);
+	stringvec changed;
 
-	_dataSet->insertColumn(column);
-	setColumnName(column, freeNewColumnName(column));
-	_dataSet->column(column)->setDefaultValues(columnType::scale);
+	for(int c = column; c<column+count; c++)
+	{
+		_dataSet->insertColumn(c);
+		const std::string & name = freeNewColumnName(c);
+		setColumnName(c, name);
+		_dataSet->column(c)->setDefaultValues(columnType::scale);
 
-	stringvec changed({getColumnName(column)});
+		changed.push_back(name);
+	}
+
 	endInsertColumns();
 
 	strstrmap		changeNameColumns;
 	stringvec		missingColumns;
 
 	emit datasetChanged(tq(changed), tq(missingColumns), tq(changeNameColumns), true, false);
+
+	return true;
 }
 
-void DataSetPackage::columnDelete(size_t column)
+bool DataSetPackage::removeColumns(int column, int count, const QModelIndex & aparent)
 {
 	setSynchingExternally(false); //Don't synch with external file after editing
-	beginRemoveColumns(indexForSubNode(_dataSet->dataNode()), column, column);
+	beginRemoveColumns(indexForSubNode(_dataSet->dataNode()), column, column + count - 1);
 
 	stringvec	changed;
 	strstrmap	changeNameColumns;
-	stringvec	missingColumns({getColumnName(column)});
+	stringvec	missingColumns;
 
-	_dataSet->removeColumn(column);
+	for(int c = column + count; c>column; c--)
+	{
+		missingColumns.push_back(getColumnName(c - 1));
+		_dataSet->removeColumn(c - 1);
+	}
 
 	endRemoveColumns();
 	emit datasetChanged(tq(changed), tq(missingColumns), tq(changeNameColumns), false, true);
+
+	return true;
 }
 
-void DataSetPackage::rowInsert(size_t row)
+bool DataSetPackage::insertRows(int row, int count, const QModelIndex & aparent)
 {
-
 	if(row > dataRowCount())
 		row = dataRowCount();
 
 	setSynchingExternally(false); //Don't synch with external file after editing
-	beginInsertRows(indexForSubNode(_dataSet->dataNode()), row, row);
+	beginInsertRows(indexForSubNode(_dataSet->dataNode()), row, row + count - 1);
 	stringvec changed;
 
 
@@ -1896,10 +1908,11 @@ void DataSetPackage::rowInsert(size_t row)
 		const std::string & name = getColumnName(c);
 		changed.push_back(name);
 
-		dataSet()->column(c)->rowInsertEmptyVal(row);
+		for(int r=row; r<row+count; r++)
+			dataSet()->column(c)->rowInsertEmptyVal(r);
 	}
 
-	dataSet()->setRowCount(dataSet()->rowCount() + 1);
+	dataSet()->setRowCount(dataSet()->rowCount() + count);
 	dataSet()->incRevision();
 	dataSet()->endBatchedToDB();
 
@@ -1909,14 +1922,14 @@ void DataSetPackage::rowInsert(size_t row)
 	stringvec		missingColumns;
 
 	emit datasetChanged(tq(changed), tq(missingColumns), tq(changeNameColumns), true, false);
+
+	return true;
 }
 
-
-
-void DataSetPackage::rowDelete(size_t row)
+bool DataSetPackage::removeRows(int row, int count, const QModelIndex & aparent)
 {
 	setSynchingExternally(false); //Don't synch with external file after editing
-	beginRemoveRows(indexForSubNode(_dataSet->dataNode()), row, row);
+	beginRemoveRows(indexForSubNode(_dataSet->dataNode()), row, row + count - 1);
 	stringvec changed;
 
 	dataSet()->beginBatchedToDB();
@@ -1926,10 +1939,11 @@ void DataSetPackage::rowDelete(size_t row)
 		const std::string & name = getColumnName(c);
 		changed.push_back(name);
 	
-		dataSet()->column(c)->rowDelete(row);
+		for(int r=row+count; r>row; r++)
+			dataSet()->column(c)->rowDelete(r-1);
 	}
 
-	setDataSetSize(dataColumnCount(), dataRowCount()-1);
+	setDataSetSize(dataColumnCount(), dataRowCount()-count);
 	dataSet()->incRevision();
 	dataSet()->endBatchedToDB();
 
@@ -1938,6 +1952,8 @@ void DataSetPackage::rowDelete(size_t row)
 
 	endRemoveRows();
 	emit datasetChanged(tq(changed), tq(missingColumns), tq(changeNameColumns), true, false);
+
+	return true;
 }
 
 void DataSetPackage::storeInEmptyValues(const std::string & columnName, const intstrmap & emptyValues)
@@ -1981,6 +1997,18 @@ void DataSetPackage::removeColumn(const std::string & name)
 
 	if (!_synchingData) // If we are synchronising, the datasetChanged is already called
 		emit datasetChanged({}, {tq(name)}, {}, false, false);
+}
+
+void DataSetPackage::resetModelOneCell()
+{
+	setData(index(0,0), "", Qt::DisplayRole);
+
+	beginResetModel();
+	DataSetPackage::pkg()->setDataSetSize(1, 1);
+	DataSetPackage::pkg()->setColumnName(0, DataSetPackage::pkg()->freeNewColumnName(0));
+	DataSetPackage::pkg()->setColumnType(0, columnType::scale);
+	endResetModel();
+
 }
 
 bool DataSetPackage::columnExists(Column *column)

@@ -88,68 +88,6 @@ void DataSetTableModel::pasteSpreadsheet(size_t row, size_t col, const std::vect
 	DataSetPackage::pkg()->pasteSpreadsheet(idx.row(), idx.column(), cells, newColNames);
 }
 
-void DataSetTableModel::columnInsert(size_t column)
-{
-	QModelIndex idx = mapToSource(index(0, column));
-	DataSetPackage::pkg()->columnInsert(idx.column());
-}
-
-void DataSetTableModel::columnDelete(size_t column)
-{
-	QModelIndex idx = mapToSource(index(0, column));
-	DataSetPackage::pkg()->columnDelete(idx.column());
-}
-
-void DataSetTableModel::rowInsert(size_t row)
-{
-	QModelIndex idx = mapToSource(index(row, 0));
-	DataSetPackage::pkg()->rowInsert(idx.row());
-}
-
-void DataSetTableModel::rowDelete(size_t row)
-{
-	QModelIndex idx = mapToSource(index(row, 0));
-	DataSetPackage::pkg()->rowDelete(idx.row());
-}
-
-bool DataSetTableModel::insertRows(int row, int count, const QModelIndex &)
-{
-	for(int r=row; r<row+count; r++)
-		rowInsert(r);
-
-	return true;
-}
-
-bool DataSetTableModel::insertColumns(int column, int count, const QModelIndex &)
-{
-	for(int c=column; c<column+count; c++)
-		columnInsert(c);
-
-	return true;
-}
-
-bool DataSetTableModel::removeRows(int row, int count, const QModelIndex &)
-{
-	if(rowCount() <= count)
-		resetModelOneCell();
-	else
-		for(int r=row+count; r>row; r--)
-			rowDelete(r-1);
-
-	return true;
-}
-
-bool DataSetTableModel::removeColumns(int column, int count, const QModelIndex &)
-{
-	if(columnCount() <= count)
-		resetModelOneCell();
-	else
-		for(int c=column+count; c>column; c--)
-			columnDelete(c-1);
-
-	return true;
-}
-
 void DataSetTableModel::setColumnComputed(int column, bool R)
 {
 	beginResetModel();
@@ -158,15 +96,5 @@ void DataSetTableModel::setColumnComputed(int column, bool R)
 	endResetModel();
 }
 
-void DataSetTableModel::resetModelOneCell()
-{
-	setData(index(0,0), "");
 
-	beginResetModel();
-	DataSetPackage::pkg()->setDataSetSize(1, 1);
-	DataSetPackage::pkg()->setColumnName(0, DataSetPackage::pkg()->freeNewColumnName(0));
-	DataSetPackage::pkg()->setColumnType(0, columnType::scale);
-	endResetModel();
-
-}
 

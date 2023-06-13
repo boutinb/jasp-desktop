@@ -68,6 +68,9 @@ FocusScope
     {
 		messages.log("ComputeColumnWindow::open("+columnName+")")
 
+		if(computedColumnsInterface.computeColumnNameSelected != columnName && computedColumnsInterface.computeColumnNameSelected != "" && computedColumnContainer.changed)
+			saveDialog.open()
+
 		if(computedColumnsInterface.showAnalysisFormForColumn(columnName))
 			close();
 		else

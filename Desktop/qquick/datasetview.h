@@ -159,6 +159,7 @@ signals:
 	void		selectionBudgesRight();
 
 	void		showComputedColumn(QString name);
+	void		columnSetColumnComputedDelayed(int col, bool R);
 	
 public slots:
 	void		calculateCellSizes()	{ calculateCellSizesAndClear(false); }
@@ -218,6 +219,9 @@ public slots:
 	void		editFinishedKeepEditing(QModelIndex here, QVariant editedValue);
 	void		onDataModeChanged(bool dataMode);
 	void		contextMenuClickedAtIndex(QModelIndex index);
+
+private slots:
+	void		columnSetColumnComputedHandler(int col, bool R);
 	
 protected:
 	void		_copy(bool includeHeader, bool clear);

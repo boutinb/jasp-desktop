@@ -121,15 +121,20 @@ public:
 		
 		
 
-		QHash<int, QByteArray>		roleNames()																					const	override;
-				int					rowCount(	const QModelIndex &parent = QModelIndex())										const	override;
-				int					columnCount(const QModelIndex &parent = QModelIndex())										const	override;
-				QVariant			data(		const QModelIndex &index, int role = Qt::DisplayRole)							const	override;
-				QVariant			headerData(	int section, Qt::Orientation orientation, int role = Qt::DisplayRole )			const	override;
-				bool				setData(	const QModelIndex &index, const QVariant &value, int role)								override;
-				Qt::ItemFlags		flags(		const QModelIndex &index)														const	override;
-				QModelIndex			parent(		const QModelIndex & index)														const	override;
-				QModelIndex			index(int row, int column, const QModelIndex &parent = QModelIndex())						const	override;
+		QHash<int, QByteArray>		roleNames()																						const	override;
+				int					rowCount(		const QModelIndex &parent = QModelIndex())										const	override;
+				int					columnCount(	const QModelIndex &parent = QModelIndex())										const	override;
+				QVariant			data(			const QModelIndex &index, int role = Qt::DisplayRole)							const	override;
+				QVariant			headerData(		int section, Qt::Orientation orientation, int role = Qt::DisplayRole )			const	override;
+				bool				setData(		const QModelIndex &index, const QVariant &value, int role)								override;
+				Qt::ItemFlags		flags(			const QModelIndex &index)														const	override;
+				QModelIndex			parent(			const QModelIndex & index)														const	override;
+				QModelIndex			index(			int row,		int column, const QModelIndex &parent = QModelIndex())			const	override;
+				bool				insertRows(		int row,		int count, const QModelIndex & aparent = QModelIndex())					override;
+				bool				insertColumns(	int column,		int count, const QModelIndex & aparent = QModelIndex())					override;
+				bool				removeRows(		int row,		int count, const QModelIndex & aparent = QModelIndex())					override;
+				bool				removeColumns(	int column,		int count, const QModelIndex & aparent = QModelIndex())					override;
+
 				QModelIndex			indexForSubNode(DataSetBaseNode * node)														const;
 				int					filteredRowCount()																			const { return _dataSet->filter()->filteredRowCount(); }
 				QVariant			getDataSetViewLines(bool up=false, bool left=false, bool down=true, bool right=true)		const;
@@ -202,10 +207,6 @@ public:
 				void						initColumnWithStrings(			QVariant			colId,		const std::string & newName, const stringvec	& values);
 				
 				void						pasteSpreadsheet(size_t row, size_t column, const std::vector<std::vector<QString>> & cells, QStringList newColNames = QStringList());
-				void						columnInsert(	size_t column	); //Maybe these  functions should be made to derive from "columnInsert" etc from AbstractItemModel
-				void						columnDelete(	size_t column	);
-				void						rowInsert(		size_t row		);
-				void						rowDelete(		size_t row		);
 
 				void						storeInEmptyValues(		const std::string	& columnName, const intstrmap & emptyValues);
 
@@ -333,6 +334,7 @@ private:
 				bool				isThisTheSameThreadAsEngineSync();
 				bool				setAllowFilterOnLabel(const QModelIndex & index, bool newAllowValue);
 				QModelIndex			lastCurrentCell();
+				void				resetModelOneCell();
 
 
 private:
@@ -371,6 +373,7 @@ private:
 							*	_labelsSubModel;
 	
 	QTimer						_databaseIntervalSyncher;
+
 };
 
 #endif // FILEPACKAGE_H
