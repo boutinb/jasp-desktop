@@ -134,7 +134,7 @@ bool DataSetTableModel::removeRows(int row, int count, const QModelIndex &)
 		resetModelOneCell();
 	else
 		for(int r=row+count; r>row; r--)
-			rowDelete(row-1);
+			rowDelete(r-1);
 
 	return true;
 }
@@ -145,7 +145,7 @@ bool DataSetTableModel::removeColumns(int column, int count, const QModelIndex &
 		resetModelOneCell();
 	else
 		for(int c=column+count; c>column; c--)
-			columnDelete(column-1);
+			columnDelete(c-1);
 
 	return true;
 }
@@ -153,7 +153,8 @@ bool DataSetTableModel::removeColumns(int column, int count, const QModelIndex &
 void DataSetTableModel::setColumnComputed(int column, bool R)
 {
 	beginResetModel();
-	DataSetPackage::pkg()->dataSet()->column(mapToSource(index(0, column)).column())->setCodeType(R ? computedColumnType::rCode : computedColumnType::constructorCode);
+	int sourceColumn = column; //The mapping isnt made yet and I think insertColumn returns the actual columnIndex in datasetpackage not in filterproxy //mapToSource(index(0, column)).column();
+	DataSetPackage::pkg()->dataSet()->column(sourceColumn)->setCodeType(R ? computedColumnType::rCode : computedColumnType::constructorCode);
 	endResetModel();
 }
 

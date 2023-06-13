@@ -1249,11 +1249,11 @@ int DataSetView::columnInsertBefore(int col)
 int DataSetView::columnInsertAfter(int col)
 {
 	if(col == -1)
-		col = _selectionEnd.isValid() ? _selectionEnd.column()
-									  : _selectionStart.isValid() ? _selectionStart.column()
+		col = _selectionEnd.isValid() ? _selectionEnd.column() + 1
+									  : _selectionStart.isValid() ? _selectionStart.column() + 1
 																  : _model->columnCount();
 	
-	return columnInsertBefore(col + 1);
+	return columnInsertBefore(col);
 }
 
 void DataSetView::columnComputedInsertAfter(int col, bool R)
@@ -1262,7 +1262,10 @@ void DataSetView::columnComputedInsertAfter(int col, bool R)
 
 	DataSetTableModel * m = qobject_cast<DataSetTableModel*>(_model);
 	if(m)
+	{
 		m->setColumnComputed(col, R);
+		emit showComputedColumn(m->columnName(col));
+	}
 	else
 		throw std::runtime_error("columnComputedInsertAfter failed because _model is not DataSetTableModel");
 }
@@ -1273,9 +1276,14 @@ void DataSetView::columnComputedInsertBefore(int col, bool R)
 
 	DataSetTableModel * m = qobject_cast<DataSetTableModel*>(_model);
 	if(m)
+	{
 		m->setColumnComputed(col, R);
+		emit showComputedColumn(m->columnName(col));
+	}
 	else
 		throw std::runtime_error("columnComputedInsertBefore failed because _model is not DataSetTableModel");
+
+
 }
 
 void DataSetView::columnsDelete()

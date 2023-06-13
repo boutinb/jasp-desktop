@@ -566,6 +566,8 @@ void MainWindow::loadQML()
 	connect(_ribbonModel, &RibbonModel::dataRemoveColumn,				DataSetView::lastInstancedDataSetView(),	&DataSetView::columnsDelete);
 	connect(_ribbonModel, &RibbonModel::dataRemoveRow,					DataSetView::lastInstancedDataSetView(),	&DataSetView::rowsDelete);
 
+	connect(DataSetView::lastInstancedDataSetView(), &DataSetView::showComputedColumn,		this,	&MainWindow::showComputedColumn);
+
 	Log::log() << "QML Initialized!"  << std::endl;
 
 	Log::log() << "Loading upgrades definitions"  << std::endl;

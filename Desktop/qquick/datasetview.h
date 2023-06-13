@@ -157,6 +157,8 @@ signals:
 	void		selectionBudgesDown();
 	void		selectionBudgesLeft();
 	void		selectionBudgesRight();
+
+	void		showComputedColumn(QString name);
 	
 public slots:
 	void		calculateCellSizes()	{ calculateCellSizesAndClear(false); }
