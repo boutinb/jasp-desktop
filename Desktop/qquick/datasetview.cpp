@@ -15,12 +15,173 @@
 #include <QClipboard>
 #include "utils.h"
 #include "columnutils.h"
-#include "utilities/languagemodel.h"
 #include "data/datasettablemodel.h"
 
 DataSetView * DataSetView::_lastInstancedDataSetView = nullptr;
 
-DataSetView::DataSetView(QQuickItem *parent) : QQuickItem (parent), _selectionModel(new QItemSelectionModel(nullptr, this))
+int ExtendedModelProxy::rowCount(bool includeVirtuals) const
+{
+	return _dataSetView->model()->rowCount() + (includeVirtuals && _dataSetView->extendDataSet() ? EXTRA_ROWS : 0);
+}
+
+int ExtendedModelProxy::columnCount(bool includeVirtuals) const
+{
+	int c = _dataSetView->model()->columnCount();
+	Log::log() << "COLUMNCOUNT ExtendedModelProxy: " << c << std::endl;
+	return c + (includeVirtuals && _dataSetView->extendDataSet() ? EXTRA_COLS : 0);
+}
+
+QVariant ExtendedModelProxy::data(int row, int col, int role) const
+{
+	if (col < _dataSetView->model()->columnCount() && row < _dataSetView->model()->rowCount())
+		return _dataSetView->model()->data(_dataSetView->model()->index(row, col), role);
+
+	if (role == _dataSetView->_roleSelected && _dataSetView->_roleSelected >= 0)
+		return false;
+	else if (role == _dataSetView->_roleLines && _dataSetView->_roleLines >= 0)
+	{
+		if (col == columnCount() - 1)
+			col = _dataSetView->model()->columnCount() - 1;
+		else if (col >= _dataSetView->model()->columnCount())
+			col = _dataSetView->model()->columnCount() - 2;
+		if (col < 0) col = 0;
+		if (row == rowCount() - 1)
+			row = _dataSetView->model()->rowCount() - 1;
+		else if (row >= _dataSetView->model()->rowCount())
+			row = _dataSetView->model()->rowCount() - 2;
+		if (row < 0) row = 0;
+
+		return _dataSetView->model()->data(_dataSetView->model()->index(row, col), role);
+	}
+	else if (role == _dataSetView->_roleValue && _dataSetView->_roleValue >= 0)
+		return "";
+	else if (role == _dataSetView->_roleItemInputValue && _dataSetView->_roleItemInputValue >= 0)
+		return "string";
+
+	return QVariant();
+}
+
+QVariant ExtendedModelProxy::headerData(int section, Qt::Orientation orientation, int role) const
+{
+	if (orientation == Qt::Orientation::Horizontal)
+	{
+		if (section < _dataSetView->model()->columnCount())
+			return _dataSetView->model()->headerData(section, orientation, role);
+		else
+		{
+			if (role == _dataSetView->getRole("columnIsComputed"))
+				return false;
+			else if (role == _dataSetView->getRole("computedColumnIsInvalidated"))
+				return false;
+			else if (role == _dataSetView->getRole("filter"))
+				return false;
+			else if (role == _dataSetView->getRole("computedColumnError"))
+				return "";
+			else if (role == _dataSetView->getRole("columnType"))
+				return int(columnType::unknown);
+			else if (role == _dataSetView->getRole("maxColString"))
+				return "XXXXXXXXXXX";
+			else if (role == Qt::DisplayRole)
+				return "";
+		}
+	}
+	else if (orientation == Qt::Orientation::Vertical)
+	{
+		if (section < _dataSetView->model()->rowCount())
+			return _dataSetView->model()->headerData(section, orientation, role);
+		else
+			return section + 1;
+	}
+
+	return QVariant();
+}
+
+bool ExtendedModelProxy::setData(int row, int col, const QVariant &value, int role)
+{
+	if (row < 0 || col < 0 || row >= rowCount() || col >= columnCount())
+		return false;
+
+	for (int colNr = _dataSetView->model()->columnCount() - 1; colNr < col; colNr++)
+		_dataSetView->columnInsertAfter(colNr);
+	for (int rowNr = _dataSetView->model()->rowCount() - 1; rowNr < row; rowNr++)
+		_dataSetView->rowInsertAfter(rowNr);
+
+	return _dataSetView->model()->setData(index(row, col), value, role);
+}
+
+Qt::ItemFlags ExtendedModelProxy::flags(int row, int column) const
+{
+	if (column < _dataSetView->model()->columnCount() && row < _dataSetView->model()->rowCount())
+		return _dataSetView->model()->flags(index(row, column));
+
+	return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
+}
+
+QModelIndex ExtendedModelProxy::index(int row, int column, const QModelIndex &parent) const
+{
+	return _dataSetView->model()->index(row, column, parent);
+}
+
+bool ExtendedModelProxy::filtered(int row, int column) const
+{
+	if (column < _dataSetView->model()->columnCount() && row < _dataSetView->model()->rowCount())
+	{
+		QModelIndex ind(_dataSetView->model()->index(row, column));
+		return _dataSetView->model()->data(ind, _dataSetView->getRole("filter")).toBool();
+	}
+
+	return true;
+}
+
+bool ExtendedModelProxy::isRowVirtual(int row) const
+{
+	bool result = row >= _dataSetView->model()->rowCount();
+	Log::log() << "ROW " << row << " is " << (result ? "VIRTUAL": "REAL") << std::endl;
+	return result;
+}
+
+bool ExtendedModelProxy::isColumnVirtual(int col) const
+{
+	return col >= _dataSetView->model()->columnCount();
+}
+
+void ExtendedModelProxy::removeRows(int start, int count)
+{
+	_dataSetView->model()->removeRows(start, count);
+}
+
+void ExtendedModelProxy::removeColumns(int start, int count)
+{
+	_dataSetView->model()->removeColumns(start, count);
+}
+
+void ExtendedModelProxy::removeRow(int row)
+{
+	if (row >= 0 && row < _dataSetView->model()->columnCount())
+		_dataSetView->model()->removeRow(row);
+}
+
+void ExtendedModelProxy::removeColumn(int col)
+{
+	if (col >= 0 && col < _dataSetView->model()->columnCount())
+		_dataSetView->model()->removeColumn(col);
+}
+
+void ExtendedModelProxy::insertRow(int row)
+{
+	_dataSetView->model()->insertRow(row);
+}
+
+void ExtendedModelProxy::insertColumn(int col)
+{
+	_dataSetView->model()->insertColumn(col);
+}
+
+DataSetView::DataSetView(QQuickItem *parent)
+	: QQuickItem (parent)
+	, _selectionModel(new QItemSelectionModel(nullptr, this))
+	, _extendedModel(new ExtendedModelProxy(this))
+
 {
 	setFlag(QQuickItem::ItemHasContents);
 	//setFlag(QQuickItem::ItemIsFocusScope);
@@ -51,7 +212,6 @@ DataSetView::DataSetView(QQuickItem *parent) : QQuickItem (parent), _selectionMo
 	connect(PreferencesModel::prefs(),	&PreferencesModel::interfaceFontChanged,		this, &DataSetView::resetItems,			Qt::QueuedConnection);
 
 	connect(DataSetPackage::pkg(),		&DataSetPackage::dataModeChanged,				this, &DataSetView::onDataModeChanged);
-
 
 	setZ(10);
 
@@ -103,19 +263,29 @@ void DataSetView::setRolenames()
 	auto roleNames = _model->roleNames();
 
 	for(auto rn : roleNames.keys())
+	{
+		if (roleNames[rn] == "selected")
+			_roleSelected = rn;
+		else if (roleNames[rn] == "lines")
+			_roleLines = rn;
+		else if (roleNames[rn] == "value")
+			_roleValue = rn;
+		else if (roleNames[rn] == "itemInputValue")
+			_roleItemInputValue = rn;
 		_roleNameToRole[roleNames[rn].toStdString()] = rn;
+	}
 
 }
 
 
 QSizeF DataSetView::getColumnSize(int col)
 {
-	QVariant maxColStringVar = _model->headerData(col, Qt::Orientation::Horizontal, _roleNameToRole["maxColString"]);
+	QVariant maxColStringVar = _extendedModel->headerData(col, Qt::Orientation::Horizontal, getRole("maxColString"));
 	if(!maxColStringVar.isNull())
 		return getTextSize(maxColStringVar.toString());
 	else
 	{
-		QVariant columnWidthFallbackVar = _model->headerData(col, Qt::Orientation::Horizontal, _roleNameToRole["columnWidthFallback"]);
+		QVariant columnWidthFallbackVar = _extendedModel->headerData(col, Qt::Orientation::Horizontal, getRole("columnWidthFallback"));
 
 		QSizeF columnSize = getTextSize("??????");
 
@@ -128,17 +298,27 @@ QSizeF DataSetView::getColumnSize(int col)
 
 QSizeF DataSetView::getRowHeaderSize()
 {
-	QString text = _model->headerData(0, Qt::Orientation::Vertical, _roleNameToRole["maxRowHeaderString"]).toString();
+	QString text = _extendedModel->headerData(0, Qt::Orientation::Vertical, getRole("maxRowHeaderString")).toString();
 
 	return getTextSize(text);
 }
 
+
+int DataSetView::getRole(const std::string &roleName) const
+{
+	auto it = _roleNameToRole.find(roleName);
+	if (it == _roleNameToRole.end())
+		return 0;
+	else
+		return it->second;
+}
+
 void DataSetView::modelDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)
 {
-	const int	colMin = std::max(0,										topLeft.column()),
-				colMax = std::min(_model->columnCount(topLeft.parent()),	bottomRight.column()),
-				rowMin = std::max(0,										topLeft.row()),
-				rowMax = std::min(_model->rowCount(topLeft.parent()),		bottomRight.row());
+	const int	colMin = std::max(0,								topLeft.column()),
+				colMax = std::min(_extendedModel->columnCount(),	bottomRight.column()),
+				rowMin = std::max(0,								topLeft.row()),
+				rowMax = std::min(_extendedModel->rowCount(),		bottomRight.row());
 
 	QSizeF calcSize = getColumnSize(colMin);
 
@@ -158,10 +338,9 @@ void DataSetView::modelDataChanged(const QModelIndex &topLeft, const QModelIndex
 				{
 					QQmlContext* context = itemCon->context;
 					if (roles.contains(int(DataSetPackage::specialRoles::selected)))
-						context->setContextProperty("itemSelected",	_model->data(_model->index(row, col), _roleNameToRole["selected"]));
-
+						context->setContextProperty("itemSelected",	_extendedModel->data(row, col, _roleSelected));
 					if (roles.contains(Qt::DisplayRole))
-						context->setContextProperty("itemText", _model->data(_model->index(row, col)));
+						context->setContextProperty("itemText", _extendedModel->data(row, col));
 				}
 			}
 	}
@@ -245,28 +424,28 @@ void DataSetView::calculateCellSizesAndClear(bool clearStorage)
 
 	if(_model == nullptr) return;
 
-	_cellSizes.resize(_model->columnCount());
-	_colXPositions.resize(_model->columnCount());
+	_cellSizes.resize(_extendedModel->columnCount());
+	_colXPositions.resize(_extendedModel->columnCount());
 	_cellTextItems.clear();
 
-	for(int col=0; col<_model->columnCount(); col++)
+	for(int col=0; col<_extendedModel->columnCount(); col++)
 		_cellSizes[col] = getColumnSize(col);
 
-	_dataColsMaxWidth.resize(_model->columnCount());
+	_dataColsMaxWidth.resize(_extendedModel->columnCount());
 
-	for(int col=0; col<_model->columnCount(); col++)
+	for(int col=0; col<_extendedModel->columnCount(); col++)
 		_dataColsMaxWidth[col] = _cellSizes[col].width() + _itemHorizontalPadding * 2;
 
-	setHeaderHeight(_model->columnCount() == 0 ? 0 : _cellSizes[0].height() + _itemVerticalPadding * 2);
+	setHeaderHeight(_extendedModel->columnCount() == 0 ? 0 : _cellSizes[0].height() + _itemVerticalPadding * 2);
 	setRowNumberWidth(getRowHeaderSize().width());
 
 	float w = _rowNumberMaxWidth;
-	for(int col=0; col<_model->columnCount(); col++)
+	for(int col=0; col<_extendedModel->columnCount(); col++)
 		w += _dataColsMaxWidth[col];
 
 	float x = _rowNumberMaxWidth;
 
-	for(int col=0; col<_model->columnCount(); col++)
+	for(int col=0; col<_extendedModel->columnCount(); col++)
 	{
 		_colXPositions[col] = x;
 		x += _dataColsMaxWidth[col];
@@ -274,8 +453,8 @@ void DataSetView::calculateCellSizesAndClear(bool clearStorage)
 
 	_dataWidth = w;
 
-	qreal	newWidth	= (_extraColumnItem != nullptr ? _dataRowsMaxHeight + 1 : 0 ) + _dataWidth,
-			newHeight	= _dataRowsMaxHeight * (_model->rowCount() + 1);
+	qreal	newWidth	= (_extraColumnItem != nullptr && !_extendDataSet ? _dataRowsMaxHeight + 1 : 0 ) + _dataWidth,
+			newHeight	= _dataRowsMaxHeight * (_extendedModel->rowCount() + 1);
 
 	//Log::log() << "Settings WxH: " << newWidth << "X" << newHeight << std::endl;
 
@@ -295,7 +474,7 @@ void DataSetView::viewportChanged()
 	if(_model == nullptr || _viewportX != _viewportX || _viewportY != _viewportY || _viewportW != _viewportW || _viewportH != _viewportH ) //only possible if they are NaN
 		return;
 
-	if(_dataColsMaxWidth.size() != _model->columnCount())
+	if(_dataColsMaxWidth.size() != _extendedModel->columnCount())
 		return;
 
 	JASPTIMER_RESUME(DataSetView::viewportChanged);
@@ -332,7 +511,7 @@ void DataSetView::determineCurrentViewPortIndices()
 	_currentViewportColMin = -1;
 
 	float cumulative = 0;
-	for(int col=0; col<_model->columnCount() && _currentViewportColMax == -1; col++)
+	for(int col=0; col<_extendedModel->columnCount() && _currentViewportColMax == -1; col++)
 	{
 		if(_currentViewportColMax == -1 && cumulative > rightBottom.x())						_currentViewportColMax = col;
 
@@ -343,13 +522,13 @@ void DataSetView::determineCurrentViewPortIndices()
 	}
 
 	if(_currentViewportColMax == -1)
-		_currentViewportColMax = _model->columnCount();
+		_currentViewportColMax = _extendedModel->columnCount();
 
-	_currentViewportColMin = std::max(0, std::min(_model->columnCount(),	_currentViewportColMin							- _viewportMargin));
-	_currentViewportColMax = std::max(0, std::min(_model->columnCount(),	_currentViewportColMax							+ _viewportMargin));
+	_currentViewportColMin = std::max(0, std::min(_extendedModel->columnCount(),	_currentViewportColMin							- _viewportMargin));
+	_currentViewportColMax = std::max(0, std::min(_extendedModel->columnCount(),	_currentViewportColMax							+ _viewportMargin));
 
-	_currentViewportRowMin = std::max(0, std::min(_model->rowCount(),		qRound(leftTop.y()		/ _dataRowsMaxHeight)	- (1 + _viewportMargin)));
-	_currentViewportRowMax = std::max(0, std::min(_model->rowCount(),		qRound(rightBottom.y()	/ _dataRowsMaxHeight)	+ (1 + _viewportMargin)));
+	_currentViewportRowMin = std::max(0, std::min(_extendedModel->rowCount(),		qRound(leftTop.y()		/ _dataRowsMaxHeight)	- (1 + _viewportMargin)));
+	_currentViewportRowMax = std::max(0, std::min(_extendedModel->rowCount(),		qRound(rightBottom.y()	/ _dataRowsMaxHeight)	+ (1 + _viewportMargin)));
 
 #ifdef DATASETVIEW_DEBUG_VIEWPORT
 	Log::log() << "viewport X: " << _viewportX << " Y: " << _viewportY << " W: " << _viewportW << " H: " << _viewportH <<  std::endl;
@@ -363,7 +542,7 @@ void DataSetView::storeOutOfViewItems()
 {
 	JASPTIMER_RESUME(DataSetView::storeOutOfViewItems);
 
-	int maxRows = _model->rowCount(), maxCols = _model->columnCount();
+	int maxRows = _extendedModel->rowCount(), maxCols = _extendedModel->columnCount();
 	if(
 			_previousViewportRowMin >= 0		&& _previousViewportRowMax >= 0			&& _previousViewportColMin >= 0			&& _previousViewportColMax >= 0 &&
 			_previousViewportRowMin < maxRows	&& _previousViewportRowMax <= maxRows	&& _previousViewportColMin < maxCols	&& _previousViewportColMax <= maxCols
@@ -445,7 +624,7 @@ void DataSetView::buildNewLinesAndCreateNewItems()
 
 			JASPTIMER_RESUME(DataSetView::buildNewLinesAndCreateNewItems_GRID_DATA);
 			if(_storedLineFlags.count(row) == 0 || _storedLineFlags[row].count(col) == 0)
-				_storedLineFlags[row][col] = static_cast<unsigned char>(_model->data(_model->index(row, col), _roleNameToRole["lines"]).toInt());
+				_storedLineFlags[row][col] = static_cast<unsigned char>(_extendedModel->data(row, col, _roleLines).toInt());
 			unsigned char lineFlags = _storedLineFlags[row][col];
 			JASPTIMER_STOP(DataSetView::buildNewLinesAndCreateNewItems_GRID_DATA);
 
@@ -493,7 +672,7 @@ void DataSetView::buildNewLinesAndCreateNewItems()
 	addLine(_viewportX,							_viewportY + 0.5f,					_viewportX + _viewportW,			_viewportY+ 0.5f);
 	addLine(_viewportX,							_viewportY + _dataRowsMaxHeight,	_viewportX + _viewportW,			_viewportY + _dataRowsMaxHeight);
 
-	if(_extraColumnItem != nullptr)
+	if(_extraColumnItem != nullptr && !_extendDataSet)
 	{
 		addLine(_viewportX + _viewportW - extraColumnWidth(),	_viewportY,		_viewportX + _viewportW - extraColumnWidth(),	_viewportY + _dataRowsMaxHeight);
 		addLine(_viewportX + _viewportW,						_viewportY,		_viewportX + _viewportW,						_viewportY + _dataRowsMaxHeight);
@@ -515,7 +694,7 @@ void DataSetView::buildNewLinesAndCreateNewItems()
 				addLine(pos0x, pos0y, pos1x, pos0y);
 
 
-			if(row == _model->rowCount() - 1 && pos1y > _dataRowsMaxHeight + _viewportY)
+			if(row == _extendedModel->rowCount() - 1 && pos1y > _dataRowsMaxHeight + _viewportY)
 				addLine(pos0x, pos1y, pos1x, pos1y);
 #endif
 		}
@@ -536,7 +715,7 @@ void DataSetView::buildNewLinesAndCreateNewItems()
 			addLine(pos0x, pos0y, pos0x, pos1y);
 
 
-		if(col == _model->columnCount() - 1 && pos1x  > _rowNumberMaxWidth + _viewportX && pos1x <= maxXForVerticalLine)
+		if(col == _extendedModel->columnCount() - 1 && pos1x  > _rowNumberMaxWidth + _viewportX && pos1x <= maxXForVerticalLine)
 			addLine(pos1x, pos0y, pos1x, pos1y);
 #endif
 	}
@@ -576,8 +755,7 @@ QQuickItem * DataSetView::createTextItem(int row, int col)
 		QQuickItem			* textItem	= nullptr;
 		ItemContextualized	* itemCon	= nullptr;
 
-		QModelIndex ind(_model->index(row, col));
-		bool active = _model->data(ind, _roleNameToRole["filter"]).toBool();
+		bool active = _extendedModel->filtered(row, col);
 
 		if(_textItemStorage.size() > 0)
 		{
@@ -705,7 +883,7 @@ QQuickItem * DataSetView::createRowNumber(int row)
 			rowNumber = itemCon->item;
 			
 			setStyleDataRowNumber(itemCon->context,
-								  _model->headerData(row, Qt::Orientation::Vertical).toString(),
+								  _extendedModel->headerData(row, Qt::Orientation::Vertical).toString(),
 								  row);
 		}
 		else
@@ -715,7 +893,7 @@ QQuickItem * DataSetView::createRowNumber(int row)
 #endif
 			QQmlIncubator localIncubator(QQmlIncubator::Synchronous);
 			itemCon = new ItemContextualized(setStyleDataRowNumber(nullptr,
-																   _model->headerData(row, Qt::Orientation::Vertical).toString(),
+																   _extendedModel->headerData(row, Qt::Orientation::Vertical).toString(),
 																   row));
 
 			_rowNumberDelegate->create(localIncubator, itemCon->context);
@@ -796,13 +974,13 @@ QQuickItem * DataSetView::createColumnHeader(int col)
 			columnHeader = itemCon->item;
 
 			setStyleDataColumnHeader(itemCon->context,
-									_model->headerData(col, Qt::Orientation::Horizontal).toString(),
+									_extendedModel->headerData(col, Qt::Orientation::Horizontal).toString(),
 									col,
-									_model->headerData(col, Qt::Orientation::Horizontal, _roleNameToRole["columnIsComputed"]).toBool(),
-									_model->headerData(col, Qt::Orientation::Horizontal, _roleNameToRole["computedColumnIsInvalidated"]).toBool(),
-									_model->headerData(col, Qt::Orientation::Horizontal, _roleNameToRole["filter"]).toBool(),
-									_model->headerData(col, Qt::Orientation::Horizontal, _roleNameToRole["computedColumnError"]).toString(),
-									_model->headerData(col, Qt::Orientation::Horizontal, _roleNameToRole["columnType"]).toInt());
+									_extendedModel->headerData(col, Qt::Orientation::Horizontal, getRole("columnIsComputed")).toBool(),
+									_extendedModel->headerData(col, Qt::Orientation::Horizontal, getRole("computedColumnIsInvalidated")).toBool(),
+									_extendedModel->headerData(col, Qt::Orientation::Horizontal, getRole("filter")).toBool(),
+									_extendedModel->headerData(col, Qt::Orientation::Horizontal, getRole("computedColumnError")).toString(),
+									_extendedModel->headerData(col, Qt::Orientation::Horizontal, getRole("columnType")).toInt());
 		}
 		else
 		{
@@ -812,13 +990,13 @@ QQuickItem * DataSetView::createColumnHeader(int col)
 			QQmlIncubator localIncubator(QQmlIncubator::Synchronous);
 			itemCon = new ItemContextualized(setStyleDataColumnHeader(
 												nullptr,
-												_model->headerData(col, Qt::Orientation::Horizontal).toString(),
+												_extendedModel->headerData(col, Qt::Orientation::Horizontal).toString(),
 												col,
-												_model->headerData(col, Qt::Orientation::Horizontal, _roleNameToRole["columnIsComputed"]).toBool(),
-												_model->headerData(col, Qt::Orientation::Horizontal, _roleNameToRole["computedColumnIsInvalidated"]).toBool(),
-												_model->headerData(col, Qt::Orientation::Horizontal, _roleNameToRole["filter"]).toBool(),
-												_model->headerData(col, Qt::Orientation::Horizontal, _roleNameToRole["computedColumnError"]).toString(),
-												_model->headerData(col, Qt::Orientation::Horizontal, _roleNameToRole["columnType"]).toInt()));
+												_extendedModel->headerData(col, Qt::Orientation::Horizontal, getRole("columnIsComputed")).toBool(),
+												_extendedModel->headerData(col, Qt::Orientation::Horizontal, getRole("computedColumnIsInvalidated")).toBool(),
+												_extendedModel->headerData(col, Qt::Orientation::Horizontal, getRole("filter")).toBool(),
+												_extendedModel->headerData(col, Qt::Orientation::Horizontal, getRole("computedColumnError")).toString(),
+												_extendedModel->headerData(col, Qt::Orientation::Horizontal, getRole("columnType")).toInt()));
 
 			_columnHeaderDelegate->create(localIncubator, itemCon->context);
 			columnHeader = qobject_cast<QQuickItem*>(localIncubator.object());
@@ -901,7 +1079,7 @@ QQuickItem * DataSetView::createleftTopCorner()
 void DataSetView::updateExtraColumnItem()
 {
 	//Log::log() << "createleftTopCorner() called!\n" << std::flush;
-	if(!_extraColumnItem)
+	if(!_extraColumnItem || _extendDataSet)
 		return;
 
 	_extraColumnItem->setHeight(_dataRowsMaxHeight - 1);
@@ -961,8 +1139,7 @@ void DataSetView::positionEditItem(int row, int col)
 		emit editDelegateChanged(_editDelegate);
 	}
 
-	QModelIndex		ind			( _model->index(row, col));
-	bool			active		= _model->data(ind, _roleNameToRole["filter"]).toBool();
+	bool			active		= _extendedModel->filtered(row, col);
 
 	if(_editItemContextual && !(_prevEditRow == row && _prevEditCol == col)) //remove previous edit item to avoid old values or broken bindings messing everything up. But only if it is in a different place than where we're at
 		destroyEditItem();
@@ -1006,57 +1183,60 @@ void DataSetView::setExtraColumnX()
 	_extraColumnItem->setX(_viewportX + _viewportW - extraColumnWidth());
 }
 
-void DataSetView::setSelectionStart(QModelIndex selectionStart)
+void DataSetView::setSelectionStart(QPoint selectionStart)
 {
 	if (_selectionStart == selectionStart || !_selectionModel)
 		return;
 	
-	Log::log() << "DataSetView::setSelectionStart( row=" << selectionStart.row() << ", col=" << selectionStart.column() << " )" << std::endl;
+	Log::log() << "DataSetView::setSelectionStart( row=" << selectionStart.y() << ", col=" << selectionStart.x() << " )" << std::endl;
 		
-	_selectionStart = _model->index(selectionStart.row(), selectionStart.column());;
+	_selectionStart = selectionStart;
 	emit selectionStartChanged(_selectionStart);
 	
-	if(!_selectionStart.isValid())
+	QModelIndex startIndex = _extendedModel->index(selectionStart.y(), selectionStart.x());
+
+	if(startIndex.isValid())
 	{
-		//_selectionModel->clear();
-		return;
-	}
+		_selectionModel->select(startIndex, QItemSelectionModel::SelectCurrent);
 
-	_selectionModel->select(_selectionStart, QItemSelectionModel::SelectCurrent);
+		if(_model->headerData(_selectionStart.x(), Qt::Horizontal, _roleNameToRole["columnIsComputed"]).toBool())
+		{
+			if(_editing)
+				destroyEditItem();
 
-	if(_model->headerData(_selectionStart.column(), Qt::Horizontal, _roleNameToRole["columnIsComputed"]).toBool())
-	{
-		if(_editing)
-			destroyEditItem();
-
-		emit showComputedColumn(_model->headerData(_selectionStart.column(), Qt::Horizontal).toString());
+			emit showComputedColumn(_model->headerData(_selectionStart.x(), Qt::Horizontal).toString());
+		}
 	}
 	else
-		edit(_selectionStart);
+		_selectionModel->clearSelection();
+
+	edit(_selectionStart.y(), _selectionStart.x());
 }
 
-void DataSetView::setSelectionEnd(QModelIndex selectionEnd) 
+void DataSetView::setSelectionEnd(QPoint selectionEnd)
 {
-	if (_selectionEnd == selectionEnd || !_selectionModel)
+	if (!_selectionModel)
 		return;
 
-	if(_selectionStart.column() == -1 || _selectionStart.row() == -1)
+	if(_selectionStart.y() == -1 || _selectionStart.x() == -1)
 		return;
 	
-	Log::log() << "DataSetView::setSelectionEnd( row=" << selectionEnd.row() << ", col=" << selectionEnd.column() << " )" << std::endl;
+	Log::log() << "DataSetView::setSelectionEnd( row=" << selectionEnd.y() << ", col=" << selectionEnd.x() << " )" << std::endl;
 
-	_selectionEnd = _model->index(selectionEnd.row(), selectionEnd.column());;
-	emit selectionEndChanged(_selectionEnd);
+	_selectionEnd = selectionEnd;
+
+	if (_selectionEnd != selectionEnd)
+		emit selectionEndChanged(_selectionEnd);
 	
-	_selectionModel->select(QItemSelection(_model->index(_selectionStart.row(), _selectionStart.column()), _selectionEnd), QItemSelectionModel::ClearAndSelect);
+	_selectionModel->select(QItemSelection(_extendedModel->index(_selectionStart.y(), _selectionStart.x()), _extendedModel->index(_selectionEnd.y(), _selectionEnd.x())), QItemSelectionModel::ClearAndSelect);
 	
 	_selectScrollMs = Utils::currentMillis();
 }
 
 void DataSetView::selectAll()
 {
-	setSelectionStart(_model->index(0, 0));
-	setSelectionEnd(_model->index(_model->rowCount() - 1, _model->columnCount() - 1));
+	setSelectionStart(QPoint(0, 0));
+	setSelectionEnd(QPoint(_extendedModel->columnCount(false) - 1, _extendedModel->rowCount(false) - 1));
 }
 
 
@@ -1074,7 +1254,7 @@ bool DataSetView::relaxForSelectScroll()
 }
 
 
-void DataSetView::pollSelectScroll(QModelIndex mouseIndex)
+void DataSetView::pollSelectScroll(int row, int col)
 {
 	if(!relaxForSelectScroll())
 		return;
@@ -1085,20 +1265,20 @@ void DataSetView::pollSelectScroll(QModelIndex mouseIndex)
 	//Log::log() << "DataSetView::pollSelectScroll row=" << mouseIndex.row() << "col=" << mouseIndex.column() << std::endl;
 
 
-	int		minMouseCol = mouseIndex.column()	- b,
-			maxMouseCol = mouseIndex.column()	+ b,
-			minMouseRow = mouseIndex.row()		- b,
-			maxMouseRow = mouseIndex.row()		+ b;
+	int		minMouseCol = col	- b,
+			maxMouseCol = col	+ b,
+			minMouseRow = row		- b,
+			maxMouseRow = row		+ b;
 
 	bool	maybeBudgeLeft	= minMouseCol <= 	_currentViewportColMin + _viewportMargin,
 			maybeBudgeRight	= maxMouseCol >		_currentViewportColMax - _viewportMargin,
 			maybeBudgeUp	= minMouseRow < 	_currentViewportRowMin + _viewportMargin,
 			maybeBudgeDown	= maxMouseRow >=	_currentViewportRowMax - _viewportMargin;
 	
-			maybeBudgeLeft	= maybeBudgeLeft	&& (_currentViewportColMin > 0						|| 0						<	mouseIndex.column	());
-			maybeBudgeUp	= maybeBudgeUp		&& (_currentViewportRowMin > 0						|| 0						<	mouseIndex.row		());
-			maybeBudgeRight	= maybeBudgeRight	&& (_currentViewportColMax < _model->columnCount()	|| _model->columnCount()	>	mouseIndex.column	());
-			maybeBudgeDown	= maybeBudgeDown	&& (_currentViewportRowMax < _model->rowCount()		|| _model->rowCount()		>	mouseIndex.row		());
+			maybeBudgeLeft	= maybeBudgeLeft	&& (_currentViewportColMin > 0						|| 0						<	col);
+			maybeBudgeUp	= maybeBudgeUp		&& (_currentViewportRowMin > 0						|| 0						<	row);
+			maybeBudgeRight	= maybeBudgeRight	&& (_currentViewportColMax < _extendedModel->columnCount()	|| _extendedModel->columnCount()	>	col);
+			maybeBudgeDown	= maybeBudgeDown	&& (_currentViewportRowMax < _extendedModel->rowCount()		|| _extendedModel->rowCount()		>	row);
 
 	if(maybeBudgeLeft)	emit selectionBudgesLeft	();
 	if(maybeBudgeUp)	emit selectionBudgesUp		();
@@ -1115,7 +1295,7 @@ void DataSetView::_copy(bool includeHeader, bool clear)
 	
 	std::vector<QStringList>	rows;
 
-	int minCol = _model->columnCount(), maxCol = 0;
+	int minCol = _extendedModel->columnCount(), maxCol = 0;
 
 
 	int previousRow = -1;
@@ -1127,7 +1307,7 @@ void DataSetView::_copy(bool includeHeader, bool clear)
 		minCol = std::min(minCol, selectee.column());
 		maxCol = std::max(maxCol, selectee.column());
 		
-		QVariant valVar = _model->data(selectee);
+		QVariant valVar = _extendedModel->data(selectee.row(), selectee.column());
 		std::string val = fq(valVar.toString());
 		
 		rows[ rows.size()-1 ].append(
@@ -1143,7 +1323,7 @@ void DataSetView::_copy(bool includeHeader, bool clear)
 	{
 		rows.insert(rows.begin(), tq(std::vector<std::string>(maxCol - minCol + 1, "")));
 		for(int c=minCol; c<=maxCol; c++)
-			rows[0][c-minCol] = _model->headerData(c, Qt::Horizontal).toString();
+			rows[0][c-minCol] = _extendedModel->headerData(c, Qt::Horizontal).toString();
 	}
 
 	if(rows.size() == 0)
@@ -1235,22 +1415,22 @@ QModelIndex DataSetView::selectionTopLeft() const
 	if(r == INT_MAX)	r = 0;
 	if(c == INT_MAX)	c = 0;
 	
-	return _model->index(r, c);
+	return _extendedModel->index(r, c);
 }
 
 
 void DataSetView::columnSelect(int col)
 {
-	setSelectionStart(_model->index(0, col));
-	setSelectionEnd(_model->index(_model->rowCount() - 1, col));
+	setSelectionStart(QPoint(col, 0));
+	setSelectionEnd(QPoint(col, _extendedModel->rowCount(false) - 1));
 }
 
 int DataSetView::columnInsertBefore(int col)
 {
 	if(col == -1)
-		col = _selectionStart.isValid() ? _selectionStart.column() : 0;
+		col = _selectionStart.x() != -1 ? _selectionStart.x() : 0;
 	
-	_model->insertColumn(col);
+	_extendedModel->insertColumn(col);
 
 	return col;
 }
@@ -1258,9 +1438,9 @@ int DataSetView::columnInsertBefore(int col)
 int DataSetView::columnInsertAfter(int col)
 {
 	if(col == -1)
-		col = _selectionEnd.isValid() ? _selectionEnd.column() + 1
-									  : _selectionStart.isValid() ? _selectionStart.column() + 1
-																  : _model->columnCount();
+		col = _selectionEnd.x() != -1 ? _selectionEnd.x() + 1
+									  : _selectionStart.x() != -1 ? _selectionStart.x() + 1
+																  : _extendedModel->columnCount(false);
 	
 	return columnInsertBefore(col);
 }
@@ -1291,56 +1471,66 @@ void DataSetView::columnComputedInsertBefore(int col, bool R)
 	emit columnSetColumnComputedDelayed(col, R);
 }
 
+void DataSetView::columnDelete(int col)
+{
+	_extendedModel->removeColumn(col);
+}
+
+void DataSetView::rowDelete(int row)
+{
+	_extendedModel->removeRow(row);
+}
+
 void DataSetView::columnsDelete()
 {
-	if(_model->columnCount() <= 1 || (!_selectionStart.isValid() && !_selectionEnd.isValid()))
+	if(_extendedModel->columnCount(false) <= 1 || (_selectionStart.x() == -1 && _selectionEnd.x() == -1))
 		return;
 
-	int columnA	= _selectionStart.isValid() ? _selectionStart.column()	: _selectionEnd.column(),
-		columnB	= _selectionEnd.isValid()	? _selectionEnd.column()	: _selectionStart.column();
+	int columnA	= _selectionStart.x() != -1 ? _selectionStart.x()	: _selectionEnd.x(),
+		columnB	= _selectionEnd.x() != -1	? _selectionEnd.x()		: _selectionStart.x();
 
 	if(columnA > columnB)
 		std::swap(columnA, columnB);
 
-	_model->removeColumns(columnA, 1 + (columnB - columnA));
+	_extendedModel->removeColumns(columnA, 1 + (columnB - columnA));
 }
 
 void DataSetView::rowSelect(int row)
 {
-	setSelectionStart(_model->index(row, 0));
-	setSelectionEnd(_model->index(row, _model->columnCount() - 1));
+	setSelectionStart(QPoint(0, row));
+	setSelectionEnd(QPoint(_extendedModel->columnCount(false) - 1, row));
 }
 
 void DataSetView::rowInsertBefore(int row)
 {
 	if(row == -1)
-		row = _selectionStart.isValid() ? _selectionStart.row() : 0;
+		row = _selectionStart.y() != -1 ? _selectionStart.y() : 0;
 	
-	_model->insertRow(row);
+	_extendedModel->insertRow(row);
 }
 
 void DataSetView::rowInsertAfter(int row)
 {
 	if(row == -1)
-		row = _selectionEnd.isValid() ? _selectionEnd.row() + 1
-									  : _selectionStart.isValid() ? _selectionStart.row() + 1
-																  : _model->rowCount();
+		row = _selectionEnd.y() != -1 ? _selectionEnd.y() + 1
+									  : _selectionStart.y() != -1 ? _selectionStart.y() + 1
+																  : _extendedModel->rowCount(false);
 	
 	rowInsertBefore(row);
 }
 
 void DataSetView::rowsDelete()
 {
-	if(_model->rowCount() <= 1 || (!_selectionStart.isValid() && !_selectionEnd.isValid()))
+	if(_extendedModel->rowCount(false) <= 1 || (_selectionStart.y() == -1 && _selectionEnd.y() == -1))
 		return;
 
-	int rowA	= _selectionStart.isValid() ? _selectionStart.row()	: _selectionEnd.row(),
-		rowB	= _selectionEnd.isValid()	? _selectionEnd.row()	: _selectionStart.row();
+	int rowA	= _selectionStart.y() != -1 ? _selectionStart.y()	: _selectionEnd.y(),
+		rowB	= _selectionEnd.y() != -1	? _selectionEnd.y()		: _selectionStart.y();
 
 	if(rowA > rowB)
 		std::swap(rowA, rowB);
 
-	_model->removeRows(rowA, 1 + (rowB - rowA));
+	_extendedModel->removeRows(rowA, 1 + (rowB - rowA));
 }
 
 void DataSetView::columnsAboutToBeInserted(const QModelIndex & parent, int first, int last)
@@ -1414,34 +1604,29 @@ void DataSetView::setEditing(bool editing)
 	emit editingChanged(_editing);
 }
 
-void DataSetView::edit(QModelIndex here)
+void DataSetView::edit(int row, int col)
 {
-	if(!here.isValid())
-		return;
 
-	Log::log() << "DataSetView::edit(row=" << here.row() << ", col=" << here.column() << ")" << std::endl;
+	Log::log() << "DataSetView::edit(row=" << row << ", col=" << col << ")" << std::endl;
 
 	if(editing())
 		destroyEditItem();
 
-	//checking the model sounds like a really good idea, but will crash jasp if you use the mouse to edit cells and 'bool isEditable (_model->flags(here) & Qt::ItemIsEditable);'
-	DataSetTableProxy * modelAsProxy = qobject_cast<DataSetTableProxy*>(_model); 
-	
-	bool isEditable = Qt::ItemIsEditable & _model->flags(_model->index(here.row(), here.column()));
+	bool isEditable = Qt::ItemIsEditable & _extendedModel->flags(row, col);
 		
 	if(isEditable)
 	{
 		//Turn editing on
 		setEditing(true);
 
-		positionEditItem(here.row(), here.column());
+		positionEditItem(row, col);
 
 		//when editItem is done or loses focus and the contents changed, this calls back to editFinished which will use setData etc
 		//this will also turn editing off again and replace editItem by normal item
 	}
 }
 
-void DataSetView::editFinishedKeepEditing(QModelIndex here, QVariant editedValue)
+void DataSetView::editFinishedKeepEditing(int row, int col, QVariant editedValue)
 {
 	if(!editing())
 	{
@@ -1449,17 +1634,16 @@ void DataSetView::editFinishedKeepEditing(QModelIndex here, QVariant editedValue
 	}
 	else
 	{
-		here = _model->index(here.row(), here.column());
-		QVariant oldValue = _model->data(here);
+		QVariant oldValue = _extendedModel->data(row, col);
 
-		Log::log() << "editing finished! old value: '" << oldValue.toString() << "'  and new value: '" << editedValue.toString() << "' (row=" << here.row() << ", col=" << here.column() << ")" << std::endl;
+		Log::log() << "editing finished! old value: '" << oldValue.toString() << "'  and new value: '" << editedValue.toString() << "' (row=" << row << ", col=" << col << ")" << std::endl;
 
 		if(oldValue.toString() != editedValue.toString())
-			_model->setData(here, editedValue);
+			_extendedModel->setData(row, col, editedValue, 0);
 	}
 }
 
-void DataSetView::editFinished(QModelIndex here, QVariant editedValue)
+void DataSetView::editFinished(int row, int col, QVariant editedValue)
 {
 	if(!editing())
 	{
@@ -1467,14 +1651,14 @@ void DataSetView::editFinished(QModelIndex here, QVariant editedValue)
 	}
 	else
 	{
-		editFinishedKeepEditing(here, editedValue);
+		editFinishedKeepEditing(row, col, editedValue);
 
 		setEditing(false);
 
 		destroyEditItem();
 	}
 
-	_selectionStart = _model->index(_selectionStart.row(), _selectionStart.column()); //To stop setSelectionEnd from crashing everything
+	_selectionStart = QPoint(_selectionStart.y(), _selectionStart.x()); //To stop setSelectionEnd from crashing everything
 }
 
 void DataSetView::onDataModeChanged(bool dataMode)
@@ -1486,22 +1670,22 @@ void DataSetView::onDataModeChanged(bool dataMode)
 	}
 }
 
-void DataSetView::contextMenuClickedAtIndex(QModelIndex index)
+void DataSetView::contextMenuClickedAtIndex(int row, int column)
 {
-	if(!_selectionModel->isSelected(index))
-		_selectionModel->select(index, QItemSelectionModel::SelectCurrent);
+	QModelIndex i = _extendedModel->index(row, column);
+	if(!_selectionModel->isSelected(i))
+		_selectionModel->select(i, QItemSelectionModel::SelectCurrent);
 }
 
 QQmlContext * DataSetView::setStyleDataItem(QQmlContext * previousContext, bool active, size_t col, size_t row, bool emptyValLabel)
 {
     JASPTIMER_SCOPE(DataSetView::setStyleDataItem);
     
-	QModelIndex idx = _model->index(row, col);
 	
-	bool isEditable(_model->flags(idx) & Qt::ItemIsEditable);
+	bool isEditable(_extendedModel->flags(row, col) & Qt::ItemIsEditable);
 
 	if(isEditable || _storedDisplayText.count(row) == 0 || _storedDisplayText[row].count(col) == 0)
-		_storedDisplayText[row][col] = _model->data(idx, Qt::DisplayRole).toString();
+		_storedDisplayText[row][col] = _extendedModel->data(row, col, Qt::DisplayRole).toString();
 
 	QString text = _storedDisplayText[row][col];
 
@@ -1514,13 +1698,13 @@ QQmlContext * DataSetView::setStyleDataItem(QQmlContext * previousContext, bool 
 	previousContext->setContextProperty("itemText",			text);
 	previousContext->setContextProperty("itemActive",		active);
 	previousContext->setContextProperty("itemEditable",		isEditable);
-	previousContext->setContextProperty("itemSelected",		_model->data(idx, _roleNameToRole["selected"]));
-	previousContext->setContextProperty("itemFiltered",		_model->data(idx, _roleNameToRole["filter"]));
-	previousContext->setContextProperty("itemValue",		_model->data(idx, _roleNameToRole["value"]));
-	previousContext->setContextProperty("itemInputType",	_model->data(idx, _roleNameToRole["itemInputType"]));
+	previousContext->setContextProperty("itemSelected",		_extendedModel->data(row, col, _roleSelected));
+	previousContext->setContextProperty("itemFiltered",		_extendedModel->filtered(col, row));
+	previousContext->setContextProperty("itemValue",		_extendedModel->data(row, col, _roleValue));
+	previousContext->setContextProperty("itemInputType",	_extendedModel->data(row, col, _roleItemInputValue));
 	previousContext->setContextProperty("columnIndex",		static_cast<int>(col));
 	previousContext->setContextProperty("rowIndex",			static_cast<int>(row));
-	previousContext->setContextProperty("index",			idx);
+	//previousContext->setContextProperty("index",			idx);
 	previousContext->setContextProperty("isDynamic",		true);
 	previousContext->setContextProperty("tableView",		_tableViewItem);
 	previousContext->setContextProperty("dataviewer",		this);
@@ -1534,7 +1718,8 @@ QQmlContext * DataSetView::setStyleDataRowNumber(QQmlContext * previousContext, 
 		previousContext = new QQmlContext(qmlContext(this), this);
 
 	previousContext->setContextProperty("rowIndex",			row);
-	previousContext->setContextProperty("rowNumber",		_model->headerData(row, Qt::Vertical, Qt::DisplayRole)); //gives original row, could be different from rowIndex if filtered-out-values arent visible
+	previousContext->setContextProperty("rowNumber",		_extendedModel->headerData(row, Qt::Vertical, Qt::DisplayRole)); //gives original row, could be different from rowIndex if filtered-out-values arent visible
+	previousContext->setContextProperty("virtual",			_extendedModel->isRowVirtual(row));
 	previousContext->setContextProperty("headerText",		text);
 
 	return previousContext;
@@ -1552,6 +1737,7 @@ QQmlContext * DataSetView::setStyleDataColumnHeader(QQmlContext * previousContex
 	previousContext->setContextProperty("columnIsFiltered",		isFiltered);
 	previousContext->setContextProperty("columnError",			computedError);
 	previousContext->setContextProperty("columnType",			columnType);
+	previousContext->setContextProperty("virtual",				_extendedModel->isColumnVirtual(column));
 
 	return previousContext;
 }
@@ -1625,6 +1811,9 @@ void DataSetView::setLeftTopCornerItem(QQuickItem * newItem)
 
 void DataSetView::setExtraColumnItem(QQuickItem * newItem)
 {
+	if (_extendDataSet)
+		newItem = nullptr;
+
 	if(newItem != _extraColumnItem)
 	{
 		if(_extraColumnItem != nullptr)
@@ -1661,6 +1850,15 @@ void DataSetView::setCacheItems(bool cacheItems)
 	emit cacheItemsChanged();
 	
 	calculateCellSizesAndClear(true);
+}
+
+void DataSetView::setExtendDataSet(bool extendDataSet)
+{
+	if(extendDataSet == _extendDataSet)
+		return;
+
+	_extendDataSet = extendDataSet;
+	emit extendDataSetChanged();
 }
 
 void DataSetView::reloadTextItems()
@@ -1759,8 +1957,8 @@ QSGNode * DataSetView::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
 		geomSize *= 2;
 		
 		QSGGeometry *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), geomSize);
-		geometry->setLineWidth(1); //ignored anyway
-        geometry->setDrawingMode(QSGGeometry::DrawLines);
+		geometry->setLineWidth(2); //ignored anyway
+		geometry->setDrawingMode(QSGGeometry::DrawLines);
 		
 		assert(sizeof(float) * 2 == geometry->sizeOfVertex());
 

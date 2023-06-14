@@ -32,17 +32,18 @@ FocusScope
 			itemVerticalPadding:	8 * jaspTheme.uiScale
 
 			model:					dataSetModel
-			cacheItems:				!ribbonModel.dataModeb
+			cacheItems:				!ribbonModel.dataMode
+			extendDataSet:			ribbonModel.dataMode
 
 			doubleClickWorkaround:	!ribbonModel.dataMode
 			//flickableInteractive:	!ribbonModel.dataMode
 			onDoubleClicked:		__myRoot.doubleClicked()
 
-			function showCopyPasteMenu(fromItem, globalPos, indexClicked)
+			function showCopyPasteMenu(fromItem, globalPos, rowIndex, columnIndex)
 			{
 				console.log("showCopyPasteMenu!")
 
-				view.contextMenuClickedAtIndex(indexClicked);
+				view.contextMenuClickedAtIndex(rowIndex, columnIndex);
 
 				var ctrlCmd = MACOS ? qsTr("Cmd") : qsTr("Ctrl");
 
@@ -64,17 +65,17 @@ FocusScope
 
 					{ text: "---" },
 
-					{ text: qsTr("Select column"),								func: function() { dataTableView.view.columnSelect(			indexClicked.column) }, icon: "menu-column-select"			},
-					{ text: qsTr("Insert column before"),						func: function() { dataTableView.view.columnInsertBefore(	indexClicked.column) }, icon: "menu-column-insert-before"	},
-					{ text: qsTr("Insert column after"),						func: function() { dataTableView.view.columnInsertAfter(	indexClicked.column) }, icon: "menu-column-insert-after"	},
-					{ text: qsTr("Delete column"),								func: function() { dataTableView.view.columnDelete(			indexClicked.column) }, icon: "menu-column-remove"			},
+					{ text: qsTr("Select column"),								func: function() { dataTableView.view.columnSelect(			columnIndex) }, icon: "menu-column-select"			},
+					{ text: qsTr("Insert column before"),						func: function() { dataTableView.view.columnInsertBefore(	columnIndex) }, icon: "menu-column-insert-before"	},
+					{ text: qsTr("Insert column after"),						func: function() { dataTableView.view.columnInsertAfter(	columnIndex) }, icon: "menu-column-insert-after"	},
+					{ text: qsTr("Delete column"),								func: function() { dataTableView.view.columnDelete(			columnIndex) }, icon: "menu-column-remove"			},
 
 					{ text: "---" },
 
-					{ text: qsTr("Select row"),									func: function() { dataTableView.view.rowSelect(			indexClicked.row) }, icon: "menu-row-select"				},
-					{ text: qsTr("Insert row before"),							func: function() { dataTableView.view.rowInsertBefore(		indexClicked.row) }, icon: "menu-row-insert-before"			},
-					{ text: qsTr("Insert row after"),							func: function() { dataTableView.view.rowInsertAfter(		indexClicked.row) }, icon: "menu-row-insert-after"			},
-					{ text: qsTr("Delete row"),									func: function() { dataTableView.view.rowDelete(			indexClicked.row) }, icon: "menu-row-remove"				}
+					{ text: qsTr("Select row"),									func: function() { dataTableView.view.rowSelect(			rowIndex) }, icon: "menu-row-select"				},
+					{ text: qsTr("Insert row before"),							func: function() { dataTableView.view.rowInsertBefore(		rowIndex) }, icon: "menu-row-insert-before"			},
+					{ text: qsTr("Insert row after"),							func: function() { dataTableView.view.rowInsertAfter(		rowIndex) }, icon: "menu-row-insert-after"			},
+					{ text: qsTr("Delete row"),									func: function() { dataTableView.view.rowDelete(			rowIndex) }, icon: "menu-row-remove"				}
 
 				]
 
@@ -129,7 +130,7 @@ FocusScope
 					color:					itemActive ? jaspTheme.textEnabled : jaspTheme.textDisabled
 					font:					jaspTheme.font
 					verticalAlignment:		Text.AlignVCenter
-					onTextChanged:			dataTableView.view.editFinishedKeepEditing(index, text);
+					onTextChanged:			dataTableView.view.editFinishedKeepEditing(rowIndex, columnIndex, text);
 					z:						10
 
 					Component.onCompleted:	focusTimer.start();
@@ -156,7 +157,7 @@ FocusScope
 					function finishEdit()
 					{
 						if(!alreadyFinished)
-							dataTableView.view.editFinished(index, text);
+							dataTableView.view.editFinished(rowIndex, columnIndex, text);
 						alreadyFinished = true;
 					}
 
@@ -203,10 +204,10 @@ FocusScope
 
 						case Qt.Key_Home:	mainWindowRoot.changeFocusToFileMenu(); break;
 
-						case Qt.Key_Up:		if(rowIndex		> 0)										{ arrowPressed = true; arrowIndex   = dataTableView.model.index(rowIndex - 1,	columnIndex);		} break;
-						case Qt.Key_Down:	if(rowIndex		< dataTableView.model.rowCount()    - 1)	{ arrowPressed = true; arrowIndex   = dataTableView.model.index(rowIndex + 1,	columnIndex);		} break;
-						case Qt.Key_Left:	if(columnIndex	> 0)										{ arrowPressed = true; arrowIndex   = dataTableView.model.index(rowIndex,		columnIndex - 1);	} break;
-						case Qt.Key_Right:	if(columnIndex	< dataTableView.model.columnCount() - 1)	{ arrowPressed = true; arrowIndex   = dataTableView.model.index(rowIndex,		columnIndex + 1);	} break;
+						case Qt.Key_Up:		if(rowIndex		> 0)									{ arrowPressed = true; arrowIndex   = Qt.point(columnIndex,		rowIndex - 1,	);	} break;
+						case Qt.Key_Down:	if(rowIndex		< dataTableView.view.rowCount()    - 1)	{ arrowPressed = true; arrowIndex   = Qt.point(columnIndex,		rowIndex + 1);		} break;
+						case Qt.Key_Left:	if(columnIndex	> 0)									{ arrowPressed = true; arrowIndex   = Qt.point(columnIndex - 1,	rowIndex);			} break;
+						case Qt.Key_Right:	if(columnIndex	< dataTableView.view.columnCount() - 1)	{ arrowPressed = true; arrowIndex   = Qt.point(columnIndex + 1, rowIndex);			} break;
 						}
 
 						if(arrowPressed)
@@ -251,7 +252,7 @@ FocusScope
 								if(mouse.buttons & Qt.RightButton)
 								{
 									finishEdit()
-									dataTableView.showCopyPasteMenu(editItem, mapToGlobal(mouse.x, mouse.y), dataSetModel.index(rowIndex, columnIndex));
+									dataTableView.showCopyPasteMenu(editItem, mapToGlobal(mouse.x, mouse.y), rowIndex, columnIndex);
 								}
 						}
 					}
@@ -282,12 +283,12 @@ FocusScope
 								if(Boolean(mouse.buttons & Qt.RightButton))
 								{
 									forceActiveFocus();
-									dataTableView.showCopyPasteMenu(itemHighlight, mapToGlobal(mouse.x, mouse.y), dataSetModel.index(rowIndex, columnIndex));
+									dataTableView.showCopyPasteMenu(itemHighlight, mapToGlobal(mouse.x, mouse.y), rowIndex, columnIndex);
 								}
 								else
 								{
-									if(!shiftPressed)	dataTableView.view.selectionStart   = dataTableView.view.model.index(rowIndex, columnIndex);
-									else				dataTableView.view.selectionEnd		= dataTableView.view.model.index(rowIndex, columnIndex);
+									if(!shiftPressed)	dataTableView.view.selectionStart   = Qt.point(columnIndex, rowIndex);
+									else				dataTableView.view.selectionEnd		= Qt.point(columnIndex, rowIndex);
 								}
 							}
 						}
@@ -296,9 +297,8 @@ FocusScope
 						{
 							if(ribbonModel.dataMode && Boolean(mouse.modifiers & Qt.ShiftModifier))
 							{
-								var idx = dataTableView.view.model.index(rowIndex, columnIndex)
-								dataTableView.view.pollSelectScroll(idx)
-								dataTableView.view.selectionEnd = idx
+								dataTableView.view.pollSelectScroll(rowIndex, columnIndex)
+								dataTableView.view.selectionEnd = Qt.point(columnIndex, rowIndex)
 							}
 						}
 
@@ -339,11 +339,12 @@ FocusScope
 				JaspControls.RectangularButton
 				{
 					id:				addColumnButton
-					width:			height
+					width:			visible ? height : 0
 					toolTip:		qsTr("Add computed column")
 					iconSource:		jaspTheme.iconPath + "/addition-sign.svg"
 					onClicked:		createComputeDialog.open()
 					border.width:	0
+					visible:		!dataTableView.extendDataSet
 				}
 
 			rowNumberDelegate:
@@ -356,7 +357,7 @@ FocusScope
 						text:				rowNumber
 						font:				jaspTheme.font
 						anchors.centerIn:	parent
-						color:				jaspTheme.textEnabled
+						color:				virtual ? jaspTheme.textDisabled : jaspTheme.textEnabled
 					}
 
 				}
@@ -552,26 +553,31 @@ FocusScope
 					onClicked:
 						if(columnIndex >= 0)
 						{
-
-							if(columnType  !== columnTypeScale)
-							{
-								var changedIndex		= labelModel.chosenColumn	!== columnIndex
-								labelModel.chosenColumn	= columnIndex;
-								labelModel.visible		= changedIndex ? true : !labelModel.visible;
-							}
+							if (virtual)
+								createComputeDialog.open()
 							else
-								dataSetModel.renameColumnDialog(columnIndex);
-
-							if(dataSetModel.columnUsedInEasyFilter(columnIndex))
 							{
-								filterWindow.showEasyFilter = true
-								filterWindow.open()
+								if(columnType  !== columnTypeScale)
+								{
+									var changedIndex		= labelModel.chosenColumn	!== columnIndex
+									labelModel.chosenColumn	= columnIndex;
+									labelModel.visible		= changedIndex ? true : !labelModel.visible;
+								}
+								else
+									dataSetModel.renameColumnDialog(columnIndex);
+
+								if(dataSetModel.columnUsedInEasyFilter(columnIndex))
+								{
+									filterWindow.showEasyFilter = true
+									filterWindow.open()
+								}
 							}
 						}
 
 					hoverEnabled:		true
-					ToolTip.visible:	containsMouse && (columnType !== columnTypeScale)
-					ToolTip.text:		qsTr("Click here to change labels") + (columnIsFiltered ? qsTr(" or inspect filter") : "" )
+					ToolTip.visible:	containsMouse && (virtual || columnType !== columnTypeScale)
+					ToolTip.text:		virtual ? qsTr("Add computed column") : (qsTr("Click here to change labels") + (columnIsFiltered ? qsTr(" or inspect filter") : "" ))
+
 					ToolTip.timeout:	3000
 					ToolTip.delay:		500
 					cursorShape:		(columnType !== columnTypeScale) || dataSetModel.columnUsedInEasyFilter(columnIndex) ? Qt.PointingHandCursor : Qt.ArrowCursor
