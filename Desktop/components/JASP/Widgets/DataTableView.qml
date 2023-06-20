@@ -328,7 +328,7 @@ FocusScope
 					border.width:	0
 				}
 
-			/*extraColumnItem:
+			extraColumnItem:
 				JaspControls.RectangularButton
 				{
 					id:				addColumnButton
@@ -338,7 +338,7 @@ FocusScope
 					onClicked:		createComputeDialog.open()
 					border.width:	0
 					visible:		!dataTableView.expandDataSet
-				}*/
+				}
 
 			rowNumberDelegate:
 				Rectangle
@@ -389,6 +389,7 @@ FocusScope
 
 					MouseArea
 					{
+						enabled:			!virtual
 						anchors.fill:		parent
 						onClicked:
 						{
@@ -446,8 +447,9 @@ FocusScope
 
 					MouseArea
 					{
-						anchors.fill:	parent
-						onClicked:		computeColumnWindow.open(dataSetModel.headerData(columnIndex, Qt.Horizontal))
+						enabled:			!virtual
+						anchors.fill:		parent
+						onClicked:			computeColumnWindow.open(dataSetModel.headerData(columnIndex, Qt.Horizontal))
 
 						hoverEnabled:		true
 						ToolTip.visible:	containsMouse
@@ -569,7 +571,7 @@ FocusScope
 
 					hoverEnabled:		true
 					ToolTip.visible:	containsMouse
-					ToolTip.text:	virtual ? qsTr("Add computed column")	
+					ToolTip.text:		virtual ? qsTr("Add computed column")
 											: ("<b>" + columnTitle + "</b><br>") +
 											  ( columnDescription !== "" ? "<i>" + columnDescription + "</i><br><br>" : "") +
 											  ((columnType === columnTypeScale ? qsTr("Click here to change variable") : qsTr("Click here to change the variable/labels")) + (columnIsFiltered ? qsTr(" or inspect filter") : "" ))
