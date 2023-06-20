@@ -52,6 +52,8 @@ DataSetView::DataSetView(QQuickItem *parent)
 	connect(PreferencesModel::prefs(),	&PreferencesModel::interfaceFontChanged,		this, &DataSetView::resetItems,			Qt::QueuedConnection);
 
 	connect(DataSetPackage::pkg(),		&DataSetPackage::dataModeChanged,				this, &DataSetView::onDataModeChanged);
+	connect(_model,						&ExpandDataProxyModel::undoChanged,				this, &DataSetView::undoChanged);
+
 
 	setZ(10);
 
@@ -1261,7 +1263,9 @@ QString DataSetView::columnInsertBefore(int col, bool computed, bool R)
 	if(col == -1)
 		col = _selectionStart.x() != -1 ? _selectionStart.x() : 0;
 
-	return _model->insertColumnSpecial(col, computed, R);
+	_model->insertColumn(col, computed, R);
+
+	return "";
 }
 
 QString DataSetView::columnInsertAfter(int col, bool computed, bool R)

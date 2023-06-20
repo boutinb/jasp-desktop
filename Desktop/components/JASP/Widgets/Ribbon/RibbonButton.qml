@@ -113,7 +113,7 @@ Rectangle
 			var analysisTitle = customMenu.props['model'].getAnalysisTitle(index);
 			var analysisQML   = customMenu.props['model'].getAnalysisQML(index);
             
-            messages.log("showMyMenu() for " + ribbonButton.moduleName + " name " + analysisName + " title " + analysisTitle)
+			console.log("showMyMenu() for " + ribbonButton.moduleName + " name " + analysisName + " title " + analysisTitle)
 
 			ribbonModel.analysisClicked(analysisName, analysisQML, analysisTitle, ribbonButton.moduleName)
 			customMenu.hide();

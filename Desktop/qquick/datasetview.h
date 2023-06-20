@@ -123,6 +123,9 @@ public:
 
 	void resetItems();
 
+	QString undoText() { return _model->undoText(); }
+	QString redoText() { return _model->redoText(); }
+
 	GENERIC_SET_FUNCTION(HeaderHeight,		_dataRowsMaxHeight, headerHeightChanged,		double)
 	GENERIC_SET_FUNCTION(RowNumberWidth,	_rowNumberMaxWidth, rowNumberWidthChanged,		double)
 	 
@@ -163,6 +166,7 @@ signals:
 	void		selectionBudgesRight();
 
 	void		showComputedColumn(QString name);
+	void		undoChanged();
 	
 public slots:
 	void		calculateCellSizes()	{ calculateCellSizesAndClear(false); }
@@ -216,6 +220,8 @@ public slots:
 	int			columnCount()	{ return _model->columnCount(); }
 
 	void		selectAll();
+	void		undo()			{ _model->undo(); }
+	void		redo()			{ _model->redo(); }
 
 	void		edit(int row, int column);
 	void		destroyEditItem(bool restoreItem=true);
@@ -224,7 +230,7 @@ public slots:
 	void		contextMenuClickedAtIndex(int row, int column);
 	void		finishCurrentEdit();
 
-	
+	int			setColumnType(int columnIndex, int newColumnType)	{ return _model->setColumnType(columnIndex, newColumnType); }
 protected:
 	void		_copy(bool includeHeader, bool clear);
 	void		calculateCellSizesAndClear(bool clearStorage);

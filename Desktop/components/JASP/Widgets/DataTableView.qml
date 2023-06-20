@@ -191,6 +191,17 @@ FocusScope
 							}
 							break;
 
+						case Qt.Key_Z:
+							if(controlPressed)
+							{
+								if (shiftPressed)
+									theView.redo();
+								else
+									theView.undo();
+								event.accepted = true;
+							}
+							break;
+
 						case Qt.Key_Home:	mainWindowRoot.changeFocusToFileMenu(); break;
 
 						case Qt.Key_Up:		if(rowI > 0)										{ arrowPressed = true; arrowIndex   = Qt.point(colI, rowI - 1);		} break;
@@ -380,7 +391,7 @@ FocusScope
 
 					function setColumnType(newColumnType)
 					{
-						dataSetModel.setColumnTypeFromQML(columnIndex, newColumnType)
+						dataTableView.view.setColumnType(columnIndex, newColumnType)
 
 						if(labelModel.chosenColumn === columnIndex && columnType === columnTypeScale)
 							labelModel.visible = false;
