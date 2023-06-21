@@ -1933,6 +1933,21 @@ void DataSetPackage::unicifyColumnNames()
 	}
 }
 
+Json::Value DataSetPackage::getColumn(size_t columnIndex) const
+{
+	Column		*	column	= _dataSet->columns()[columnIndex];
+	if (column)
+		return column->serialize();
+	else
+		return Json::nullValue;
+}
+
+void DataSetPackage::setColumn(size_t columnIndex, const Json::Value& col)
+{
+	Column		*	column	= _dataSet->columns()[columnIndex];
+	column->deserialize(col);
+}
+
 void DataSetPackage::pasteSpreadsheet(size_t row, size_t col, const std::vector<std::vector<QString>> & cells, QStringList newColNames)
 {
 	JASPTIMER_SCOPE(DataSetPackage::pasteSpreadsheet);
@@ -2264,9 +2279,9 @@ void DataSetPackage::resetModelOneCell()
 	setData(index(0,0), "", Qt::DisplayRole);
 
 	beginResetModel();
-	DataSetPackage::pkg()->setDataSetSize(1, 1);
-	DataSetPackage::pkg()->setColumnName(0, DataSetPackage::pkg()->freeNewColumnName(0), false);
-	DataSetPackage::pkg()->setColumnType(0, columnType::scale,	false);
+	setDataSetSize(1, 1);
+	setColumnName(0, freeNewColumnName(0), false);
+	setColumnType(0, columnType::scale,	false);
 	endResetModel();
 }
 

@@ -570,6 +570,9 @@ void MainWindow::loadQML()
 	connect(_ribbonModel, &RibbonModel::dataInsertRowAfter,				DataSetView::lastInstancedDataSetView(),	&DataSetView::rowInsertAfter);
 	connect(_ribbonModel, &RibbonModel::dataRemoveColumn,				DataSetView::lastInstancedDataSetView(),	&DataSetView::columnsDelete);
 	connect(_ribbonModel, &RibbonModel::dataRemoveRow,					DataSetView::lastInstancedDataSetView(),	&DataSetView::rowsDelete);
+	connect(_ribbonModel, &RibbonModel::dataUndo,						DataSetView::lastInstancedDataSetView(),	&DataSetView::undo);
+	connect(_ribbonModel, &RibbonModel::dataRedo,						DataSetView::lastInstancedDataSetView(),	&DataSetView::redo);
+	connect(_package,	&DataSetPackage::columnDataTypeChanged,			DataSetView::lastInstancedDataSetView(),	&DataSetView::columnDataTypeChanged);
 
 	connect(DataSetView::lastInstancedDataSetView(), &DataSetView::showComputedColumn,		this,	&MainWindow::showComputedColumn);
 
