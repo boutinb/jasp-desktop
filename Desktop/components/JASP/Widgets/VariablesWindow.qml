@@ -76,6 +76,23 @@ FocusScope
 
 			property int labelMaxWidth: Math.max(nameLabel.width, descriptionLabel.width)
 
+			MenuButton
+			{
+				id:					closeButton
+				width:				height
+				iconSource:			jaspTheme.iconPath + "close-button.png"
+				onClicked:			labelModel.visible = false
+				toolTip:			qsTr("Remove variable description")
+				radius:				height
+				anchors
+				{
+					top:			parent.top
+					topMargin:		-jaspTheme.generalAnchorMargin
+					right:			parent.right
+				}
+			}
+
+
 			Label
 			{
 				id: nameLabel
@@ -138,7 +155,7 @@ FocusScope
 					left:			parent.left
 					leftMargin:		levelsTableViewRectangle.labelMaxWidth + jaspTheme.generalAnchorMargin
 					right:			buttonColumnVariablesWindow.left
-					rightMargin:	jaspTheme.generalAnchorMargin
+					rightMargin:	5 * jaspTheme.generalAnchorMargin
 				}
 				height:				Math.max(columnNameVariablesWindow.height, Math.min(maxHeight, control.contentHeight + 5 * jaspTheme.uiScale))
 				control.padding:	3 * jaspTheme.uiScale
@@ -176,6 +193,8 @@ FocusScope
 					anchors
 					{
 						top:			parent.top
+						margins:1
+
 						left:			parent.left
 						right:			parent.right
 						bottom:			parent.bottom
@@ -486,23 +505,6 @@ FocusScope
 					width:			height
 
 					toolTip:		qsTr("Reset all filter checkmarks for all columns")
-				}
-
-				Item //Spacer
-				{
-					Layout.fillHeight:	true
-				}
-
-				RoundedButton
-				{
-					id:				variablesWindowCloseButton
-					iconSource:		jaspTheme.iconPath + "cross.png"
-					onClicked:		labelModel.visible = false;
-					height:			buttonColumnVariablesWindow.buttonHeight
-					implicitHeight: buttonColumnVariablesWindow.buttonHeight
-					width:			height
-
-					toolTip: qsTr("Close this view")
 				}
 			}
 
