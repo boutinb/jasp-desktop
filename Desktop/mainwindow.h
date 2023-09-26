@@ -214,7 +214,6 @@ signals:
 	void closeWindows();
 	void hideDataPanel();
 	void exitSignal(				int			returnCode = 0) const;
-	void showComputedColumn(		QString		columnName);
 
 	void contactVisibleChanged();
 
