@@ -4,6 +4,7 @@
 #include <QTransposeProxyModel>
 #include "datasettablemodel.h"
 #include "variableinfo.h"
+#include <QQmlContext>
 
 /// 
 /// Model used by the filter-drag-n-drop to give all the columns and their datatypes

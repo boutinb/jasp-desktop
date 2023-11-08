@@ -136,3 +136,9 @@
 [submodule "Modules/jaspTestModule"]
 	path = Modules/jaspTestModule
 	url = https://github.com/jasp-stats/jaspTestModule
+[submodule "jaspCommon"]
+	path = jaspCommon
+	url = https://github.com/boutinb/jaspCommon
+[submodule "jaspQMLComponents"]
+	path = jaspQMLComponents
+	url = https://github.com/boutinb/jaspQMLComponents

@@ -23,7 +23,7 @@ endif()
 target_include_directories(
   CommonData
   PUBLIC # JASP
-         ${PROJECT_SOURCE_DIR}/Common
+         ${PROJECT_SOURCE_DIR}/jaspCommon
          # R
          ${R_INCLUDE_PATH}
          ${R_HOME_PATH}/include
@@ -40,7 +40,7 @@ target_link_libraries(
 		 #$<$<PLATFORM_ID:Linux>:${_PKGCONFIG_LIB_JSONCPP_LIBRARIES}>
 		 #$<$<PLATFORM_ID:Linux>:${_PKGCONFIG_LIB_JSONCPP_LINK_LIBRARIES}>
          #
-         Common
+         jaspCommon
          LibArchive::LibArchive
 		 SQLite::SQLite3
          #

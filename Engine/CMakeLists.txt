@@ -37,7 +37,7 @@ target_include_directories(
   JASPEngine
   PUBLIC ${PROJECT_SOURCE_DIR}/R-Interface
          ${PROJECT_SOURCE_DIR}/CommonData
-         ${PROJECT_SOURCE_DIR}/Common
+         ${PROJECT_SOURCE_DIR}/jaspCommon
          # Conan
          #$<$<BOOL:${USE_CONAN}>:${CONAN_INCLUDE_DIRS_JSONCPP}>
          #
@@ -63,7 +63,7 @@ endif()
 
 target_link_libraries(
   JASPEngine
-  PUBLIC Common
+  PUBLIC jaspCommon
          CommonData
          #
          $<$<PLATFORM_ID:Windows>:${_LIB_R_INTERFACE_STATIC_DLL_A}>
