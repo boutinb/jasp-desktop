@@ -723,6 +723,23 @@ void MainWindow::setQmlImportPaths()
 	}
 }
 
+void MainWindow::generateWrappersForModule(QString modulePath)
+{
+	QDir moduleFolder(modulePath);
+	if (moduleFolder.exists())
+	{
+		QString moduleName = moduleFolder.dirName();
+		for (auto analysisEntry : _dynamicModules->dynamicModule(moduleName)->menu())
+			if (analysisEntry->isAnalysis())
+			{
+				Analysis* analysis = _analyses->create(analysisEntry);
+				analysis->setWatchFileChange(false);
+				analysis->setGeneratedWrapperPath(fq(modulePath));
+				connect(analysis, &Analysis::analysisInitialized, analysis, &Analysis::generateFileWrapper, Qt::QueuedConnection);
+			}
+	}
+}
+
 QObject * MainWindow::loadQmlData(QString data, QUrl url)
 {
 	QObject *	createdObject = nullptr;
@@ -1845,6 +1862,11 @@ void MainWindow::testLoadedJaspFile(int timeOut, bool save)
 void MainWindow::reportHere(QString dir)
 {
 	_reporter = new Reporter(this, dir);
+}
+
+void MainWindow::generateWrappers(QString modulePath)
+{
+	generateWrappersForModule(modulePath);
 }
 
 void MainWindow::unitTestTimeOut()

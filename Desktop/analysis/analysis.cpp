@@ -138,7 +138,7 @@ bool Analysis::checkAnalysisEntry()
 
 		_lastQmlFormPath = qmlFormPath(false, true);
 
-		if(qmlFileChanged)
+		if(qmlFileChanged && _watchFileChange)
 		{
 			Log::log() << "Analysis::checkAnalysisEntry() has a changed qml file path, calling watchQmlForm()" << std::endl;
 			watchQmlForm();
@@ -1035,6 +1035,18 @@ void Analysis::setRSyntaxTextInResult()
 void Analysis::onUsedVariablesChanged()
 {
 	DataSetPackage::pkg()->checkComputedColumnDependenciesForAnalysis(this);
+}
+
+void Analysis::generateFileWrapper()
+{
+   QString wrapper = form()->generateWrapper();
+   QString modulePath = tq(_generatedWrapperPath);
+   QFile wrapperFile(modulePath + "/R/" + tq(_moduleData->function()) + "Wrapper.R");
+   if (wrapperFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
+   {
+	   QTextStream stream(&wrapperFile);
+	   stream << wrapper;
+   }
 }
 
 void Analysis::checkForRSources()

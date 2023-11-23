@@ -127,6 +127,7 @@ public:
 			void				checkDefaultTitleFromJASPFile(	const Json::Value & analysisData);
 			void				loadResultsUserdataAndRSourcesFromJASPFile(const Json::Value & analysisData, Status status);
 			Json::Value			createAnalysisRequestJson();
+			void				setWatchFileChange(bool watchFileChange) { _watchFileChange = watchFileChange; }
 
 	static	Status				parseStatus(std::string name);
 
@@ -157,6 +158,8 @@ public:
 	Json::Value						rSources()									const;
 	bool							isOwnComputedColumn(const std::string& col)	const	override	{ return _computedColumns.contains(col); }
 	void							preprocessMarkdownHelp(QString & md)		const				{ if (_dynamicModule) _dynamicModule->preprocessMarkdownHelp(md);}
+
+	void					setGeneratedWrapperPath(const std::string& wrapperPath) { _generatedWrapperPath = wrapperPath; }
 
 signals:
 	void					titleChanged();
@@ -194,6 +197,7 @@ public slots:
 	void					analysisQMLFileChanged();
 	void					setRSyntaxTextInResult();
 	void					onUsedVariablesChanged()																	override;
+	void					generateFileWrapper();
 
 protected:
 	void					abort();
@@ -238,12 +242,14 @@ private:
 								_rfile,
 								_showDepsName					= "",
 								_codedReferenceToAnalysisEntry	= "",
-								_lastQmlFormPath				= "";
+								_lastQmlFormPath				= "",
+								_generatedWrapperPath			= "";
 	bool						_isDuplicate					= false,
 								_wasUpgraded					= false,
 								_tryToFixNotes					= false,
 								_hasReport						= false,
-								_beingTranslated				= false;
+								_beingTranslated				= false,
+								_watchFileChange				= true;
 	int							_revision						= 0;
 
 	Modules::AnalysisEntry	*	_moduleData						= nullptr;

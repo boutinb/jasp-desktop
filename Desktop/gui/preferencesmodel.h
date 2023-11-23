@@ -149,6 +149,7 @@ public slots:
 	void setWhiteBackground(			bool		whiteBackground);
 	void setPlotBackground(				QString		plotBackground);
 	void setDeveloperFolder(			QString		developerFolder);
+	void setTempDeveloperFolder(		QString		developerFolder);
 	void setUseDefaultEditor(			bool		useDefaultEditor);
 	void browseSpreadsheetEditor();
 	void browseDeveloperFolder();
@@ -253,6 +254,7 @@ private:
 					_allResultFonts,
 					_allCodeFonts;
 	bool			_githubPatCustom; //Should be initialized on prefs construction
+	QString			_developerFolder; //If empty, this is the Developer folder Setting.
 
 	void			_loadDatabaseFont();
 	QString			_checkFontList(QString fonts)					const;

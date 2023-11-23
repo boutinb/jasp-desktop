@@ -530,14 +530,15 @@ void DynamicModules::uninstallJASPDeveloperModule()
 
 void DynamicModules::installJASPDeveloperModule()
 {
-	if(Settings::value(Settings::DEVELOPER_FOLDER).toString() == "")
+	QString devFolder = PreferencesModel::prefs()->developerFolder();
+	if(devFolder == "")
 	{
 		MessageForwarder::showWarning(tr("Select a folder"), tr("To install a development module you need to select the folder you want to watch and load, you can do this under the filemenu, Preferences->Advanced."));
 		return;
 	}
-	else if(!QDir(Settings::value(Settings::DEVELOPER_FOLDER).toString()).exists())
+	else if(!QDir(devFolder).exists())
 	{
-		MessageForwarder::showWarning(tr("Select an exisiting folder"), tr("To install a development module you need to select and existing folder, you selected '$1' but it doesn't exist.").arg(Settings::value(Settings::DEVELOPER_FOLDER).toString()));
+		MessageForwarder::showWarning(tr("Select an exisiting folder"), tr("To install a development module you need to select and existing folder, you selected '$1' but it doesn't exist.").arg(devFolder));
 		return;
 	}
 
@@ -545,8 +546,7 @@ void DynamicModules::installJASPDeveloperModule()
 
 	try
 	{
-
-		_devModSourceDirectory = QDir(Settings::value(Settings::DEVELOPER_FOLDER).toString());
+		_devModSourceDirectory = QDir(devFolder);
 
 		DynamicModule * devMod = new DynamicModule(this);
 

@@ -111,6 +111,7 @@ public:
 
 	const QStringList loadedModules() const;
 	const QStringList loadedModulesTitles() const;
+	QString devModSourceDirectory() const { return _devModSourceDirectory.absolutePath(); }
 
 public slots:
 	void installationPackagesSucceeded(	const QString		& moduleName);

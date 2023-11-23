@@ -103,6 +103,7 @@ public:
 	void				open(const Json::Value & dbJson);
 	void				testLoadedJaspFile(int timeOut, bool save);
 	void				reportHere(QString dir);
+	void				generateWrappers(QString dir);
 
 	bool				progressBarVisible()	const	{ return _progressBarVisible;	}
 	int					progressBarProgress()	const	{ return _progressBarProgress;	}
@@ -272,6 +273,7 @@ private slots:
 	void onDataModeChanged(bool dataMode);
 	void printQmlWarnings(const QList<QQmlError> &warnings);
 	void setQmlImportPaths();
+	void generateWrappersForModule(QString moduleName);
 
 private:
 	void _analysisSaveImageHandler(Analysis* analysis, QString options);
