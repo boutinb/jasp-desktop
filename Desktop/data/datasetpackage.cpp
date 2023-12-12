@@ -1274,7 +1274,11 @@ void DataSetPackage::createDataSet()
 	_dataSubModel->selectNode(_dataSet->dataNode());
 	_filterSubModel->selectNode(_dataSet->filtersNode());
 	
-	_dataSet->setModifiedCallback([&](){ setModified(true); }); //DataSet and co dont use Qt so instead we just use a callback
+	_dataSet->setModifiedCallback([&]()
+	{
+		ColumnEncoder::setCurrentColumnNames(getColumnNames());
+		setModified(true);
+	}); //DataSet and co dont use Qt so instead we just use a callback
 }
 
 void DataSetPackage::loadDataSet(std::function<void(float)> progressCallback)
@@ -2360,7 +2364,6 @@ Column * DataSetPackage::createColumn(const std::string & name, columnType colum
 	_dataSet->column(newColumnIndex)->setName(name);
 	_dataSet->column(newColumnIndex)->setDefaultValues(columnType);
 	endResetModel();
-	enginesReceiveNewData();
 
 	return _dataSet->column(newColumnIndex);
 }
