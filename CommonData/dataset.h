@@ -53,6 +53,7 @@ public:
 
 			size_t			getMaximumColumnWidthInCharacters(size_t columnIndex) const;
 			stringvec		getColumnNames();
+			stringvec		getEncodedColumnNames();
 
 			void			setDataFilePath(	const std::string & dataFilePath)	{ _dataFilePath		= dataFilePath;			dbUpdate(); }
 			void			setDatabaseJson(	const std::string & databaseJson)	{ _databaseJson		= databaseJson;			dbUpdate(); }
@@ -88,6 +89,15 @@ public:
 			void					setWorkspaceEmptyValues(	const stringset& values);
 	const	std::string			&	description()																	const	{ return _description; }
 			void					setDescription(				const std::string& desc);
+
+			bool					shouldDecodeColumnName(const char * colName);
+			std::string				decodeColumnName(const char * colName);
+			std::string				encodeColumnName(const char * colName);
+			std::string				encodeAllColumnNames(const char * colNames);
+			std::string				decodeAllColumnNames(const char * colNames);
+			std::string				encodeRScript(std::string text, std::set<std::string> * columnNamesFound = nullptr);
+			std::string				encodeRScript(std::string text, const std::map<std::string, std::string> & map, const std::vector<std::string> & names, std::set<std::string> * columnNamesFound = nullptr);
+			void					decodeColumnNamesJson(Json::Value & json);
 
 private:
 	DataSetBaseNode			*	_dataNode				= nullptr, //To make sure we have a pointer to flesh out the node hierarchy we add a "data" node, so we can place it next to the "filters" node in the tree

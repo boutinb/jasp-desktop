@@ -26,7 +26,6 @@
 #endif
 
 
-
 ColumnEncoder				*	ColumnEncoder::_columnEncoder				= nullptr;
 std::set<ColumnEncoder*>	*	ColumnEncoder::_otherEncoders				= nullptr;
 bool							ColumnEncoder::_encodingMapInvalidated		= true;

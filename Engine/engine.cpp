@@ -124,7 +124,7 @@ void Engine::initialize()
 		else
 			Log::log() << "No dataset available so resetting columnnames in encoder." << std::endl;
 
-                ColumnEncoder::columnEncoder()->setCurrentColumnNames(provideAndUpdateDataSet() == nullptr ? std::vector<std::string>({}) : provideAndUpdateDataSet()->getColumnNames());
+				//ColumnEncoder::columnEncoder()->setCurrentColumnNames(provideAndUpdateDataSet() == nullptr ? std::vector<std::string>({}) : provideAndUpdateDataSet()->getColumnNames());
 
 
 
@@ -460,9 +460,10 @@ void Engine::runComputeColumn(const std::string & computeColumnName, const std::
 	computeColumnResponse["columnName"]		= computeColumnName;
 
 
-    if(provideAndUpdateDataSet())
+	DataSet *dataset = provideAndUpdateDataSet();
+	if(dataset)
 	{
-		std::string computeColumnNameEnc = ColumnEncoder::columnEncoder()->encode(computeColumnName);
+		std::string computeColumnNameEnc = dataset->encodeColumnName(computeColumnName.c_str());
 		computeColumnResponse["columnName"]		= computeColumnNameEnc;
 
 		std::string computeColumnCodeComplete	= "local({;calcedVals <- {"+computeColumnCode +"};\n"  "return(toString(" + setColumnFunction.at(computeColumnType) + "('" + computeColumnNameEnc +"', calcedVals)));})";
@@ -604,7 +605,7 @@ void Engine::sendString(std::string message)
 
 	if(Json::Reader().parse(message, msgJson)) //If everything is converted to jaspResults maybe we can do this there?
 	{
-		ColumnEncoder::columnEncoder()->decodeJson(msgJson); // decode all columnnames as far as you can
+		provideAndUpdateDataSet()->decodeColumnNamesJson(msgJson); // decode all columnnames as far as you can
 		_channel->send(msgJson.toStyledString());
 	}
 	else
@@ -867,13 +868,14 @@ DataSet * Engine::provideAndUpdateDataSet()
 	if(_dataSet)
 	{
 		Log::log() << "There is a dataset, ";
-		if(_dataSet->checkForUpdates())
+/*		if(_dataSet->checkForUpdates())
 		{
 			Log::log(false) << "updates found, loading them.";
 			ColumnEncoder::columnEncoder()->setCurrentNames(_dataSet->getColumnNames());
 		}
 		else
 			Log::log(false) << "no updates found.";
+			*/
 
 		Log::log(false) << std::endl;
 	}
@@ -1031,7 +1033,7 @@ void Engine::sendEnginePaused()
 void Engine::reloadColumnNames()
 {
 	Log::log() << "Engine rescanning columnNames for en/decoding" << std::endl;
-	ColumnEncoder::columnEncoder()->setCurrentColumnNames(provideAndUpdateDataSet() == nullptr ? std::vector<std::string>({}) : provideAndUpdateDataSet()->getColumnNames());
+	//ColumnEncoder::columnEncoder()->setCurrentColumnNames(provideAndUpdateDataSet() == nullptr ? std::vector<std::string>({}) : provideAndUpdateDataSet()->getColumnNames());
 }
 
 void Engine::resumeEngine(const Json::Value & jsonRequest)

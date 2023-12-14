@@ -28,9 +28,6 @@ private:
 #endif
 
 public slots:
-	QString		encodeAllColumnNames(	const QString	& str);
-	QString		decodeAllColumnNames(	const QString	& str);
-
 	QJSValue	encodeJson(				const QJSValue	& val, QQuickItem * caller);
 	QJSValue	decodeJson(				const QJSValue	& val, QQuickItem * caller);
 
