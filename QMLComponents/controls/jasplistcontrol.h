@@ -42,6 +42,7 @@ class JASPListControl : public JASPControl
 	Q_PROPERTY( QVariant		source					READ source					WRITE setSource					NOTIFY sourceChanged				)
 	Q_PROPERTY( QVariant		rSource					READ rSource				WRITE setRSource				NOTIFY sourceChanged				)
 	Q_PROPERTY( QVariant		values					READ values					WRITE setValues					NOTIFY sourceChanged				)
+	Q_PROPERTY( QVariant		levels					READ levels													NOTIFY levelsChanged				)
 	Q_PROPERTY( int				count					READ count													NOTIFY countChanged					)
 	Q_PROPERTY( int				maxRows					READ maxRows				WRITE setMaxRows				NOTIFY maxRowsChanged				)
 	Q_PROPERTY( QString			optionKey				READ optionKey				WRITE setOptionKey													)
@@ -87,8 +88,9 @@ public:
 	Q_INVOKABLE columnType		getVariableType(const QString& name);
 
 			const QVariant&		source()					const			{ return _source;				}
-			const QVariant&		values()					const			{ return _values;				}
 			const QVariant&		rSource()					const			{ return _rSource;				}
+			QVariant			values()					const;
+			QStringList			levels()					const;
 			QQmlComponent*		rowComponent()				const			{ return _rowComponent;			}
 			int					count();
 			int					maxRows()					const			{ return _maxRows;				}
@@ -151,7 +153,6 @@ protected:
 	QString					_optionKey				= "value";
 	QVariant				_source;
 	QVariant				_rSource;
-	QVariant				_values;
 	bool					_addEmptyValue			= false,
 							_containsVariables		= false,
 							_containsInteractions	= false,

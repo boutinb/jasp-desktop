@@ -291,3 +291,39 @@ void JASPListControl::sourceChangedHandler()
 	_setupSources();
 	model()->sourceTermsReset();
 }
+
+QVariant JASPListControl::values() const
+{
+	ListModelLabelValueTerms *labelValueModel = qobject_cast<ListModelLabelValueTerms *>(model());
+
+	if (labelValueModel)
+	{
+		QVariantList result;
+		QStringList values = tq(labelValueModel->getValues());
+		for (const QString& value : values)
+		{
+			QMap<QString, QVariant> map {{_labelRole, labelValueModel->getLabel(value)},{_valueRole, value}};
+			result.push_back(map);
+		}
+
+		return result;
+	}
+	else
+		return model()->terms().asQList();
+
+}
+
+QStringList JASPListControl::levels() const
+{
+	QStringList result;
+
+	for (const Term& term : model()->terms())
+	{
+		QStringList labels = model()->requestInfo(VariableInfo::Labels, term.asQString()).toStringList();
+		if (labels.size() > 0)	result.append(labels);
+		else					result.append(term.asQString());
+
+	}
+
+	return result;
+}
