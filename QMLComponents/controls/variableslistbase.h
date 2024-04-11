@@ -71,6 +71,7 @@ public:
 	const QString&				interactionHighOrderCheckBox()				const				{ return _interactionHighOrderCheckBox;				}
 	bool						addRowControl(const QString& key, JASPControl* control) override;
 	void						moveItems(QList<int> &indexes, ListModelDraggable* dropModel, int dropItemIndex = -1);
+	QString						friendlyName()								const	override;
 
 signals:
 	void listViewTypeChanged();

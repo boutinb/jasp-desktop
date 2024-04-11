@@ -272,6 +272,21 @@ void VariablesListBase::moveItems(QList<int> &indexes, ListModelDraggable* targe
 	if (form()) form()->blockValueChangeSignal(false);
 }
 
+QString VariablesListBase::friendlyName() const
+{
+	if (maxRows() == 1)							return tr("Single Variable");
+	if (columns() == 2)							return tr("Paired Variables List");
+	switch (_listViewType)
+	{
+	case ListViewType::Layers:					return tr("Variables List with layers");
+	case ListViewType::RepeatedMeasures:		return tr("Repeated Measured cells");
+	case ListViewType::Interaction:				return tr("Variables List with interactions");
+	default:									return tr("Variables List");
+	}
+
+	return tr("Variables List"); // For dummy compilers
+}
+
 void VariablesListBase::setDropKeys(const QStringList &dropKeys)
 {
 	Log::log() << "LOG setDropKeys " << name() << ": " << dropKeys.join('/') << std::endl;

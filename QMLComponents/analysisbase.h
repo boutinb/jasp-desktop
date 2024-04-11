@@ -30,7 +30,7 @@ public:
 	virtual const std::string & name()										const	{ return emptyString;		}
 	virtual const std::string & title()										const	{ return emptyString;		}
 	virtual void setTitle(const std::string& titel)									{}
-	virtual void preprocessMarkdownHelp(const QString& md)					const	{}
+	virtual void preprocessMarkdownHelp(QString& md)						const	{}
 	virtual QString helpFile()														{ return "";				}
 	virtual const stringvec & upgradeMsgsForOption(const std::string& name) const	{ return emptyStringVec;	}
 	virtual const Json::Value & resultsMeta()								const 	{ return Json::Value::null;	}

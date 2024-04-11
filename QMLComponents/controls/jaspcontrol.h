@@ -11,6 +11,25 @@ class AnalysisForm;
 class JASPListControl;
 class BoundControl;
 
+class InfoProps : public QObject
+{
+	Q_OBJECT
+	Q_PROPERTY(bool		useLabel		READ useLabel	WRITE setUseLabel	)
+	Q_PROPERTY(QString	infoLabel		READ infoLabel	WRITE  setInfoLabel	)
+	QML_ANONYMOUS
+
+public:
+	bool		useLabel()								const	{ return _useLabel;		}
+	QString		infoLabel()								const	{ return _infoLabel;	}
+
+	void		setUseLabel(bool useLabel)						{ _useLabel = useLabel;		}
+	void		setInfoLabel(const QString& infoLabel)			{ _infoLabel = infoLabel;	}
+
+private:
+	bool	_useLabel = true;
+	QString	_infoLabel;
+};
+
 ///
 /// Basic class for all our qml controls
 /// Contains all the properties that *must* be there for the QML components defined under Desktop/components/Controls and their bases in Desktop/widgets to function
@@ -24,6 +43,7 @@ class JASPControl : public QQuickItem
 	Q_PROPERTY( QString								title					READ title					WRITE setTitle					NOTIFY titleChanged					) //Basically whatever a human sees on their screen when they look at this specific item.
 	Q_PROPERTY( QString								info					READ info					WRITE setInfo					NOTIFY infoChanged					)
 	Q_PROPERTY( QString								infoLabel				READ infoLabel				WRITE setInfoLabel				NOTIFY infoLabelChanged				)
+	Q_PROPERTY( InfoProps*							infoProps				READ infoProps																					)
 	Q_PROPERTY( QString								toolTip					READ toolTip				WRITE setToolTip				NOTIFY toolTipChanged				)
 	Q_PROPERTY( QString								helpMD					READ helpMDControl											NOTIFY helpMDChanged				)
 	Q_PROPERTY( bool								isBound					READ isBound				WRITE setIsBound				NOTIFY isBoundChanged				)
@@ -50,6 +70,7 @@ class JASPControl : public QQuickItem
 	Q_PROPERTY( int									alignment				READ alignment				WRITE setAlignment													)
 	Q_PROPERTY( Qt::FocusReason						focusReason				READ getFocusReason																				)
 	Q_PROPERTY( QVariant							depends					READ explicitDepends		WRITE setExplicitDepends		NOTIFY explicitDependsChanged		)
+	QML_ELEMENT
 
 protected:
 	typedef std::set<JASPControl*>			Set;
@@ -176,6 +197,7 @@ public:
 	
 	QString infoLabel() const;
 	void setInfoLabel(const QString &newInfoLabel);
+	InfoProps*	infoProps()			{ return &_infoProps; }
 	
 public slots:
 	void	setControlType(			ControlType			controlType)		{ _controlType = controlType; }
@@ -323,7 +345,8 @@ protected:
 	static QQmlComponent*							getMouseAreaComponent(QQmlEngine* engine);
 	static const QStringList						_optionReservedNames;
 private:
-	QString _infoLabel;
+	QString		_infoLabel;
+	InfoProps	_infoProps;
 };
 
 

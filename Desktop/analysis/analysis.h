@@ -157,7 +157,7 @@ public:
 	const Json::Value			&	getRSource(const std::string & name)		const	override	{ return _rSources.count(name) > 0 ? _rSources.at(name) : Json::Value::null; }
 	Json::Value						rSources()									const;
 	bool							isOwnComputedColumn(const std::string& col)	const	override	{ return _computedColumns.contains(col); }
-	void							preprocessMarkdownHelp(QString & md)		const				{ if (_dynamicModule) _dynamicModule->preprocessMarkdownHelp(md);}
+	void							preprocessMarkdownHelp(QString & md)		const	override	{ if (_dynamicModule) _dynamicModule->preprocessMarkdownHelp(md);}
 
 signals:
 	void					titleChanged();
