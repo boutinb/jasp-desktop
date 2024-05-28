@@ -582,6 +582,7 @@ void AnalysisForm::setAnalysisUp()
 
 	setRSyntaxText();
 	emit analysisChanged();
+	emit initializeChanged();
 }
 
 void AnalysisForm::knownIssuesUpdated()

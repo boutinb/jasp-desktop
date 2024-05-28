@@ -1150,3 +1150,15 @@ std::string Analysis::qmlFormPath(bool addFileProtocol, bool ignoreReadyForUse) 
 				_moduleData->qmlFilePath()	:
 				Dirs::resourcesDir() + "/" + module() + "/qml/"  + qml());
 }
+
+void Analysis::generateFileWrapper()
+{
+	QString wrapper = form()->generateWrapper();
+	QFile wrapperFile("/Users/brunoboutin/JASP/source/" + _dynamicModule->nameQ() + "/R/" + tq(_moduleData->function()) + "Wrapper.R");
+	if (wrapperFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
+	{
+		QTextStream stream(&wrapperFile);
+		stream << wrapper;
+	}
+	wrapperFile.close();
+}

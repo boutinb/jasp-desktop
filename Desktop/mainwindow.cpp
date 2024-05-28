@@ -2141,3 +2141,13 @@ void MainWindow::resetVariableTypes()
 {
 	DataSetPackage::pkg()->resetVariableTypes();
 }
+
+void MainWindow::generateWrappersForModule(QString moduleName)
+{
+	for (auto analysisEntry : _dynamicModules->dynamicModule(moduleName)->menu())
+		if (analysisEntry->isAnalysis())
+		{
+			Analysis* analysis = _analyses->create(analysisEntry);
+			connect(analysis->form(), &AnalysisForm::initializeChanged, analysis, &Analysis::generateFileWrapper, Qt::QueuedConnection);
+		}
+}

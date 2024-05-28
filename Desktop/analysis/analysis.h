@@ -127,8 +127,10 @@ public:
 			void				checkDefaultTitleFromJASPFile(	const Json::Value & analysisData);
 			void				loadResultsUserdataAndRSourcesFromJASPFile(const Json::Value & analysisData, Status status);
 			Json::Value			createAnalysisRequestJson();
+			void				generateFileWrapper();
 
 	static	Status				parseStatus(std::string name);
+
 
 	bool isEmpty()			const { return status() == Empty;		}
 	bool isAborted()		const { return status() == Aborted;		}

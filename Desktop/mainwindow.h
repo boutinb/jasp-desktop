@@ -166,6 +166,8 @@ public slots:
 	void undo();
 	void redo();
 
+	void generateWrappersForModule(QString moduleName);
+
 	QObject * loadQmlData(QString data, QUrl url);
 
 	QQmlContext * giveRootQmlContext();

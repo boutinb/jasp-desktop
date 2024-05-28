@@ -128,6 +128,7 @@ signals:
 	void					rSyntaxTextChanged();
 	void					showAllROptionsChanged();
 	void					activeJASPControlChanged();
+	void					initializeChanged();
 		
 public:
 	ListModel			*	getModel(const QString& modelName)								const	{ return _modelMap.count(modelName) > 0 ? _modelMap[modelName] : nullptr;	} // Maps create elements if they do not exist yet
@@ -146,6 +147,7 @@ public:
 	Q_INVOKABLE void		runAnalysis();
 	Q_INVOKABLE bool		initialized()			const	{ return _initialized; }
 	Q_INVOKABLE QString		generateWrapper()		const;
+	Q_INVOKABLE QString		moduleName()			const	{ return module(); }
 
 	void			addControlError(JASPControl* control, QString message, bool temporary = false, bool warning = false);
 	void			clearControlError(JASPControl* control);

@@ -218,6 +218,21 @@ AnalysisForm
 				}
 			}
 
+			Button
+			{
+				id:					generateAllWrappersButton
+				visible:            DEBUG_MODE || form.developerMode
+				height:				visible ? implicitHeight : 0
+				label:				qsTr("Generate all Wrappers")
+				onClicked:			mainWindow.generateWrappersForModule(form.moduleName())
+				anchors
+				{
+					top:			generateWrapperButton.top
+					left:			generateWrapperButton.right
+					leftMargin:		10
+				}
+			}
+
 			CheckBox
 			{
 				id:					showAllROptionsCheckBox
