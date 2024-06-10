@@ -76,16 +76,6 @@ VariablesListBase
 
 	onModelChanged: if (model) model.selectedItemsChanged.connect(selectedItemsChanged);
 
-	function setEnabledState(source, dragging)
-	{
-		var result = !dragging || areTypesAllowed(source.model.selectedItemsTypes());
-
-		// Do not use variablesList.enabled: this may break the binding if the developer used it in his QML form.
-		itemRectangle.enabled = result
-		itemTitle.enabled = result
-	}
-
-
 	function moveSelectedItems(target)
 	{
 		var selectedItems = variablesList.model.selectedItems()
@@ -94,8 +84,6 @@ VariablesListBase
 		itemsDropped(selectedItems, target, -1);
 		variablesList.clearSelectedItems();
 	}
-
-
 
 	function getExistingItems()
 	{
@@ -413,6 +401,7 @@ VariablesListBase
 				border.color:	containsDragItem && variablesList.dropModeReplace ? jaspTheme.containsDragBorderColor : jaspTheme.grayLighter
 				radius:			jaspTheme.borderRadius
 				
+<<<<<<< Updated upstream
 				property bool	clearOtherSelectedItemsWhenClicked: false
 				property bool	selected:				model.selected
 				property bool	isDependency:			variablesList.dependencyMustContain.indexOf(colName.text) >= 0
@@ -430,6 +419,22 @@ VariablesListBase
 				property var	extraItem:				model.rowComponent
 
 				enabled: (variablesList.listViewType != JASP.AvailableVariables || !columnType || variablesList.areTypesAllowed([columnType])) && (!variablesList.draggable || model.selectable)
+=======
+				property bool clearOtherSelectedItemsWhenClicked: false
+				property bool selected:				model.selected
+				property bool isDependency:			variablesList.dependencyMustContain.indexOf(colName.text) >= 0
+				property bool dragging:				false
+				property int offsetX:				0
+				property int offsetY:				0
+				property int rank:					index
+				property bool containsDragItem:		variablesList.itemContainingDrag === itemRectangle
+				property bool isVirtual:			(typeof model.type !== "undefined") && model.type.includes("virtual")
+				property bool isVariable:			(typeof model.type !== "undefined") && model.type.includes("variable")
+				property bool isLayer:				(typeof model.type !== "undefined") && model.type.includes("layer")
+				property bool draggable:			variablesList.draggable && model.selectable
+				property string columnType:			isVariable && (typeof model.columnType !== "undefined") ? model.columnType : ""
+				property var extraItem:				model.rowComponent
+>>>>>>> Stashed changes
 				
 				function setRelative(draggedRect)
 				{

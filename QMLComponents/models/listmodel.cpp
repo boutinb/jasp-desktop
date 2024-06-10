@@ -331,13 +331,6 @@ int ListModel::searchTermWith(QString searchString)
 	return result;
 }
 
-void ListModel::_addSelectedItemType(int _index)
-{
-	QString type = data(index(_index, 0), ListModel::ColumnTypeRole).toString();
-	if (!type.isEmpty())
-		_selectedItemsTypes.insert(type);
-}
-
 void ListModel::selectItem(int _index, bool _select)
 {
 	bool changed = false;
@@ -353,7 +346,6 @@ void ListModel::selectItem(int _index, bool _select)
 				else if (_selectedItems[i] > _index)
 				{
 					_selectedItems.insert(i, _index);
-					_addSelectedItemType(_index);
 					changed = true;
 					break;
 				}
@@ -361,7 +353,6 @@ void ListModel::selectItem(int _index, bool _select)
 			if (i == _selectedItems.length())
 			{
 				_selectedItems.append(_index);
-				_addSelectedItemType(_index);
 				changed = true;
 			}
 		}
@@ -369,16 +360,7 @@ void ListModel::selectItem(int _index, bool _select)
 	else
 	{
 		if (_selectedItems.removeAll(_index) > 0)
-		{
-			_selectedItemsTypes.clear();
-			for (int i : _selectedItems)
-			{
-				QString type = data(index(i, 0), ListModel::ColumnTypeRole).toString();
-				if (!type.isEmpty())
-					_selectedItemsTypes.insert(type);
-			}
 			changed = true;
-		}
 	}
 
 	if (changed)
@@ -393,7 +375,6 @@ void ListModel::clearSelectedItems(bool emitSelectedChange)
 	QList<int> selected = _selectedItems;
 
 	_selectedItems.clear();
-	_selectedItemsTypes.clear();
 
 	for (int i : selected)
 		emit dataChanged(index(i,0), index(i,0), { ListModel::SelectedRole });
@@ -416,15 +397,11 @@ void ListModel::selectAllItems()
 	if (nbTerms == 0) return;
 
 	_selectedItems.clear();
-	_selectedItemsTypes.clear();
 
 	for (int i = 0; i < nbTerms; i++)
 	{
 		if (data(index(i, 0), ListModel::SelectableRole).toBool())
-		{
 			_selectedItems.append(i);
-			_addSelectedItemType(i);
-		}
 	}
 
 	emit dataChanged(index(0, 0), index(nbTerms - 1, 0), { ListModel::SelectedRole });
@@ -648,15 +625,6 @@ int ListModel::sourceColumnTypeChanged(QString name)
 	if (i >= 0)
 	{
 		QModelIndex ind = index(i, 0);
-
-		//keep selected item types up to date
-		if(_selectedItems.contains(i))
-		{
-			_selectedItemsTypes.clear();
-			for(int item : _selectedItems)
-				_addSelectedItemType(item);
-			emit selectedItemsTypesChanged();
-		}
 
 		emit dataChanged(ind, ind, {ListModel::ColumnTypeRole, ListModel::ColumnTypeIconRole, ListModel::ColumnTypeDisabledIconRole});
 		emit columnTypeChanged(name);

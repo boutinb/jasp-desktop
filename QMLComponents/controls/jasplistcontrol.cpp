@@ -244,18 +244,6 @@ QString JASPListControl::getSourceType(QString name)
 	return model() ? model()->getItemType(name) : "";
 }
 
-bool JASPListControl::areTypesAllowed(QStringList types)
-{
-	bool result = true;
-
-	if (!_variableTypesAllowed.empty())
-		for (const QString& type : types)
-			if (!_variableTypesAllowed.count(columnTypeFromQString(type)))
-				result = false;
-
-	return result;
-}
-
 columnType JASPListControl::getVariableType(const QString &name)
 {
 	return model()->getVariableType(name);

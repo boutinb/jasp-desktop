@@ -33,6 +33,7 @@ class VariablesListBase : public JASPListControl, public BoundControl
 
 	Q_PROPERTY( ListViewType		listViewType					READ listViewType					WRITE setListViewType					NOTIFY listViewTypeChanged					)
 	Q_PROPERTY( int					columns							READ columns						WRITE setColumns						NOTIFY columnsChanged						)
+	Q_PROPERTY( QStringList			suggestedColumns				READ allowedColumns					WRITE setAllowedColumns					NOTIFY allowedColumnsChanged				)
 	Q_PROPERTY( QStringList			allowedColumns					READ allowedColumns					WRITE setAllowedColumns					NOTIFY allowedColumnsChanged				)
 	Q_PROPERTY(	QStringList			allowedColumnsIcons				READ allowedColumnsIcons													NOTIFY allowedColumnsIconsChanged			)
 	Q_PROPERTY( QStringList			columnsTypes					READ columnsTypes															NOTIFY columnsTypesChanged					)
