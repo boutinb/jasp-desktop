@@ -3,8 +3,9 @@
 #include "datasettablemodel.h"
 #include "columnmodel.h"
 #include "filtermodel.h"
-#include "computedcolumnmodel.h"
-#include "utilities/qutils.h"
+#include "computedcolumnsmodel.h"
+#include "qutils.h"
+#include "columnutils.h"
 
 UndoStack* UndoStack::_undoStack = nullptr;
 

@@ -16,12 +16,11 @@
 // <http://www.gnu.org/licenses/>.
 //
 
-import QtQuick			2.12
-import QtQuick.Window	2.12
-import QtQuick.Controls 2.12
-import JASP				1.0
-import JASP.Widgets		1.0 as JW
-import JASP.Controls	1.0 as JC
+import QtQuick
+import QtQuick.Window
+import QtQuick.Controls as QTC
+import JASP.Widgets
+import JASP.Controls as JC
 
 Window
 {
@@ -108,7 +107,7 @@ Window
 					height:		Math.max(outputWindow.implicitHeight, outputScroll.height)
 					width:		outputScroll.width
 
-					TextArea
+					QTC.TextArea
 					{					
 						id:					outputWindow
 						text:				rCmd.output
@@ -144,7 +143,7 @@ Window
 				}
 			}
 
-			JC.JASPScrollBar
+			JASPScrollBar
 			{
 				id:					vertScroll
 				flickable:			outputScroll
@@ -195,7 +194,7 @@ Window
 						width:					codeEntry.width
 						height:					codeEntry.implicitHeight
 
-						TextArea
+						QTC.TextArea
 						{
 							
 							RSyntaxHighlighterQuick
@@ -240,7 +239,7 @@ Window
 					interactive:			false
 				}
 
-				JC.JASPScrollBar
+				JASPScrollBar
 				{
 					id:					codeEntryScrollbar
 					flickable:			codeEntryFlickable;
@@ -338,7 +337,7 @@ Window
 				}
 			}
 
-			JC.DropDown
+			DropDown
 			{
 				id:							selectModule
 				values:		 				dynamicModules.loadedModulesTitles

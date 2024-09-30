@@ -17,6 +17,9 @@
 //
 
 #include "jaspversionchecker.h"
+#include "qutils.h"
+#include "gui/aboutmodel.h"
+#include "appinfo.h"
 #include "knownissues.h"
 #include "appinfo.h"
 #include "log.h"

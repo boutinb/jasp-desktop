@@ -7,6 +7,7 @@
 class ImportDataSet;
 class ImportColumn;
 #include <QCoreApplication>
+#include "qutils.h"
 
 ///
 /// Base class for all importers

@@ -17,15 +17,15 @@
 
 #include "datasetpackage.h"
 #include "log.h"
-#include "utilities/qutils.h"
+#include "qutils.h"
 #include <QThread>
 #include "engine/enginesync.h"
 #include "columnencoder.h"
 #include "timers.h"
-#include "utilities/appdirs.h"
+#include "appdirs.h"
 #include "utils.h"
 #include "columnutils.h"
-#include "utilities/messageforwarder.h"
+#include "messageforwarder.h"
 #include "datasetpackagesubnodemodel.h"
 #include "databaseconnectioninfo.h"
 #include "utilities/settings.h"

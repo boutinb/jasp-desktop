@@ -3,6 +3,7 @@
 #include "columnmodel.h"
 #include "columnutils.h"
 #include "utilities/qutils.h"
+#include "qutils.h"
 #include "datasettablemodel.h"
 #include "computedcolumnmodel.h"
 #include "gui/preferencesmodel.h"

@@ -10,7 +10,7 @@
 
 #include <map>
 #include <QtQml>
-#include "utilities/qutils.h"
+#include "qutils.h"
 #include "data/expanddataproxymodel.h"
 
 #include <QItemSelectionModel>
@@ -52,6 +52,7 @@ typedef std::map<int, ItemContextualized *>                 ItemCxsByIndex;
 class DataSetView : public QQuickItem
 {
 	Q_OBJECT
+	QML_ELEMENT
 
 	Q_PROPERTY( QAbstractItemModel	*	model					READ model					WRITE setModel					NOTIFY modelChanged					)
 	Q_PROPERTY( int						itemHorizontalPadding	READ itemHorizontalPadding	WRITE setItemHorizontalPadding	NOTIFY itemHorizontalPaddingChanged )

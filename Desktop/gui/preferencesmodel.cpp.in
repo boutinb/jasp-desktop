@@ -1,7 +1,7 @@
 #include "preferencesmodel.h"
-#include "utilities/qutils.h"
+#include "qutils.h"
 #include "utilities/settings.h"
-#include "utilities/messageforwarder.h"
+#include "messageforwarder.h"
 #include "jasptheme.h"
 #include "utilities/languagemodel.h"
 #include <QFontDatabase>
@@ -28,9 +28,8 @@ PreferencesModel::PreferencesModel(QObject *parent) :
 	connect(this,					&PreferencesModel::safeGraphicsChanged,			this, &PreferencesModel::animationsOnChanged			); // So animationsOn *might* not be changed, but it  doesnt matter
 	connect(this,					&PreferencesModel::disableAnimationsChanged,	this, &PreferencesModel::animationsOnChanged			);
 	connect(this,					&PreferencesModel::dataLabelNAChanged,			this, &PreferencesModel::dataLabelNAChangedSlot			);
-
 	connect(this,					&PreferencesModel::guiQtTextRenderChanged,		this, &PreferencesModel::onGuiQtTextRenderChanged,		Qt::QueuedConnection);
-
+	connect(this,					&PreferencesModel::ALTNavModeActiveChanged,		this, &PreferencesModelBase::ALTNavModeActiveChangedBase ); // Cannot emit ALTNavModeActiveChangedBase directly since the argument would be lost.
 	connect(LanguageModel::lang(),	&LanguageModel::currentLanguageChanged,			this, &PreferencesModel::languageCodeChanged			);
 
 	_loadDatabaseFont();

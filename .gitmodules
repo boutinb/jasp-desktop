@@ -146,10 +146,6 @@
 	path = Modules/jaspSurvival
 	url = https://github.com/jasp-stats/jaspSurvival
 	branch = master
-[submodule "Common/jaspColumnEncoder"]
-	path = Common/jaspColumnEncoder
-	url = https://github.com/jasp-stats/jaspColumnEncoder
-	branch = master
 [submodule "Engine/jaspModuleInstaller"]
 	path = Engine/jaspModuleInstaller
 	url = https://github.com/jasp-stats/jaspModuleInstaller.git
@@ -157,4 +153,12 @@
 [submodule "Modules/jaspBFF"]
 	path = Modules/jaspBFF
 	url = https://github.com/jasp-stats/jaspBFF
+	branch = master
+[submodule "jaspCommonLib"]
+	path = jaspCommonLib
+	url = https://github.com/jasp-stats/jaspCommonLib
+	branch = master
+[submodule "jaspQMLControlsPlugin"]
+	path = jaspQMLControlsPlugin
+	url = https://github.com/jasp-stats/jaspQMLControlsPlugin
 	branch = master

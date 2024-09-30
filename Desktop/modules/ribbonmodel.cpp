@@ -18,7 +18,8 @@
 
 
 #include "ribbonmodel.h"
-#include "utilities/messageforwarder.h"
+#include "appdirs.h"
+#include "messageforwarder.h"
 #include "log.h"
 #include "qquick/datasetview.h"
 #include "mainwindow.h"

@@ -1,6 +1,6 @@
 #include "computedcolumnmodel.h"
 #include "jsonutilities.h"
-#include "utilities/qutils.h"
+#include "qutils.h"
 #include "columnencoder.h"
 #include "analysis/analyses.h"
 #include "variableinfo.h"

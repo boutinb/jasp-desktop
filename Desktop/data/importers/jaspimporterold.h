@@ -23,10 +23,7 @@
 #include <string>
 #include <vector>
 #include <QCoreApplication>
-#include "json/value.h"
-#include "columntype.h"
-#include "version.h"
-#include "importer.h"
+#include "qutils.h"
 
 ///
 /// Loads a jasp file

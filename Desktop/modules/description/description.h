@@ -5,6 +5,7 @@
 #include <QTimer>
 #include "version.h"
 #include <QQuickItem>
+#include "qutils.h"
 #include <json/json.h>
 #include "utilities/qutils.h"
 #include "modules/dynamicmodule.h"

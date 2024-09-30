@@ -27,7 +27,6 @@ class PreferencesModel : public PreferencesModelBase
 	Q_PROPERTY(QString		plotBackground			READ plotBackground				WRITE setPlotBackground				NOTIFY plotBackgroundChanged			)
 	Q_PROPERTY(double		uiScale					READ uiScale					WRITE setUiScale					NOTIFY uiScaleChanged					)
 	Q_PROPERTY(int			defaultPPI				READ defaultPPI					WRITE setDefaultPPI					NOTIFY defaultPPIChanged				)
-	Q_PROPERTY(bool			developerMode			READ developerMode				WRITE setDeveloperMode				NOTIFY developerModeChanged				)
 	Q_PROPERTY(QString		developerFolder			READ developerFolder			WRITE setDeveloperFolder			NOTIFY developerFolderChanged			)
 	Q_PROPERTY(int			thresholdScale			READ thresholdScale				WRITE setThresholdScale				NOTIFY thresholdScaleChanged			)
 	Q_PROPERTY(bool			logToFile				READ logToFile					WRITE setLogToFile					NOTIFY logToFileChanged					)
@@ -48,7 +47,6 @@ class PreferencesModel : public PreferencesModelBase
 	Q_PROPERTY(bool			generateMarkdown		READ generateMarkdown			WRITE setGenerateMarkdown			NOTIFY generateMarkdownChanged			)
 	Q_PROPERTY(QStringList	emptyValues				READ emptyValues													NOTIFY emptyValuesChanged				)
 	Q_PROPERTY(int			plotPPI					READ plotPPI														NOTIFY plotPPIPropChanged				)
-	Q_PROPERTY(bool			animationsOn			READ animationsOn													NOTIFY animationsOnChanged				)
 	Q_PROPERTY(QString		languageCode			READ languageCode													NOTIFY languageCodeChanged				)
 	Q_PROPERTY(QStringList	allCodeFonts			READ allCodeFonts				CONSTANT																	)
 	Q_PROPERTY(QString		defaultInterfaceFont	READ defaultInterfaceFont		CONSTANT																	)
@@ -117,7 +115,7 @@ public:
 	QString		currentThemeName()						const;
 	QString		languageCode()							const;
 	bool		disableAnimations()						const;
-	bool		animationsOn()							const { return !disableAnimations() && !safeGraphics(); }
+	bool		animationsOn()							const override { return !disableAnimations() && !safeGraphics(); }
 	bool		generateMarkdown()						const;
 	QStringList allInterfaceFonts()						const { return _allInterfaceFonts; }
 	QStringList allCodeFonts()							const { return _allCodeFonts; }
@@ -139,8 +137,6 @@ public:
 	void		zoomOut();
 	void		zoomReset();
 	int 		maxEnginesAdmin() 						const;
-	bool		developerMode()							const;
-	bool		ALTNavModeActive()						const;
     bool		orderByValueByDefault()					const;
 	int			maxScaleLevels()						const override;
 	QVariantList pdfPageSizeModel()						const { return _pdfPageSizeModel; }
@@ -164,7 +160,7 @@ public slots:
 	void setCustomEditor(				QString		customEditor);
 	void setFixedDecimals(				bool		fixedDecimals);
 	void setUseDefaultPPI(				bool		useDefaultPPI);
-	void setDeveloperMode(				bool		developerMode);
+	void setDeveloperMode(				bool		developerMode)		override;
 	void setWhiteBackground(			bool		whiteBackground);
 	void setPlotBackground(				QString		plotBackground);
 	void setDeveloperFolder(			QString		developerFolder);
@@ -227,7 +223,6 @@ signals:
 	void customPPIChanged(				int			customPPI);
 	void defaultPPIChanged(				int			defaultPPI);
 	void emptyValuesChanged();
-	void developerModeChanged(			bool		developerMode);
 	void developerFolderChanged(		QString		developerFolder);
 	void plotPPIChanged(				int			ppiForPlot,			bool	wasUserAction);
 	void plotBackgroundChanged(			QString		plotBackground);
@@ -244,11 +239,9 @@ signals:
 	void resultFontChanged(				QString		resultFont);
 	void currentThemeNameChanged(		QString		currentThemeName);
 	void plotPPIPropChanged();
-	void languageCodeChanged();
 	void useNativeFileDialogChanged(	bool		useNativeFileDialog);
 	void disableAnimationsChanged(		bool		disableAnimations);
 	void generateMarkdownChanged(		bool		generateMarkdown);
-	void animationsOnChanged();
 	void lcCtypeChanged();
 	void restartAllEngines();
 	void maxEnginesChanged(				int			maxEngines);

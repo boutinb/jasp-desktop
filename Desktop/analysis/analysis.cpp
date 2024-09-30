@@ -21,20 +21,19 @@
 #include "appinfo.h"
 #include "dirs.h"
 #include "analyses.h"
-#include "analysisform.h"
-#include "utilities/qutils.h"
+#include "analysisformbase.h"
+#include "qutils.h"
 #include "log.h"
 #include "utils.h"
 #include "utilities/settings.h"
 #include "gui/preferencesmodel.h"
 #include "utilities/reporter.h"
 #include "results/resultsjsinterface.h"
+#include "messageforwarder.h"
 
 Analysis::Analysis(size_t id, Modules::AnalysisEntry * analysisEntry, std::string title, std::string moduleVersion, Json::Value *data) :
 	  AnalysisBase(Analyses::analyses(), moduleVersion),
 	  _id(				id),
-	  _name(			analysisEntry->function()),
-	  _qml(				analysisEntry->qml().empty() ? _name : analysisEntry->qml()),
 	  _titleDefault(	analysisEntry->title()),
 	  _title(			title == "" ? _titleDefault : title),
 	  _moduleData(		analysisEntry),
@@ -62,8 +61,6 @@ Analysis::Analysis(size_t id, Analysis * duplicateMe)
 	, _imgOptions(						duplicateMe->_imgOptions						)
 	, _progress(						duplicateMe->_progress							)
 	, _id(								id												)
-	, _name(							duplicateMe->_name								)
-	, _qml(								duplicateMe->_qml								)
 	, _titleDefault(					duplicateMe->_titleDefault						)
 	, _title(fq(tr("Copy of %1").arg(tq(duplicateMe->_title)))							)
 	, _rfile(							duplicateMe->_rfile								)
@@ -335,10 +332,10 @@ void Analysis::createForm(QQuickItem* parentItem)
 
 	if (_analysisForm)
 	{
-		connect(this,					&Analysis::rSourceChanged,			_analysisForm,	&AnalysisForm::rSourceChanged				);
-		connect(this,					&Analysis::refreshTableViewModels,	_analysisForm,	&AnalysisForm::refreshTableViewModels		);
-		connect(this, 					&Analysis::titleChanged,			_analysisForm,	&AnalysisForm::titleChanged					);
-		connect(this,					&Analysis::needsRefreshChanged,		_analysisForm,	&AnalysisForm::needsRefreshChanged			);
+		connect(this,					&Analysis::rSourceChanged,			_analysisForm,	&AnalysisFormBase::rSourceChanged				);
+		connect(this,					&Analysis::refreshTableViewModels,	_analysisForm,	&AnalysisFormBase::refreshTableViewModels		);
+		connect(this, 					&Analysis::titleChanged,			_analysisForm,	&AnalysisFormBase::titleChanged					);
+		connect(this,					&Analysis::needsRefreshChanged,		_analysisForm,	&AnalysisFormBase::needsRefreshChanged			);
 		connect(this,					&Analysis::boundValuesChanged,		this,			&Analysis::setRSyntaxTextInResult,		Qt::QueuedConnection	);
 
 		setRSyntaxTextInResult();
@@ -391,7 +388,7 @@ Json::Value Analysis::asJSON(bool withRSource) const
 	Json::Value analysisAsJson = Json::objectValue;
 
 	analysisAsJson["id"]			= int(_id);
-	analysisAsJson["name"]			= _name;
+	analysisAsJson["name"]			= name();
 	analysisAsJson["title"]			= _title;
 	analysisAsJson["titleDef"]		= _titleDefault;
 	analysisAsJson["rfile"]			= _rfile;
@@ -425,7 +422,7 @@ void Analysis::checkDefaultTitleFromJASPFile(const Json::Value & analysisData)
 
 void Analysis::loadResultsUserdataAndRSourcesFromJASPFile(const Json::Value & analysisData, Status status)
 {
-	Log::log() << "Now loading userdata results and R Sources for analysis " << _name << " from file." << std::endl;
+	Log::log() << "Now loading userdata results and R Sources for analysis " << name() << " from file." << std::endl;
 	setUserData(analysisData["userdata"]);
 	setResults(analysisData["results"], status);
 	setRSources(analysisData["rSources"]);
@@ -661,6 +658,11 @@ Json::Value Analysis::editOptionsOfPlot(const std::string & uniqueName, bool emi
 	}
 
 	return editOptions;
+}
+
+AnalysisFormBase* Analysis::form() const
+{
+	return _analysisForm;
 }
 
 bool Analysis::_editOptionsOfPlot(const Json::Value & results, const std::string & uniqueName, Json::Value & editOptions)
@@ -1152,5 +1154,5 @@ std::string Analysis::qmlFormPath(bool addFileProtocol, bool ignoreReadyForUse) 
 
 	return (addFileProtocol ? "file:" : "") + (_moduleData != nullptr	?
 				_moduleData->qmlFilePath()	:
-				Dirs::resourcesDir() + "/" + module() + "/qml/"  + qml());
+				Dirs::resourcesDir() + "/" + module() + "/qml/"  + qmlFileName());
 }

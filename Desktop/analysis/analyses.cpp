@@ -15,16 +15,15 @@
 // License along with this program.  If not, see
 // <http://www.gnu.org/licenses/>.
 //
-
+#include <QFile>
+#include <QTimer>
 #include "analyses.h"
 #include "utilities/settings.h"
 #include "modules/ribbonmodel.h"
-#include "analysisform.h"
 #include "knownissues.h"
 #include "timers.h"
-#include <QTimer>
-#include <QFile>
 #include "log.h"
+#include "analysisformbase.h"
 
 using namespace std;
 using Modules::Upgrader;

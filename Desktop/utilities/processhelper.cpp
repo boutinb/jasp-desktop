@@ -1,6 +1,7 @@
 #include "processhelper.h"
-#include "utilities/appdirs.h"
-#include "utilities/qutils.h"
+#include "appdirs.h"
+#include "tempfiles.h"
+#include "utils.h"
 #include "log.h"
 
 QProcessEnvironment ProcessHelper::getProcessEnvironmentForJaspEngine(bool bootStrap)
