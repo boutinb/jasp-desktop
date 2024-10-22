@@ -296,12 +296,33 @@ std::vector<std::string> JASPListControl::usedVariables() const
 	else												return {};
 }
 
-columnTypeVec JASPListControl::valueTypes() const
+Json::Value JASPListControl::valueTypes() const
 {
-	columnTypeVec types;
+	Json::Value types(Json::arrayValue);
+	std::map<std::string, std::string> variableTypeMap;
+	static columnType unknownType = columnType::unknown;
 
 	for (const Term& term : model()->terms())
-		types.push_back(term.type());
+		if (term.components().size() == 1)
+			variableTypeMap[term.asString()] = columnTypeToString(term.type());
+
+	for (const Term& term : model()->terms())
+	{
+		if (term.components().size() == 1)
+			types.append(columnTypeToString(term.type()));
+		else
+		{
+			Json::Value compTypes(Json::arrayValue);
+			for (const std::string& component : term.scomponents())
+			{
+				if (variableTypeMap.count(component) > 0)
+					compTypes.append(variableTypeMap[component]);
+				else
+					compTypes.append(columnTypeToString(unknownType));
+			}
+			types.append(compTypes);
+		}
+	}
 
 	return types;
 }
