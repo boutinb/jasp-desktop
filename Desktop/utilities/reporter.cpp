@@ -9,7 +9,6 @@
 #include <QDateTime>
 #include <QFile>
 #include <QDirIterator>
-#include <QStringRef>
 #include "tempfiles.h"
 #include "log.h"
 

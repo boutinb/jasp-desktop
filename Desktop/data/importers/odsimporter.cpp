@@ -20,7 +20,6 @@
 #include "ods/odsxmlmanifesthandler.h"
 #include "ods/odsxmlcontentshandler.h"
 #include "archivereader.h"
-#include <QXmlInputSource>
 #include "log.h"
 #include "timers.h"
 
@@ -61,7 +60,7 @@ ImportDataSet* ODSImporter::loadFile(const std::string &locator, std::function<v
 void ODSImporter::readManifest(const std::string &path, ODSImportDataSet *dataset)
 {
 
-	QXmlInputSource src;
+//	QXmlInputSource src;
 	{
 		// Get the data file proper from the ODS manifest file.
 		ArchiveReader manifest(path, ODSImportDataSet::manifestPath);
@@ -69,16 +68,16 @@ void ODSImporter::readManifest(const std::string &path, ODSImportDataSet *datase
 		int errorCode = 0;
 		if (((tmp = manifest.readAllData(4096, errorCode)).size() == 0) || (errorCode < 0))
 			throw std::runtime_error("Error reading manifest in ODS.");
-		src.setData(QString::fromStdString(tmp));
+//		src.setData(QString::fromStdString(tmp));
 		manifest.close();
 	}
 
 	{
 		XmlManifestHandler * manHandler = new XmlManifestHandler(dataset);
-		QXmlSimpleReader reader;
-		reader.setContentHandler(manHandler);
-		reader.setErrorHandler(manHandler);
-		reader.parse(src);
+//		QXmlSimpleReader reader;
+//		reader.setContentHandler(manHandler);
+//		reader.setErrorHandler(manHandler);
+//		reader.parse(src);
 	}
 }
 
@@ -87,7 +86,7 @@ void ODSImporter::readContents(const std::string &path, ODSImportDataSet *datase
 
 	ArchiveReader contents(path, dataset->getContentFilename());
 
-	QXmlInputSource src;
+//	QXmlInputSource src;
 	{
 		std::string tmp;
 		int errorCode = 0;
@@ -96,15 +95,15 @@ void ODSImporter::readContents(const std::string &path, ODSImportDataSet *datase
 #ifdef JASP_DEBUG
 		Log::log()  << "ODS XML looks like:\n" << tmp << std::endl;
 #endif
-		src.setData(QString::fromStdString(tmp));
+//		src.setData(QString::fromStdString(tmp));
 	}
 
 	{
 		ODSXmlContentsHandler * contentsHandler = new ODSXmlContentsHandler(dataset);
-		QXmlSimpleReader reader;
-		reader.setContentHandler(contentsHandler);
-		reader.setErrorHandler(contentsHandler);
-		reader.parse(src);
+//		QXmlSimpleReader reader;
+//		reader.setContentHandler(contentsHandler);
+//		reader.setErrorHandler(contentsHandler);
+//		reader.parse(src);
 	}
 
 	contents.close();

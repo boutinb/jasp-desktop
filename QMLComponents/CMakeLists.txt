@@ -45,8 +45,6 @@ target_link_libraries(
 	Qt::QuickControls2Impl
 	Qt::QuickWidgets
 	Qt::QuickTemplates2
-	$<$<NOT:$<BOOL:${FLATPAK_USED}>>:Qt::Core5Compat>
-	$<$<BOOL:${FLATPAK_USED}>:/app/lib/$ENV{FLATPAK_ARCH}-linux-gnu/libQt6Core5Compat.so>
 )
 
 file(GLOB_RECURSE QML_RESOURCE_FILES "${CMAKE_CURRENT_LIST_DIR}/components/*")

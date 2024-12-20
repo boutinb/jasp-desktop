@@ -1,7 +1,8 @@
-﻿import QtQuick						2.11
-import QtQuick.Controls				2.4
-import JASP.Controls				1.0
-import Qt5Compat.GraphicalEffects
+﻿import QtQuick
+import QtQuick.Controls		as QTC
+import JASP.Controls
+import QtQuick.Effects
+//import Qt5Compat.GraphicalEffects
 
 DropArea
 {
@@ -40,21 +41,27 @@ DropArea
 
 	Component.onCompleted: myAnalysis.expandAnalysis.connect(toggleExpander)
 
+
+	MultiEffect
+	{
+		id:						shadow
+		source:					draggableItem
+		anchors.fill:			draggableItem
+		visible:				draggableItem.Drag.active
+		shadowBlur:				1.0
+		shadowEnabled:			true
+		shadowColor:			jaspTheme.shadow
+		shadowVerticalOffset:	5
+		shadowHorizontalOffset: 5
+	}
 	Rectangle
 	{
-		id:						bottomLine
-		anchors.bottom:			parent.bottom
-		anchors.left:			parent.left
-		height:                 1
-		width:                  parent.width + 1
-		color:                  jaspTheme.buttonBorderColor
-		visible:				draggableItem.state != "dragging"
-	}
-
-	Item
-	{
 		id:					draggableItem
-		height:				loaderAndError.y
+		height:				expanderRectangle. d
+		width:				parent.width
+//		anchors.top:	parent.top
+//		anchors.left:	parent.left
+//		anchors.right:	parent.right
 		activeFocusOnTab:	true
 
 		onActiveFocusChanged:	{ if (activeFocus) backgroundFlickable.scrollToElement(expanderButton); }
@@ -79,42 +86,13 @@ DropArea
 					target:			draggableItem
 					parent:			backgroundFlickable
 				}
-				
+
 				AnchorChanges
 				{
 					target:			draggableItem
 					anchors.top:	undefined
 					anchors.left:	undefined
 					anchors.right:	undefined
-				}
-
-				PropertyChanges
-				{
-					restoreEntryValues: false
-					draggableItem
-					{
-						focus:			true
-					}
-				}
-			},
-			
-			State
-			{
-				name:	"chilling"
-				when:	!draggableItem.Drag.active
-
-				ParentChange
-				{
-					target:			draggableItem
-					parent:			analysisFormExpander
-				}
-
-				AnchorChanges
-				{
-					target:			draggableItem
-					anchors.top:	parent.top
-					anchors.left:	parent.left
-					anchors.right:	parent.right
 				}
 			}
 		]
@@ -127,19 +105,6 @@ DropArea
 			}
 		}
 
-
-		ToolTip
-		{
-			text:			qsTr("Drag to reorder the analyses")
-			timeout:		jaspTheme.toolTipTimeout
-			delay:			jaspTheme.toolTipDelay
-			font:			jaspTheme.font
-			background:		Rectangle { color:	jaspTheme.tooltipBackgroundColor }
-			visible:		mouseArea.containsMouse && !analysesModel.moving && analysesModel.rowCount() > 1
-			y:				mouseArea.mouseY
-			x:				mouseArea.mouseX + 5
-		}
-
 		MouseArea
 		{
 			id:				mouseArea
@@ -147,21 +112,6 @@ DropArea
 			hoverEnabled:	true
 			cursorShape:	draggableItem.Drag.active ? Qt.ClosedHandCursor : Qt.PointingHandCursor
 			drag.target:	draggableItem
-
-			drag.onActiveChanged:
-			{
-				if (drag.active)
-				{
-					analysesModel.unselectAnalysis()
-					analysesModel.moving = true
-					draggableItem.droppedIndex = -1
-				}
-				else
-				{
-					analysesModel.moving = false
-					analysesModel.moveAnalysesResults(formParent.myAnalysis, draggableItem.droppedIndex)
-				}
-			}
 
 			anchors
 			{
@@ -172,32 +122,20 @@ DropArea
 			height: jaspTheme.formExpanderHeaderHeight + (2 * jaspTheme.formMargin) //We only want to see a tooltip when we are hovering the "button" part of AnalysisFormExpander
 		}
 
-		RectangularGlow
-		{
-			id				: shadow
-			anchors.centerIn: draggableItem
-			width			: draggableItem.width
-			height			: draggableItem.height
-			visible			: draggableItem.Drag.active
-			color			: jaspTheme.grayDarker
-			spread			: 0.2
-			cornerRadius	: expanderButton.radius + glowRadius
-			glowRadius		: 5
-		}
 
-		Rectangle
-		{
-			// This line appears only when the analysis above this one is dragged.
-			anchors
-			{
-				top:		parent.top
-				topMargin:	-1
-				left:		parent.left
-			}
-			height:			1
-			width:			parent.width
-			color:			jaspTheme.buttonBorderColor
-		}
+//		RectangularGlow
+//		{
+//			id				: shadow
+//			anchors.centerIn: draggableItem
+//			width			: draggableItem.width
+//			height			: draggableItem.height
+//			visible			: draggableItem.Drag.active
+//			color			: jaspTheme.grayDarker
+//			spread			: 0.2
+//			cornerRadius	: expanderButton.radius + glowRadius
+//			glowRadius		: 5
+//		}
+
 
 		Rectangle
 		{
@@ -477,15 +415,15 @@ DropArea
 												helpModel.markdown = ""; //break binding
 												helpModel.analysis = null
 											}
-											
-												
+
+
 										}
 										else
 										{
 											helpModel.markdown = "";
 											helpModel.showOrTogglePageForAnalysis(formParent.myAnalysis)
 										}
-										
+
 					toolTip:			qsTr("Show info for this analysis")
 					radius:				height
 					anchors
@@ -571,7 +509,7 @@ DropArea
 						verticalAlignment:	Text.AlignVCenter
 						text:				formParent.error
 						wrapMode:			Text.Wrap
-						
+
 						//onTextChanged:		messages.log("errorMessagesText text changed to '" + text + "'");
 					}
 				}

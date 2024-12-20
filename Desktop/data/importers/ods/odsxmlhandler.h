@@ -19,17 +19,16 @@
 #ifndef __ODSXMLERRORHANDLER_H_
 #define __ODSXMLERRORHANDLER_H_
 
-#include <QXmlDefaultHandler>
+#include <QXmlStreamReader>
 #include "odsimportdataset.h"
 
 namespace ods
 {
 
-class XmlHandler : public QXmlDefaultHandler
+class XmlHandler : public QXmlStreamReader
 {
 public:
 	XmlHandler(ODSImportDataSet *data);
-	~XmlHandler() override;
 
 protected:
 	ODSImportDataSet * _dataSet;

@@ -22,7 +22,7 @@ XmlManifestHandler::XmlManifestHandler(ODSImportDataSet *data)
  * Called when a <tag ...> construction found.
  *
  */
-bool XmlManifestHandler::startElement(const QString &namespaceURI, const QString &localName, const QString &qName, const QXmlAttributes &atts)
+bool XmlManifestHandler::startElement(const QString &namespaceURI, const QString &localName, const QString &qName, const QXmlStreamAttributes &atts)
 {
 	static const QString localNameFileEntry("file-entry");
 	static const QString attNamemediaType("manifest:media-type");
@@ -33,8 +33,8 @@ bool XmlManifestHandler::startElement(const QString &namespaceURI, const QString
 
 	if (localName == localNameFileEntry)
 	{
-		QString fullPath = atts.value(attNameFullPath);
-		QString mediaType = atts.value(attNamemediaType);
+        QString fullPath = atts.value(attNameFullPath).toString();
+        QString mediaType = atts.value(attNamemediaType).toString();
 
 		// are we a spread-sheet?
 		if ((fullPath == root) && (!_foundRoot))

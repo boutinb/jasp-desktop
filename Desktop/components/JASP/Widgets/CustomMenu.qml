@@ -16,10 +16,10 @@
 // <http://www.gnu.org/licenses/>.
 //
 
-import QtQuick						2.15
-import QtQuick.Controls				2.4
-import JASP.Controls				1.0 as JASPControl
-import Qt5Compat.GraphicalEffects
+import QtQuick
+import QtQuick.Controls
+import JASP.Controls			 as JASPControl
+import QtQuick.Effects
 
 FocusScope
 {
@@ -404,13 +404,15 @@ FocusScope
 		}
 	}
 
-	RectangularGlow
-	{
-		id				: menuShadow
-		anchors.fill	: menuRectangle
-		color			: jaspTheme.shadow
-		spread			: 0.2
-		cornerRadius	: menuRectangle.radius + glowRadius
-		glowRadius		: 5
+	MultiEffect {
+		id:						menuShadow
+		source:					menuRectangle
+		anchors.fill:			menuRectangle
+		autoPaddingEnabled:		true
+		shadowBlur:				1.0
+		shadowColor:			jaspTheme.shadow
+		shadowEnabled:			true
+		shadowVerticalOffset:	8 * jaspTheme.uiScale
 	}
+
 }

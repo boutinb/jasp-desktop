@@ -25,7 +25,7 @@ public:
 	 * Called when a <tag ...> construction found.
 	 *
 	 */
-	virtual bool startElement(const QString &namespaceURI, const QString &localName, const QString &qName, const QXmlAttributes &atts);
+    virtual bool startElement(const QString &namespaceURI, const QString &localName, const QString &qName, const QXmlStreamAttributes &atts);
 
 	/**
 	 * @brief endElement Called on the end of an element.

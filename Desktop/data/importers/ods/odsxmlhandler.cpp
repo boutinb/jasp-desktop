@@ -25,8 +25,3 @@ XmlHandler::XmlHandler(ODSImportDataSet *data)
 {
 
 }
-
-XmlHandler::~XmlHandler()
-{
-
-}

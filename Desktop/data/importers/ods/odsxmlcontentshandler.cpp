@@ -48,7 +48,7 @@ ODSXmlContentsHandler::ODSXmlContentsHandler(ODSImportDataSet *dta)
  * Called when a <tag ...> construction found.
  *
  */
-bool ODSXmlContentsHandler::startElement(const QString &namespaceURI, const QString &localName, const QString &qName, const QXmlAttributes &atts)
+bool ODSXmlContentsHandler::startElement(const QString &namespaceURI, const QString &localName, const QString &qName, const QXmlStreamAttributes &atts)
 {
 	if (_tableRead == false)
 	{
@@ -312,10 +312,10 @@ void ODSXmlContentsHandler::resetDocument()
 	_dataSet->clear();
 }
 
-XmlDatatype ODSXmlContentsHandler::_setLastTypeGetValue(QString &value, const QXmlAttributes &atts)
+XmlDatatype ODSXmlContentsHandler::_setLastTypeGetValue(QString &value, const QXmlStreamAttributes &atts)
 {
 	_lastType = odsType_unknown;
-	QString fromfile = atts.value(_attValueType);
+    QString fromfile = atts.value(_attValueType).toString();
 
 	if (fromfile == _typeFloat)				_lastType = odsType_float;
 	else if (fromfile == _typeCurrency)		_lastType = odsType_currency;
@@ -330,19 +330,19 @@ XmlDatatype ODSXmlContentsHandler::_setLastTypeGetValue(QString &value, const QX
 	case odsType_float:
 	case odsType_currency:
 	case odsType_percent:
-		value = atts.value(_attValue);
+        value = atts.value(_attValue).toString();
 		break;
 		
 	case odsType_boolean:
-		value = atts.value(_attBoolValue);
+        value = atts.value(_attBoolValue).toString();
 		break;
 	
 	case odsType_date:
-		value = atts.value(_attDateValue);
+        value = atts.value(_attDateValue).toString();
 		break;
 	
 	case odsType_time:
-		value = atts.value(_attTimeValue);
+        value = atts.value(_attTimeValue).toString();
 		break;
 	
 	case odsType_string:
@@ -359,7 +359,7 @@ XmlDatatype ODSXmlContentsHandler::_setLastTypeGetValue(QString &value, const QX
  * @param defaultValue The value to return if not found.
  * @return The found value or default.
  */
-int ODSXmlContentsHandler::_findColRepeat(const QXmlAttributes &atts, int defaultValue)
+int ODSXmlContentsHandler::_findColRepeat(const QXmlStreamAttributes &atts, int defaultValue)
 {
 	int result = 0;
 	bool okay = false;
@@ -367,7 +367,7 @@ int ODSXmlContentsHandler::_findColRepeat(const QXmlAttributes &atts, int defaul
 	return (okay) ? result : defaultValue;
 }
 
-int ODSXmlContentsHandler::_findRowRepeat(const QXmlAttributes &atts, int defaultValue)
+int ODSXmlContentsHandler::_findRowRepeat(const QXmlStreamAttributes &atts, int defaultValue)
 {
 	int result = 0;
 	bool okay = false;

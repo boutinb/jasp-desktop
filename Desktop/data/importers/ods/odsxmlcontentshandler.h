@@ -40,7 +40,7 @@ public:
 	 * Called when a <tag ...> construction found.
 	 *
 	 */
-	virtual bool startElement(const QString &namespaceURI, const QString &localName, const QString &qName, const QXmlAttributes &atts);
+    virtual bool startElement(const QString &namespaceURI, const QString &localName, const QString &qName, const QXmlStreamAttributes &atts);
 
 	/**
 	 * @brief endElement Called on the end of an element.
@@ -122,7 +122,7 @@ private:
 	 * @param QXmlAttributes atts Attriutes to find.
 	 * @return value of lastType;
 	 */
-	XmlDatatype _setLastTypeGetValue(QString &value, const QXmlAttributes &atts);
+    XmlDatatype _setLastTypeGetValue(QString &value, const QXmlStreamAttributes &atts);
 
 	/**
 	 * @brief _findColRepeat/_findRowRepeat Finds the column/row repeat from attributes.
@@ -130,8 +130,8 @@ private:
 	 * @param defaultValue The value to return if not found.
 	 * @return The found value or default.
 	 */
-	static int _findColRepeat(const QXmlAttributes &atts, int defaultValue = 1);
-	static int _findRowRepeat(const QXmlAttributes &atts, int defaultValue = 1);
+    static int _findColRepeat(const QXmlStreamAttributes &atts, int defaultValue = 1);
+    static int _findRowRepeat(const QXmlStreamAttributes &atts, int defaultValue = 1);
 
 };
 
