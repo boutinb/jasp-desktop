@@ -737,9 +737,9 @@ QString JASPControl::humanFriendlyLabel() const
 
 }
 
-QVector<JASPControl::ParentKey> JASPControl::getParentKeys()
+QVector<AnalysisBase::ParentKey> JASPControl::getParentKeys()
 {
-	QVector<JASPControl::ParentKey> parentKeys;
+    QVector<AnalysisBase::ParentKey> parentKeys;
 	JASPListControl* parentControl =  parentListView();
 	QString parentKeyValue = parentListViewKey();
 

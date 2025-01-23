@@ -7,6 +7,9 @@
 #include <qdebug.h>
 #include "knownissues.h"
 #include "utilities/qmlutils.h"
+#include "models/term.h"
+#include "jaspcontrol.h"
+#include "altnavpostfixassignmentstrategy.h"
 
 
 //![plugin]
@@ -37,6 +40,11 @@ class JASPQmlPlugin : public QQmlEngineExtensionPlugin
 			defaultJaspTheme->setIconPath("/default/");
 			engine->rootContext()->setContextProperty("jaspTheme",				defaultJaspTheme	);
 		}
+
+        engine->rootContext()->setContextProperty("INTERACTION_SEPARATOR",	Term::separator);
+
+        qmlRegisterUncreatableType<JASPControl>(					"JASP",		1, 0, "JASP",					"Impossible to create JASP Object");
+        qmlRegisterUncreatableType<ALTNavPostfixAssignmentStrategy>("JASP",		1, 0, "AssignmentStrategy",		"Can't make it"	);
 
 		qmlRegisterUncreatableMetaObject(JASPControl::staticMetaObject, // static meta object
 										 "JASP.Controls",        // import statement

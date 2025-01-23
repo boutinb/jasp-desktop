@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2013-2018 University of Amsterdam
+// Copyright (C) 2013-2025 University of Amsterdam
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -22,9 +22,9 @@
 #include <QMap>
 #include <QQuickItem>
 
-#include "boundcontrols/boundcontrol.h"
 #include "analysisbase.h"
 #include "models/listmodel.h"
+#include "analysisformbase.h"
 #include "utilities/qutils.h"
 #include <queue>
 
@@ -41,7 +41,7 @@ class RSyntax;
 /// Each time a JASPControl is initialized, it is registered by the form, and when the form is initialized it sets up the JASPControls either by their default values, 
 /// or by the values stored in a JASP file (when a JASP file is loaded).
 /// The interface errors and warnings are managed by this class.
-class AnalysisForm : public QQuickItem
+class AnalysisForm : public AnalysisFormBase
 {
 	Q_OBJECT
 	QML_ELEMENT
@@ -73,12 +73,12 @@ public:
 	void					runRScript(	const QString & script, const QString & controlName, bool whiteListedVersion);
 	void					runFilter(	const QString & name);
 
-	void					itemChange(QQuickItem::ItemChange change, const QQuickItem::ItemChangeData &value) override;
+    void					itemChange(QQuickItem::ItemChange change, const QQuickItem::ItemChangeData &value)  override;
 
-	void					setMustBe(		stringset						mustBe);
-	void					setMustContain(	std::map<std::string,stringset> mustContain);
+    void					setMustBe(		stringset						mustBe)                             override;
+    void					setMustContain(	std::map<std::string,stringset> mustContain)                        override;
 
-	bool					runOnChange()	{ return _runOnChange; }
+    bool					runOnChange()                   override { return _runOnChange; }
 	void					setRunOnChange(bool change);
 	void					blockValueChangeSignal(bool block, bool notifyOnceUnblocked = true);
 	QString					title()							const	{ return _analysis ? tq(_analysis->title())		: "";		}
@@ -87,21 +87,21 @@ public:
 	QString					version()						const	{ return _analysis ? tq(_analysis->moduleVersion().asString()) : "";	}
 	bool					hasVolatileNotes()				const	{ return _hasVolatileNotes;									}
 	bool					wasUpgraded()					const	{ return _analysis ? _analysis->wasUpgraded() : false;		}
-	bool					formCompleted()					const	{ return _formCompleted;	}
+    bool					formCompleted()					const	override { return _formCompleted;	}
 	bool					showRButton()					const	{ return _showRButton;		}
 	bool					developerMode()					const	{ return _developerMode;	}
 	QString					rSyntaxText()					const;
 	bool					showAllROptions()				const;
 
 public slots:
-	void					runScriptRequestDone(		const QString		&	result, const QString & requestId, bool hasError);
-	void					filterByNameDone(			const QString		&	name,	const QString & error);
-	void					setAnalysis(				AnalysisBase		*	analysis);
-	void					boundValueChangedHandler(	JASPControl			*	control);
+    void					runScriptRequestDone(		const QString		&	result, const QString & requestId, bool hasError)   override;
+    void					filterByNameDone(			const QString		&	name,	const QString & error)                      override;
+    void					setAnalysis(				AnalysisBase		*	analysis)   override;
+    void					boundValueChangedHandler(	JASPControl			*	control);
 	void					setOptionNameConversion(	const QVariantList	&	conv);
 	void					setTitle(					QString					title);
-	void					setShowRButton(				bool					showRButton);
-	void					setDeveloperMode(			bool					developerMode);
+    void					setShowRButton(				bool					showRButton)    override;
+    void					setDeveloperMode(			bool					developerMode)  override;
 	void					setRSyntaxText();
 	void					setShowAllROptions(			bool				showAllROptions);
 	void					sendRSyntax(				QString				text);
@@ -110,10 +110,8 @@ public slots:
 signals:
 	void					formChanged(				AnalysisBase	*	analysis);
 	void					formCompletedSignal();
-	void					refreshTableViewModels();
 	void					errorMessagesItemChanged();
 	void					languageChanged();
-	void					needsRefreshChanged();
 	void					hasVolatileNotesChanged();
 	void					runOnChangeChanged();
 	void					infoChanged();
@@ -122,9 +120,7 @@ signals:
 	void					errorsChanged();
 	void					warningsChanged();
 	void					analysisChanged();
-	void					rSourceChanged(const QString& name);
 	void					optionNameConversionChanged();
-	void					titleChanged();
 	void					showRButtonChanged();
 	void					developerModeChanged();
 	void					rSyntaxTextChanged();
@@ -145,14 +141,14 @@ public:
 	Q_INVOKABLE void		addFormError(const QString& message);
 	Q_INVOKABLE void		addFormWarning(const QString& message);
 	Q_INVOKABLE void		refreshAnalysis();
-	Q_INVOKABLE bool		initialized()			const	{ return _initialized; }
-	Q_INVOKABLE QString		generateWrapper()		const;
+    Q_INVOKABLE bool		initialized()			const	override { return _initialized; }
+    Q_INVOKABLE QString		generateWrapper()		const;
 	Q_INVOKABLE QString		parseOptions(QString options);
 
 	void					addControlError(JASPControl* control, QString message, bool temporary = false, bool warning = false, bool closeable = true);
 	void					clearControlError(JASPControl* control);
-	void					cleanUpForm();
-	bool					hasError();
+    void					cleanUpForm()   override;
+    bool					hasError()      override;
 	QString					getError();
 
 	bool					isOwnComputedColumn(const std::string& col)			const	{ return _analysis ? _analysis->isOwnComputedColumn(col) : false; }
@@ -167,7 +163,7 @@ public:
 	QString					warnings()				const	{ return msgsListToString(_formWarnings);	}
 	QVariant				analysis()				const	{ return QVariant::fromValue(_analysis);	}
 	RSyntax*				rSyntax()				const	{ return _rSyntax;							}
-	QString					generateRSyntax(bool useHtml = false) const;
+    QString					generateRSyntax(bool useHtml = false) const override;
 	QVariantList			optionNameConversion()	const;
 	bool					isFormulaName(const QString& name)	const;
 	bool					isColumnFreeOrMine(const QString & name) const;
@@ -176,13 +172,13 @@ public:
 	void					addColumnControl(JASPControl* control, bool isComputed);
 
 	const Json::Value	&	boundValues()																		const	{ return _analysis ? _analysis->boundValues() : Json::Value::null; }
-	const Json::Value	&	boundValue(const std::string& name, const QVector<JASPControl::ParentKey>& parentKeys)		{ return _analysis ? _analysis->boundValue(name, parentKeys) : Json::Value::null; }
-	void					setBoundValue(const std::string& name, const Json::Value& value, const Json::Value& meta, const QVector<JASPControl::ParentKey>& parentKeys = {});
-	stringset				usedVariables();
+    const Json::Value	&	boundValue(const std::string& name, const QVector<AnalysisBase::ParentKey>& parentKeys)		{ return _analysis ? _analysis->boundValue(name, parentKeys) : Json::Value::null; }
+    void					setBoundValue(const std::string& name, const Json::Value& value, const Json::Value& meta, const QVector<AnalysisBase::ParentKey>& parentKeys = {});
+    stringset				usedVariables()                 override;
 
 	void					sortControls(QList<JASPControl*>& controls);
 	QString					getSyntaxName(const QString& name)				const;
-	void					setHasVolatileNotes(bool hasVolatileNotes);
+    void					setHasVolatileNotes(bool hasVolatileNotes) override;
 	void					setActiveJASPControl(JASPControl* control, bool hasActiveFocus);
 	JASPControl*			getActiveJASPControl()	{ return _activeJASPControl; }
 
@@ -193,7 +189,7 @@ public:
 	
 private:
 
-	Json::Value	&	_getParentBoundValue(const QVector<JASPControl::ParentKey>& parentKeys);
+    Json::Value	&	_getParentBoundValue(const QVector<AnalysisBase::ParentKey>& parentKeys);
 	void			_setUpControls();
 	void			_setUpModels();
 	void			_setUp();

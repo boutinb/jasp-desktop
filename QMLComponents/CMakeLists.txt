@@ -32,17 +32,14 @@ if(LINUX)
   endif()
 endif()
 
-configure_file(${CMAKE_CURRENT_LIST_DIR}/utilities/appdirs.h.in
-               ${CMAKE_CURRENT_LIST_DIR}/utilities//appdirs.h)
-message(STATUS "appdirs.h is successfully generated...")
-
 target_compile_definitions(QMLComponents PUBLIC JASP_USES_QT_HERE)
 
 target_include_directories(
 	QMLComponents
 	PUBLIC # JASP
 	${PROJECT_SOURCE_DIR}/Common
-	${PROJECT_SOURCE_DIR}/CommonData
+  ${PROJECT_SOURCE_DIR}/CommonQt
+  ${PROJECT_SOURCE_DIR}/CommonData
 	${PROJECT_SOURCE_DIR}/Common/jaspColumnEncoder
 	${CMAKE_CURRENT_LIST_DIR}/controls
 	${CMAKE_CURRENT_LIST_DIR}/rsyntax
@@ -54,6 +51,7 @@ target_link_libraries(
 	QMLComponents
 	PUBLIC
 	Common
+	CommonQt
 	CommonData
 	Qt::Core
 	Qt::Gui

@@ -106,7 +106,7 @@ public:
 	const	Json::Value		&	imgOptions()		const				{ return _imgOptions;						}
 	const	Json::Value		&	imgResults()		const				{ return _imgResults;						}
 	Modules::DynamicModule	*	dynamicModule()		const				{ return _dynamicModule;					}
-			AnalysisForm	*	form()				const				{ return _analysisForm;						}
+            AnalysisFormBase*	form()				const				{ return _analysisForm;						}
 			bool				hasForm()			const				{ return _analysisForm;						}
 			bool				isDuplicate()		const	override	{ return _isDuplicate;						}
 			bool				shouldRun()								{ return !isWaitingForModule() && ( isSaveImg() || isEditImg() || isRewriteImgs() || isEmpty() ) && form();	}

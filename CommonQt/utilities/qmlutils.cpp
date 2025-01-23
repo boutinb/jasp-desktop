@@ -5,9 +5,6 @@
 #include "qutils.h"
 #include "log.h"
 #include "columnencoder.h"
-#include "models/term.h"
-#include "jaspcontrol.h"
-#include "altnavpostfixassignmentstrategy.h"
 
 #ifdef linux
 #include <QtGlobal>
@@ -197,8 +194,4 @@ void QmlUtils::setGlobalPropertiesInQMLContext(QQmlContext * ctxt)
 	ctxt->setContextProperty("MACOS",					isMac);
 	ctxt->setContextProperty("LINUX",					isLinux);
 	ctxt->setContextProperty("WINDOWS",					isWindows);
-	ctxt->setContextProperty("INTERACTION_SEPARATOR",	Term::separator);
-
-	qmlRegisterUncreatableType<JASPControl>(					"JASP",		1, 0, "JASP",					"Impossible to create JASP Object");
-	qmlRegisterUncreatableType<ALTNavPostfixAssignmentStrategy>("JASP",		1, 0, "AssignmentStrategy",		"Can't make it"	);
 }

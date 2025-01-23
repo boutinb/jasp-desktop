@@ -36,7 +36,7 @@ using namespace std;
 
 const QString AnalysisForm::rSyntaxControlName = "__RSyntaxTextArea";
 
-AnalysisForm::AnalysisForm(QQuickItem *parent) : QQuickItem(parent)
+AnalysisForm::AnalysisForm(QQuickItem *parent) : AnalysisFormBase(parent)
 {
 	setObjectName("AnalysisForm");
 
@@ -874,7 +874,7 @@ std::vector<std::vector<string> > AnalysisForm::_getValuesFromJson(const Json::V
 	return result;
 }
 
-void  AnalysisForm::setBoundValue(const string &name, const Json::Value &value, const Json::Value &meta, const QVector<JASPControl::ParentKey> &parentKeys)
+void  AnalysisForm::setBoundValue(const string &name, const Json::Value &value, const Json::Value &meta, const QVector<AnalysisBase::ParentKey> &parentKeys)
 {
 	if (_analysis)
 		_analysis->setBoundValue(name, value, meta, parentKeys);

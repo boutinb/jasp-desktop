@@ -6,6 +6,7 @@
 
 #include "utilities/qutils.h"
 #include "columntype.h"
+#include "analysisbase.h"
 
 class AnalysisForm;
 class JASPListControl;
@@ -56,14 +57,6 @@ protected:
 	typedef std::set<const JASPControl*>	SetConst;
 
 public:
-	struct ParentKey
-	{
-		std::string name, key;
-		std::vector<std::string> value;
-		ParentKey(const std::string & _name, const std::string & _key, const std::vector<std::string>& _value)
-			: name(_name), key(_key), value(_value) {}
-	};
-
 	// Any addition here should also be added manually to ControlTypeToFriendlyString... I couldnt get this to work with DECLARE_ENUM...
 	enum class ControlType {
 		  DefaultControl
@@ -157,7 +150,7 @@ public:
 
 	QString				humanFriendlyLabel()		const;
 
-	QVector<JASPControl::ParentKey>	getParentKeys();
+    QVector<AnalysisBase::ParentKey>	getParentKeys();
 
 	static QString					ControlTypeToFriendlyString(ControlType controlType);
 	static QList<JASPControl*>		getChildJASPControls(const QQuickItem* item, bool removeUnecessaryGroups = false);

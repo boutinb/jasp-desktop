@@ -1,5 +1,23 @@
+//
+// Copyright (C) 2013-2025 University of Amsterdam
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public
+// License along with this program.  If not, see
+// <http://www.gnu.org/licenses/>.
+//
+
 #include "analysisbase.h"
-#include "analysisform.h"
+#include "analysisformbase.h"
 #include "log.h"
 #include "utilities/qmlutils.h"
 
@@ -73,7 +91,7 @@ void AnalysisBase::createForm(QQuickItem* parentItem)
 
 		Log::log() << "Created a form, got pointer " << newForm << std::endl;
 
-		_analysisForm = qobject_cast<AnalysisForm *>(newForm);
+        _analysisForm = qobject_cast<AnalysisFormBase *>(newForm);
 
 		if(!_analysisForm)
 			throw std::logic_error("QML file '" + qmlFormPath(false, false) + "' didn't spawn into AnalysisForm, but into: " + (newForm ? fq(newForm->objectName()) : "null"));
@@ -116,7 +134,7 @@ void AnalysisBase::setQmlError(const QString &newQmlError)
 
 // This method tries to find the parent keys in _boundValues Json object
 // If found, it sets the path to this reference to parentNames and returns a reference of the sub Json object
-Json::Value& AnalysisBase::_getParentBoundValue(const QVector<JASPControl::ParentKey>& parentKeys, QVector<std::string>& parentNames, bool& found, bool createAnyway)
+Json::Value& AnalysisBase::_getParentBoundValue(const QVector<AnalysisBase::ParentKey>& parentKeys, QVector<std::string>& parentNames, bool& found, bool createAnyway)
 {
 	found = (parentKeys.size() == 0);
 	Json::Value* parentBoundValue = &_boundValues;
@@ -208,7 +226,7 @@ Json::Value& AnalysisBase::_getParentBoundValue(const QVector<JASPControl::Paren
 	return *parentBoundValue;
 }
 
-std::string AnalysisBase::_displayParentKeys(const QVector<JASPControl::ParentKey> & parentKeys) const
+std::string AnalysisBase::_displayParentKeys(const QVector<AnalysisBase::ParentKey> & parentKeys) const
 {
 	std::string keys;
 	bool firstKey = true;
@@ -231,7 +249,7 @@ std::string AnalysisBase::_displayParentKeys(const QVector<JASPControl::ParentKe
 	return keys;
 }
 
-void AnalysisBase::setBoundValue(const std::string &name, const Json::Value &value, const Json::Value &meta, const QVector<JASPControl::ParentKey>& parentKeys)
+void AnalysisBase::setBoundValue(const std::string &name, const Json::Value &value, const Json::Value &meta, const QVector<AnalysisBase::ParentKey>& parentKeys)
 {
 	bool found = false;
 	QVector<std::string> parents;
@@ -261,7 +279,7 @@ void AnalysisBase::setBoundValues(const Json::Value &boundValues)
 	_boundValues = boundValues;
 }
 
-const Json::Value &AnalysisBase::boundValue(const std::string &name, const QVector<JASPControl::ParentKey> &parentKeys)
+const Json::Value &AnalysisBase::boundValue(const std::string &name, const QVector<AnalysisBase::ParentKey> &parentKeys)
 {
 	bool found = false;
 	QVector<std::string> parentNames;

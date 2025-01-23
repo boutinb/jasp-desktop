@@ -22,7 +22,7 @@
 #include "appinfo.h"
 #include "dirs.h"
 #include "analyses.h"
-#include "analysisform.h"
+#include "analysisformbase.h"
 //#include <boost/bind.hpp>
 #include "utilities/qutils.h"
 #include "utilities/settings.h"
@@ -336,10 +336,10 @@ void Analysis::createForm(QQuickItem* parentItem)
 
 	if (_analysisForm)
 	{
-		connect(this,					&Analysis::rSourceChanged,			_analysisForm,	&AnalysisForm::rSourceChanged				);
-		connect(this,					&Analysis::refreshTableViewModels,	_analysisForm,	&AnalysisForm::refreshTableViewModels		);
-		connect(this, 					&Analysis::titleChanged,			_analysisForm,	&AnalysisForm::titleChanged					);
-		connect(this,					&Analysis::needsRefreshChanged,		_analysisForm,	&AnalysisForm::needsRefreshChanged			);
+        connect(this,					&Analysis::rSourceChanged,			_analysisForm,	&AnalysisFormBase::rSourceChanged				);
+        connect(this,					&Analysis::refreshTableViewModels,	_analysisForm,	&AnalysisFormBase::refreshTableViewModels		);
+        connect(this, 					&Analysis::titleChanged,			_analysisForm,	&AnalysisFormBase::titleChanged					);
+        connect(this,					&Analysis::needsRefreshChanged,		_analysisForm,	&AnalysisFormBase::needsRefreshChanged			);
 		connect(this,					&Analysis::boundValuesChanged,		this,			&Analysis::setRSyntaxTextInResult,		Qt::QueuedConnection	);
 
 		setRSyntaxTextInResult();
