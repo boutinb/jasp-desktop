@@ -21,8 +21,6 @@
 
 #include "listmodeldraggable.h"
 #include "terms.h"
-#include "variableinfo.h"
-#include "sortmenumodel.h"
 #include "sortable.h"
 
 class ListModelAssignedInterface;

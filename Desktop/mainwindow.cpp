@@ -41,10 +41,9 @@
 
 #include "gui/jaspversionchecker.h"
 #include "gui/preferencesmodel.h"
-#include "ALTNavigation/altnavcontrol.h"
 #include "utilities/messageforwarder.h"
-
 #include "modules/activemodules.h"
+
 #include "modules/dynamicmodules.h"
 #include "modules/menumodel.h"
 
@@ -60,17 +59,12 @@
 #include "utilities/reporter.h"
 
 #include "widgets/filemenu/filemenu.h"
-#include "rsyntax/formulabase.h"
 #include "utilities/desktopcommunicator.h"
 
 #include "boost/iostreams/stream.hpp"
 #include <boost/iostreams/device/null.hpp>
 
 #include "communitydefs.h"
-#include <QtPlugin>
-
-//The following seemed to be necessary for loading the plugin on Windows (making it static so it links properly)
-Q_IMPORT_PLUGIN(JASPQmlPlugin)
 
 using namespace std;
 using namespace Modules;
@@ -152,7 +146,6 @@ MainWindow::MainWindow(QApplication * application) : QObject(application), _appl
 	qmlRegisterUncreatableType<PlotEditor::AxisModel>			("JASP.PlotEditor",	1, 0, "AxisModel",					"Can't make it");
 	qmlRegisterUncreatableType<PlotEditor::PlotEditorModel>		("JASP.PlotEditor",	1, 0, "PlotEditorModel",			"Can't make it");
 
-	ALTNavControl::ctrl()->enableAlTNavigation(_preferences->ALTNavModeActive());
 	QmlUtils::setGlobalPropertiesInQMLContext(_qml->rootContext());
 
 	_dynamicModules->registerQMLTypes();
@@ -408,7 +401,6 @@ void MainWindow::makeConnections()
 	connect(_engineSync,			&EngineSync::checkDataSetForUpdates,				_package,				&DataSetPackage::checkDataSetForUpdates,					Qt::QueuedConnection);
 
 	qRegisterMetaType<columnType>();
-	qRegisterMetaType<ListModel*>();
 	qRegisterMetaType<DbType>();
 
 	connect(_computedColumnsModel,	&ComputedColumnModel::sendComputeCode,				_engineSync,			&EngineSync::computeColumn,									Qt::QueuedConnection);
@@ -488,7 +480,6 @@ void MainWindow::makeConnections()
 	connect(_preferences,			&PreferencesModel::normalizedNotationChanged,		_resultsJsInterface,	&ResultsJsInterface::setNormalizedNotationHandler			);
 	connect(_preferences,			&PreferencesModel::developerFolderChanged,			_dynamicModules,		&DynamicModules::uninstallJASPDeveloperModule				);
 	connect(_preferences,			&PreferencesModel::showRSyntaxInResultsChanged,		_analyses,				&Analyses::showRSyntaxInResults								);
-	connect(_preferences,			&PreferencesModel::ALTNavModeActiveChanged,			ALTNavControl::ctrl(),	&ALTNavControl::enableAlTNavigation							);
 	connect(_preferences,			&PreferencesModel::orderByValueByDefaultChanged,	[&](){	Column::setAutoSortByValuesByDefault(PreferencesModel::prefs()->orderByValueByDefault()); });
 	
 	Column::setAutoSortByValuesByDefault(PreferencesModel::prefs()->orderByValueByDefault());
@@ -696,6 +687,7 @@ void MainWindow::setQmlImportPaths()
 
 	newImportPaths.append(":/jasp-stats.org/imports");
 	newImportPaths.append("qrc:///components");
+	newImportPaths.append("../QMLComponents");
 	newImportPaths.append(_dynamicModules->importPaths());
 
 	if(_qml->importPathList() == newImportPaths)

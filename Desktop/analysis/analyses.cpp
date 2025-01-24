@@ -19,8 +19,8 @@
 #include "analyses.h"
 #include "utilities/settings.h"
 #include "modules/ribbonmodel.h"
-#include "analysisform.h"
 #include "knownissues.h"
+#include "analysisformbase.h"
 #include "timers.h"
 #include <QTimer>
 #include <QFile>

@@ -10,7 +10,8 @@
 #include "models/term.h"
 #include "jaspcontrol.h"
 #include "altnavpostfixassignmentstrategy.h"
-
+#include "altnavcontrol.h"
+#include "log.h"
 
 //![plugin]
 class JASPQmlPlugin : public QQmlEngineExtensionPlugin
@@ -26,13 +27,15 @@ class JASPQmlPlugin : public QQmlEngineExtensionPlugin
 		QLocale::setDefault(QLocale(QLocale::English)); // make decimal points == .
 
 		QmlUtils::setGlobalPropertiesInQMLContext(engine->rootContext());
-
 		PreferencesModelBase* prefModel = engine->rootContext()->contextProperty("preferencesModel").value<PreferencesModelBase*>();
-		if (prefModel == nullptr)
+		if (!prefModel)
 		{
 			prefModel = new PreferencesModelBase();
 			engine->rootContext()->setContextProperty("preferencesModel",		prefModel);
 		}
+
+		ALTNavControl::ctrl()->enableAlTNavigation(prefModel->ALTNavModeActive());
+		connect(prefModel,	&PreferencesModelBase::ALTNavModeActiveChanged,	ALTNavControl::ctrl(),	&ALTNavControl::enableAlTNavigation);
 
 		if (engine->rootContext()->contextProperty("jaspTheme").isNull())
 		{
@@ -53,10 +56,6 @@ class JASPQmlPlugin : public QQmlEngineExtensionPlugin
 										 "Error: only enums");
 		if (!KnownIssues::issues())
 			new KnownIssues(this);
-
-		// TODO: I don't know anymore why I had to add these lines for the pilot project. It does not seem to be needed.
-		// ALTNavControl::ctrl()->enableAlTNavigation(prefModel->ALTNavModeActive());
-		// connect(prefModel,	&PreferencesModelBase::ALTNavModeActiveChanged,	ALTNavControl::ctrl(),	&ALTNavControl::enableAlTNavigation);
 
 	}
 };

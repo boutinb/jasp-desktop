@@ -15,7 +15,7 @@ message(STATUS "appdirs.h is successfully generated...")
 file(GLOB_RECURSE HEADER_FILES "${CMAKE_CURRENT_LIST_DIR}/*.h")
 file(GLOB_RECURSE SOURCE_FILES "${CMAKE_CURRENT_LIST_DIR}/*.cpp")
 
-add_library(CommonQt STATIC ${SOURCE_FILES} ${HEADER_FILES})
+add_library(CommonQt SHARED ${SOURCE_FILES} ${HEADER_FILES})
 
 if(LINUX)
   target_link_libraries(CommonQt PUBLIC ${_LIB_RT})

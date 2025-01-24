@@ -34,8 +34,6 @@
 
 using namespace std;
 
-const QString AnalysisForm::rSyntaxControlName = "__RSyntaxTextArea";
-
 AnalysisForm::AnalysisForm(QQuickItem *parent) : AnalysisFormBase(parent)
 {
 	setObjectName("AnalysisForm");

@@ -22,8 +22,6 @@
 #include <QAbstractListModel>
 #include "sortable.h"
 
-class ListModelAvailableInterface;
-
 class SortMenuModel : public QAbstractListModel
 {
 	Q_OBJECT

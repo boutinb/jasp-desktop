@@ -107,7 +107,7 @@ bool RCommander::addAnalysis(const QString &code)
 	{
 		Analysis* analysis = Analyses::analyses()->createAnalysis(moduleName, analysisName);
 		if (analysis)
-			analysis->sendRScript(code, AnalysisForm::rSyntaxControlName, false);
+			analysis->sendRScript(code, analysis->form()->rSyntaxControlName, false);
 		else
 			appendToOutput("> " + tr("Analysis not found"));
 	}

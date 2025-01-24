@@ -25,7 +25,7 @@
 #include <QFileSystemWatcher>
 
 #include "analysis/analyses.h"
-#include "analysisform.h"
+#include "analysisformbase.h"
 #include "data/asyncloader.h"
 #include "data/asyncloaderthread.h"
 #include "data/columnsmodel.h"
@@ -288,7 +288,7 @@ private:
 	void checkForUpdates();
 
 private:
-	typedef std::map<Analysis*, AnalysisForm*> analysisFormMap;
+	typedef std::map<Analysis*, AnalysisFormBase*> analysisFormMap;
 
 	static MainWindow			*	_singleton;
 

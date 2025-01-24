@@ -28,18 +28,21 @@ class AnalysisFormBase : public QQuickItem
     Q_OBJECT
 
 public:
-    explicit AnalysisFormBase(QQuickItem * parent = nullptr) : QQuickItem(parent) {} ;
+	explicit AnalysisFormBase(QQuickItem * parent = nullptr) : QQuickItem(parent) {} ;
 
-    Q_INVOKABLE virtual bool		initialized()                                   const           = 0;
-                virtual void        cleanUpForm()                                                   = 0;
-                virtual bool        hasError()                                                      = 0;
-                virtual bool		runOnChange()                                                   = 0;
-                virtual stringset	usedVariables()                                                 = 0;
-                virtual void		setMustBe(		stringset						mustBe)         = 0;
-                virtual void		setMustContain(	std::map<std::string,stringset> mustContain)    = 0;
-                virtual void		setHasVolatileNotes(bool hasVolatileNotes)                      = 0;
-                virtual bool		formCompleted()                                 const           = 0;
-                virtual QString		generateRSyntax(bool useHtml = false)           const           = 0;
+	Q_INVOKABLE virtual bool		initialized()									const			= 0;
+				virtual void		cleanUpForm()													= 0;
+				virtual bool		hasError()														= 0;
+				virtual bool		runOnChange()													= 0;
+				virtual stringset	usedVariables()													= 0;
+				virtual void		setMustBe(		stringset						mustBe)			= 0;
+				virtual void		setMustContain(	std::map<std::string,stringset> mustContain)	= 0;
+				virtual void		setHasVolatileNotes(bool hasVolatileNotes)						= 0;
+				virtual bool		formCompleted()									const			= 0;
+				virtual QString		generateRSyntax(bool useHtml = false)			const			= 0;
+
+				const QString	rSyntaxControlName = "__RSyntaxTextArea";
+
 
 public slots:
                 virtual void            setAnalysis(        AnalysisBase *	analysis)                   = 0;
@@ -53,7 +56,9 @@ signals:
     void	refreshTableViewModels();
     void	titleChanged();
     void	needsRefreshChanged();
+	void	languageChanged();
 
 };
+
 
 #endif // ANALYSISFORMBASE_H

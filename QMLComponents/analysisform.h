@@ -111,7 +111,6 @@ signals:
 	void					formChanged(				AnalysisBase	*	analysis);
 	void					formCompletedSignal();
 	void					errorMessagesItemChanged();
-	void					languageChanged();
 	void					hasVolatileNotesChanged();
 	void					runOnChangeChanged();
 	void					infoChanged();
@@ -182,8 +181,6 @@ public:
 	void					setActiveJASPControl(JASPControl* control, bool hasActiveFocus);
 	JASPControl*			getActiveJASPControl()	{ return _activeJASPControl; }
 
-	static const QString	rSyntaxControlName;
-		
 	GENERIC_SET_FUNCTION(Info					, _info					, infoChanged					, QString		)
 	GENERIC_SET_FUNCTION(InfoBottom				, _infoBottom			, infoBottomChanged				, QString		)
 	
