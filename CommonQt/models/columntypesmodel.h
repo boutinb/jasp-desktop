@@ -22,10 +22,11 @@
 #include <QAbstractListModel>
 #include <QStringList>
 #include "columntype.h"
+#include "commotqtglobals.h"
 
 ///
 /// A simple qt model with the columntypes, their respective icons and names
-class ColumnTypesModel : public QAbstractListModel
+class COMMONQT_EXPORTS ColumnTypesModel : public QAbstractListModel
 {
 	Q_OBJECT
 

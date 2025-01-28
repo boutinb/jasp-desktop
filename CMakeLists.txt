@@ -94,6 +94,7 @@ include(Config)
 # ------ Conan Dependency Manager
 
 include(Conan)
+unset(CMAKE_MSVC_RUNTIME_LIBRARY)
 
 # ------ JASP Config
 

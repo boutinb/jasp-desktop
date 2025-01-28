@@ -26,10 +26,11 @@
 #include "utils.h"
 #include "columntype.h"
 #include "utilities/qutils.h"
+#include "commotqtglobals.h"
 
 class AnalysisFormBase;
 
-class AnalysisBase : public QObject
+class COMMONQT_EXPORTS AnalysisBase : public QObject
 {
 	Q_OBJECT
 

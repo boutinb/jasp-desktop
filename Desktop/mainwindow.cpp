@@ -688,14 +688,15 @@ void MainWindow::setQmlImportPaths()
 	newImportPaths.append(":/jasp-stats.org/imports");
 	newImportPaths.append("qrc:///components");
 	newImportPaths.append("../QMLComponents");
-	newImportPaths.append(_dynamicModules->importPaths());
+    newImportPaths.append("./QMLComponents");
+    newImportPaths.append(_dynamicModules->importPaths());
 
 	if(_qml->importPathList() == newImportPaths)
 		return;
 
 	_qml->setImportPathList(newImportPaths);
 
-	if(_preferences->developerMode())
+    //if(_preferences->developerMode())
 	{
 		Log::log() << "QML has the following import paths:\n";
 

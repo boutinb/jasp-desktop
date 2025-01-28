@@ -5,6 +5,7 @@
 #include <QJSValue>
 #include <QQuickItem>
 #include <QDir>
+#include "commotqtglobals.h"
 
 struct qmlLoadError  : public std::runtime_error
 {
@@ -13,7 +14,7 @@ struct qmlLoadError  : public std::runtime_error
 };
 
 /// Simply links through utilities for use in and around QML
-class QmlUtils : public QObject
+class COMMONQT_EXPORTS QmlUtils : public QObject
 {
 	Q_OBJECT
 public:
@@ -39,7 +40,7 @@ public slots:
 
 };
 
-QObject * instantiateQml(							const QUrl 	& filePath, const std::string & moduleName,																		QQmlContext * ctxt = nullptr);
-QObject * instantiateQml(const QString 	& qmlTxt, 	const QUrl & url, 		const std::string & moduleName, const std::string & whatAmILoading, const std::string & filename, 	QQmlContext * ctxt = nullptr);
+COMMONQT_EXPORTS QObject * instantiateQml(							const QUrl 	& filePath, const std::string & moduleName,																		QQmlContext * ctxt = nullptr);
+COMMONQT_EXPORTS QObject * instantiateQml(const QString 	& qmlTxt, 	const QUrl & url, 		const std::string & moduleName, const std::string & whatAmILoading, const std::string & filename, 	QQmlContext * ctxt = nullptr);
 
 #endif // QMLUTILS_H

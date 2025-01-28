@@ -24,6 +24,7 @@
 #include <QAbstractItemModel>
 #include <QQmlContext>
 #include "columntype.h"
+#include "commotqtglobals.h"
 
 class VariableInfoProvider;
 class DataSet;
@@ -34,7 +35,7 @@ class DataSet;
 // The VariableInfoProvider and VariableInfoConsumer are classes used by ColumnsModel, ListModel or SourceItem, that are already QObject classes.
 // As a class cannot derive from 2 QObject classes, the VariableInfoProvider and VariableInfoConsumer cannot be QObject classes.
 // So we just use the VariableInfo class (which is a singleton intialized at the start of the application) to propagate the signals
-class VariableInfo : public QObject
+class COMMONQT_EXPORTS VariableInfo : public QObject
 {
 	Q_OBJECT
 public:

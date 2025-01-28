@@ -19,9 +19,11 @@
 #ifndef SORTABLE_H
 #define SORTABLE_H
 
+#include "commotqtglobals.h"
+
 class SortMenuModel;
 
-class Sortable
+class COMMONQT_EXPORTS Sortable
 {
 
 public:

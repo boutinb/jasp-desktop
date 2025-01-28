@@ -10,12 +10,14 @@ list(APPEND CMAKE_MESSAGE_CONTEXT CommonQt)
 
 configure_file(${CMAKE_CURRENT_LIST_DIR}/utilities/appdirs.h.in
                ${CMAKE_CURRENT_LIST_DIR}/utilities//appdirs.h)
-message(STATUS "appdirs.h is successfully generated...")
+message(STATUS "appdirs.h is successfully generated......")
 
 file(GLOB_RECURSE HEADER_FILES "${CMAKE_CURRENT_LIST_DIR}/*.h")
 file(GLOB_RECURSE SOURCE_FILES "${CMAKE_CURRENT_LIST_DIR}/*.cpp")
 
 add_library(CommonQt SHARED ${SOURCE_FILES} ${HEADER_FILES})
+
+target_compile_definitions(CommonQt PRIVATE JASP_COMMONQT_LIB)
 
 if(LINUX)
   target_link_libraries(CommonQt PUBLIC ${_LIB_RT})

@@ -2,10 +2,11 @@
 #define DESKTOPCOMMUNICATOR_H
 
 #include <QObject>
+#include "commotqtglobals.h"
 
 ///This class only exists to allow signal-slot connections to be made between certain classes in Desktop and in QMLComponents.
 /// And to easily split that off when building for R -only
-class DesktopCommunicator : public QObject
+class COMMONQT_EXPORTS DesktopCommunicator : public QObject
 {
 	Q_OBJECT
 public:

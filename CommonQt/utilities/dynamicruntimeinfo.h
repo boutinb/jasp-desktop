@@ -12,8 +12,9 @@
 #include <cstdint>
 #include <string>
 #include <map>
+#include "commotqtglobals.h"
 
-class DynamicRuntimeInfo 
+class COMMONQT_EXPORTS DynamicRuntimeInfo
 {
 public:
 	enum RuntimeEnvironment{ ZIP, MSIX, MSI, R, FLATPAK, MAC, LINUX_LOCAL, UNKNOWN };

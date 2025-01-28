@@ -2,8 +2,9 @@
 #define PREFERENCESMODELBASE_H
 
 #include <QObject>
+#include "commotqtglobals.h"
 
-class PreferencesModelBase : public QObject
+class COMMONQT_EXPORTS PreferencesModelBase : public QObject
 {
 	Q_OBJECT
 public:

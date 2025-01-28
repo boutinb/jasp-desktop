@@ -5,6 +5,7 @@
 #include <QColor>
 #include <QFont>
 #include <QFontMetricsF>
+#include "commotqtglobals.h"
 
 #define theme_distanceType	float
 #define theme_sizeType		float
@@ -12,7 +13,7 @@
 
 /// Basic qquickItem we use a theme solution and to easily change theme by simply changing the one referenced in the global environment
 /// Currently only two are instantiated by Desktop during loadQml()
-class JaspTheme : public QQuickItem
+class COMMONQT_EXPORTS JaspTheme : public QQuickItem
 {
 	Q_OBJECT
 
