@@ -3,7 +3,7 @@
 
 #include <QQuickItem>
 #include <string>
-#include "commotqtglobals.h"
+#include "commonqtglobals.h"
 
 ///
 /// Singleton class for shwoing warnings, messages, etc

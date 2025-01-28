@@ -12,7 +12,7 @@
 #include <cstdint>
 #include <string>
 #include <map>
-#include "commotqtglobals.h"
+#include "commonqtglobals.h"
 
 class COMMONQT_EXPORTS DynamicRuntimeInfo
 {

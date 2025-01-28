@@ -21,7 +21,7 @@
 
 #include <QAbstractListModel>
 #include "sortable.h"
-#include "commotqtglobals.h"
+#include "commonqtglobals.h"
 
 class COMMONQT_EXPORTS SortMenuModel : public QAbstractListModel
 {

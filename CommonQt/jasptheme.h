@@ -5,7 +5,7 @@
 #include <QColor>
 #include <QFont>
 #include <QFontMetricsF>
-#include "commotqtglobals.h"
+#include "commonqtglobals.h"
 
 #define theme_distanceType	float
 #define theme_sizeType		float

@@ -39,6 +39,7 @@ class TempFiles
 
 public:
 	static void			init(long _sessionId);
+	static void			initGlobals(long _sessionId);
 	static void			attach(long _sessionId);
 	static void			heartbeat();
 

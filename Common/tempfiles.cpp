@@ -18,14 +18,11 @@
 #include "tempfiles.h"
 
 #include <iostream>
-#include <sstream>
 #include <fstream>
-
-#include "columnencoder.h"
 #include "utils.h"
-
 #include "dirs.h"
 #include "log.h"
+
 using namespace std;
 
 const long 				outOfDateDelta = 24 * 3600;
@@ -36,14 +33,18 @@ std::string				TempFiles::_clipboard		= "";
 int						TempFiles::_nextFileId		= 0;
 int						TempFiles::_nextTmpFolderId	= 0;
 
-void TempFiles::init(long sessionId)
+void TempFiles::initGlobals(long sessionId)
 {
 	_sessionId		= sessionId;
 	_nextFileId		= 0;
 	_sessionDirName	= Dirs::tempDir() + "/" + std::to_string(sessionId);
 	_statusFileName	= _sessionDirName +  "/status";
 	_clipboard		= Dirs::tempDir() + "/clipboard";
-	
+}
+
+void TempFiles::init(long sessionId)
+{
+	initGlobals(sessionId);
 	createSessionDir();
 }
 

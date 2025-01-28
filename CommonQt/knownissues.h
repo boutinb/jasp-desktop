@@ -5,7 +5,7 @@
 #include <json/json.h>
 #include "utilities/qutils.h"
 #include "stringutils.h"
-#include "commotqtglobals.h"
+#include "commonqtglobals.h"
 
 ///
 /// This class stores information per module and analysis that is pulled from the server occasionally (in JaspVersionChecker)

@@ -22,7 +22,7 @@
 #include <QAbstractListModel>
 #include <QStringList>
 #include "columntype.h"
-#include "commotqtglobals.h"
+#include "commonqtglobals.h"
 
 ///
 /// A simple qt model with the columntypes, their respective icons and names

@@ -5,7 +5,7 @@
 #include <QJSValue>
 #include <QQuickItem>
 #include <QDir>
-#include "commotqtglobals.h"
+#include "commonqtglobals.h"
 
 struct qmlLoadError  : public std::runtime_error
 {

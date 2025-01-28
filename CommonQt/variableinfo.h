@@ -24,7 +24,7 @@
 #include <QAbstractItemModel>
 #include <QQmlContext>
 #include "columntype.h"
-#include "commotqtglobals.h"
+#include "commonqtglobals.h"
 
 class VariableInfoProvider;
 class DataSet;

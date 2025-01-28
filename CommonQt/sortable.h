@@ -19,7 +19,7 @@
 #ifndef SORTABLE_H
 #define SORTABLE_H
 
-#include "commotqtglobals.h"
+#include "commonqtglobals.h"
 
 class SortMenuModel;
 

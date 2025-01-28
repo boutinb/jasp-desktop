@@ -21,7 +21,7 @@
 
 #include <QQuickItem>
 #include "utils.h"
-#include "commotqtglobals.h"
+#include "commonqtglobals.h"
 
 class AnalysisBase;
 class COMMONQT_EXPORTS AnalysisFormBase : public QQuickItem

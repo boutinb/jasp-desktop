@@ -11,6 +11,7 @@
 #include "jaspcontrol.h"
 #include "altnavpostfixassignmentstrategy.h"
 #include "altnavcontrol.h"
+#include "tempfiles.h"
 #include "log.h"
 
 //![plugin]
@@ -25,6 +26,9 @@ class JASPQmlPlugin : public QQmlEngineExtensionPlugin
 		QQmlEngineExtensionPlugin::initializeEngine(engine, uri);
 
 		QLocale::setDefault(QLocale(QLocale::English)); // make decimal points == .
+
+		int sessionId = engine->rootContext()->contextProperty("sessionId").toInt();
+		TempFiles::initGlobals(sessionId);
 
 		QmlUtils::setGlobalPropertiesInQMLContext(engine->rootContext());
 		PreferencesModelBase* prefModel = engine->rootContext()->contextProperty("preferencesModel").value<PreferencesModelBase*>();

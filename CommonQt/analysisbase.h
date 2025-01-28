@@ -26,7 +26,7 @@
 #include "utils.h"
 #include "columntype.h"
 #include "utilities/qutils.h"
-#include "commotqtglobals.h"
+#include "commonqtglobals.h"
 
 class AnalysisFormBase;
 

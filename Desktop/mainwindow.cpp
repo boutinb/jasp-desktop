@@ -569,7 +569,7 @@ void MainWindow::loadQML()
 	_qml->rootContext()->setContextProperty("jaspTheme",								nullptr											); //Will be set from jaspThemeChanged()!
 	_qml->rootContext()->setContextProperty("messages",									MessageForwarder::msgForwarder()				);
 	_qml->rootContext()->setContextProperty("qmlUtils",									new QmlUtils(this)								);
-
+	_qml->rootContext()->setContextProperty("sessionId",								int(ProcessInfo::currentPID())					);
 	_qml->rootContext()->setContextProperty("baseBlockDim",								20												); //should be taken from Theme
 	_qml->rootContext()->setContextProperty("baseFontSize",								16												);
 	_qml->rootContext()->setContextProperty("languageModel",							_languageModel									);
