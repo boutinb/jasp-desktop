@@ -142,17 +142,21 @@ void BoundControlRlangTextArea::_setBoundValues()
 	boundValue["modelOriginal"] = _textArea->text().toStdString();
 	boundValue["model"]			= _textEncoded.toStdString();
 
-	Json::Value columns(Json::arrayValue);
-	Terms	terms;
+	Json::Value encodedColumns(Json::arrayValue),
+				columns(Json::arrayValue);
+	Terms		terms;
 
 	for (const std::string& column : _noPrefixUsedColumnNames)
 	{
 		terms.add(Term(column, _textArea->getVariableType(tq(column))));
-		columns.append(ColumnEncoder::columnEncoder()->encode(column));
+		encodedColumns.append(ColumnEncoder::columnEncoder()->encode(column));
+		columns.append(column);
 	}
 
 	_textArea->model()->initTerms(terms);
-	boundValue["columns"] = columns;
+	boundValue["columns"] = encodedColumns;
+	boundValue["value"] = columns;
+	boundValue["types"] = terms.types();
 
 	Json::Value prefixedColumns(Json::objectValue);
 	for(auto& prefixSet : _prefixedUsedColumnNames) {
