@@ -1544,6 +1544,9 @@ void DatabaseInterface::labelsLoad(const Columns &columns)//, std::function<void
 		}
 	};
 
+	for(Column * column : columns)
+		column->labelsClear(false);
+
 	runStatements(statement.str(), prepare, processRow);
 
 	for(Column * column : columns)
