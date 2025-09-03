@@ -35,6 +35,8 @@ list(REMOVE_ITEM SOURCE_FILES "${CMAKE_CURRENT_LIST_DIR}/container_permission_ch
 
 file(GLOB_RECURSE BUNDLE_RESOURCES "${CMAKE_SOURCE_DIR}/Resources/*")
 
+find_package(Qt6 REQUIRED COMPONENTS Core)
+
 qt_add_executable(
   JASP
   ${SYSTEM_TYPE}
@@ -155,6 +157,7 @@ target_link_libraries(
     Qt::DBus
     Qt::QmlWorkerScript
     Qt::LabsFolderListModel
+    Qt::QuickTest
     # System
     ZLIB::ZLIB
     Iconv::Iconv
@@ -188,6 +191,7 @@ if(NOT WINDOWS)
 	PRIVATE
     # When using Conan, we need to provide the static libraries directly, for some reason!
     ${Iconv_LIBRARY_LIST})
+target_link_libraries(JASP PRIVATE Qt6::Core)
 endif()
 
 if(LINUX)

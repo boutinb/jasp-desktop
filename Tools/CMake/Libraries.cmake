@@ -109,6 +109,7 @@ if(NOT FLATPAK_USED)
                QuickControls2Impl
                QmlWorkerScript
                QuickWidgets
+               QuickTest
                Core5Compat)
 
 else()
@@ -131,6 +132,7 @@ else()
                QuickTemplates2
                LabsFolderListModel
                Quick
+               QuickTest
                QuickLayouts
                QuickControls2
                QuickControls2Impl

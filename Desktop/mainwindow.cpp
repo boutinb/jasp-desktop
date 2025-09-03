@@ -28,6 +28,7 @@
 #include <QtWebEngineQuick/qtwebenginequickglobal.h>
 #include <QAction>
 #include <QMenuBar>
+#include <QtQuickTest/quicktest.h>
 #include <exception>
 #include <iostream>
 
@@ -1973,6 +1974,7 @@ void MainWindow::testLoadedJaspFile(int timeOut, bool save)
 	if(save)
 		resultXmlCompare::compareResults::theOne()->enableSaving();
 
+
 	QTimer::singleShot(60000 * timeOut, this, &MainWindow::unitTestTimeOut);
 }
 
@@ -1995,12 +1997,20 @@ void MainWindow::startComparingResults()
 {
 	if (resultXmlCompare::compareResults::theOne()->testMode())
 	{
-		_analyses->refreshAllAnalyses();
+		//_analyses->refreshAllAnalyses();
+		QTEST_SET_MAIN_SOURCE_PATH
+		char** testArgV(new char *[2]);
+		testArgV[0]				= (char*)"UnitTestCase";
+		int testArgC			= 1;
+		testArgV[testArgC]		= 0;
+		const char* name		= "MinMaxTest.qml";
+		const char* sourceDir	= "/Users/brunoboutin/JASP/source/jaspTestModule/inst/qml/";
+		quick_test_main(testArgC, testArgV, name, sourceDir);
+
+
 		resultXmlCompare::compareResults::theOne()->setRefreshCalled();
 	}
 }
-
-
 
 void MainWindow::analysesForComparingDoneAlready()
 {

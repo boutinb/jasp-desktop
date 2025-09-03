@@ -31,6 +31,8 @@
 #include "results/resultsjsinterface.h"
 #include "utilities/messageforwarder.h"
 #include "gui/jaspConfiguration/jaspconfiguration.h"
+#include <QtQuickTest/quicktest.h>
+#include "setup.h"
 
 Analysis::Analysis(size_t id, Modules::AnalysisEntry * analysisEntry, std::string title, std::string moduleVersion, Json::Value *data) :
 	  AnalysisBase(Analyses::analyses(), moduleVersion),
@@ -618,7 +620,16 @@ QString	Analysis::fullHelpPath(QString helpFileName)
 
 void Analysis::duplicateMe()
 {
-	Analyses::analyses()->duplicateAnalysis(_id);
+	//Analyses::analyses()->duplicateAnalysis(_id);
+	QTEST_SET_MAIN_SOURCE_PATH
+	char** testArgV(new char *[2]);
+	testArgV[0]				= (char*)"UnitTestCase";
+	int testArgC			= 1;
+	testArgV[testArgC]		= 0;
+	const char* name		= _qml.c_str();
+	const char* sourceDir	= _lastQmlFormPath.c_str();
+	Setup setup;
+	quick_test_main_with_setup(testArgC, testArgV, name, sourceDir, &setup);
 }
 
 QString Analysis::generateWrapper()
