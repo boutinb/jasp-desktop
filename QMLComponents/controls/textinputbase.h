@@ -84,6 +84,7 @@ private:
 	QString		_getDoubleArrayValue(const std::vector<double>& dblValues);
 
 	void		_setBoundValue();
+	bool		_isColumnType()				const;
 
 	TextInputType			_inputType;
 	QString					_label,

@@ -166,6 +166,20 @@ Json::Value TextInputBase::createJson() const
 	if (value.toString() == "" && !_defaultValue.isNull())	
 		value = _defaultValue;
 
+	if (_isColumnType() && value.toString() != "")
+	{
+		// Ensure that the default value is not an existing variable name
+		QString defValue = value.toString(),
+				uniqueValue = defValue;
+		int		suffix = 1;
+		QStringList varaibleNames = VariableInfo::info()->provider()->provideInfo(VariableInfo::VariableNames).toStringList();
+
+		while (varaibleNames.contains(uniqueValue))
+			uniqueValue = defValue + QString::number(++suffix);
+
+		value = uniqueValue;
+	}
+
 	return _getJsonValue(value);
 }
 
@@ -319,8 +333,14 @@ void TextInputBase::checkIfColumnIsFreeOrMine()
 
 bool TextInputBase::encodeValue() const
 {
+	return _isColumnType();
+}
+
+bool TextInputBase::_isColumnType() const
+{
 	return _inputType == TextInputType::ComputedColumnType || _inputType == TextInputType::AddColumnType || _inputType == TextInputType::CheckColumnFreeOrMineType;
 }
+
 
 bool TextInputBase::_formulaResultInBounds(double result)
 {
@@ -476,4 +496,3 @@ void TextInputBase::_setBoundValue()
 	else setBoundValue(_getJsonValue(_value));
 
 }
-
