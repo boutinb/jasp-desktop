@@ -133,7 +133,10 @@ bool RowControls::addJASPControl(JASPControl *control)
 		success = true;
 
 	if (!control->name().isEmpty() && success)
+	{
 		_rowJASPControlMap[control->name()] = control;
+		connect(control, &QObject::destroyed, this, [this, control] {_rowJASPControlMap.remove(control->name());});
+	}
 
 	return success;
 }

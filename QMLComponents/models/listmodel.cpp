@@ -275,7 +275,20 @@ JASPControl *ListModel::getRowControl(const QString &key, const QString &name) c
 
 bool ListModel::addRowControl(const QString &key, JASPControl *control)
 {
-	return _rowControlsMap.contains(key) ? _rowControlsMap[key]->addJASPControl(control) : false;
+	if (!_rowControlsMap.contains(key))
+	{
+		Log::log() << "Try to add control " << control->name() << " to " << _listView->name() << " but no row with key " << key << " exists." << std::endl;
+		return false;
+	}
+
+	_rowControlsMap[key]->addJASPControl(control);
+	if (_listView->initialized())
+	{
+		control->setUp();
+		initTerms(terms());
+	}
+
+	return true;
 }
 
 QStringList ListModel::getUsedTypes() const
