@@ -62,17 +62,25 @@ import JASP.Controls
 
     \section1 Example
 
-    \qml
-    CheckBox {
-        name: "includeCI"
-        label: qsTr("Confidence interval")
-        checked: true
+	\qml
+	CheckBox { name: "pearson"; label: qsTr("Pearson"); checked: true }
+	\endqml
 
-        CIField {
-            name: "ciWidth"
-        }
-    }
-    \endqml
+	\image {/Docs/development/img/qml-guide/CheckBox_example_1.png} {Simple CheckBox}
+
+	\qml
+	CheckBox
+	{
+		name: "homogeneityCorrections"
+		label: qsTr("Homogeneity corrections")
+		columns: 3
+		CheckBox { name: "homogeneityNone";   label: qsTr("None")           ; checked: true }
+		CheckBox { name: "homogeneityBrown";	label: qsTr("Brown-Forsythe") ; checked: true }
+		CheckBox { name: "homogeneityWelch";	label: qsTr("Welch")          ; checked: true }
+	}
+	\endqml
+
+	\image {/Docs/development/img/qml-guide/CheckBox_example_2.png} {CheckBox with sub CheckBoxes}
 */
 CheckBoxBase
 {

@@ -12,11 +12,11 @@
 <div class="descr" id="details">
 <h2 id="introduction">Introduction</h2>
 <p>Welcome to the JASP QML Reference documentation. This library contains the custom controls used to build JASP analysis modules.</p>
-<h2 id="getting-started">Getting Started</h2>
-<p>To use these controls, import the module in your QML file:</p>
-<pre class="cpp" translate="no">import JASP<span class="operator">.</span>Controls <span class="number">1.0</span></pre>
-<h2 id="key-components">Key Components</h2>
-<p>See the JASP.Controls module for all available types.</p>
+<p>QML (Qt Modeling Language) is a user interface markup language that JASP uses to show the analysis input panel. In this panel the user can specify what options should be set to what values and thereby change the tables and plots that the analysis computes. QML is a very flexible language that allows us to easily generate checkboxes, dropdowns and other common interface components. To create a more uniform layout and make it easier to add new analyses we have provided a number of standardized components. These components should satisfy most analyses, and are explained in this document. One important pardigm in QML is containment: the implementation of a component is hidden, only public properties (specified by the component self) can be used to manipulate the component. QML uses JavaScript expressions to set values of these properties. Another important paradigm in QML is property binding: this means that when you set a property of a component with a JavaScript expression that uses values of other elements, whenever the values of those elements change, the property value will change automatically:</p>
+<pre class="qml" translate="no">CheckBox { id: addFrequencyTable; label: &quot;Frequency tables&quot; }
+IntegerField { label: &quot;Maximum distinct values&quot; ; enabled: addFrequencyTable.checked }</pre>
+<p>In this example, the `enabled` property of the <a href="qml-jasp-controls-integerfield.html" translate="no">IntegerField</a> is bound to the addFrequencyTable <a href="qml-jasp-controls-checkbox.html" translate="no">CheckBox</a> `checked` property: whenever the `checked` property changes, the `enabled` property will change automatically. Here the expression `addFrequencyTable.checked` is simple, but it can be much more complex using several other propeties of other components. For more explanation on QML, you can read <a href="https://en.wikipedia.org/wiki/QML">wikipedia on QML</a> or the <a href="https://doc.qt.io/qt-5/qtqml-index.html">official site</a> To write a QML form you should follow the <a href="https://github.com/jasp-stats/jasp-desktop/blob/development/Docs/development/jasp-qml-style-example.qml">styleguide</a>.</p>
+<h2 id="controls">Controls</h2>
 <h2 id="all-controls">All Controls</h2>
 <p  class="centerAlign functionIndex" translate="no"><b><a href="#a">A</a>&nbsp;<a href="#b">B</a>&nbsp;<a href="#c">C</a>&nbsp;<a href="#d">D</a>&nbsp;<a href="#f">F</a>&nbsp;<a href="#g">G</a>&nbsp;<a href="#i">I</a>&nbsp;<a href="#j">J</a>&nbsp;<a href="#l">L</a>&nbsp;<a href="#m">M</a>&nbsp;<a href="#p">P</a>&nbsp;<a href="#r">R</a>&nbsp;<a href="#s">S</a>&nbsp;<a href="#t">T</a>&nbsp;<a href="#v">V</a>&nbsp;</b></p>
 <div class="flowListDiv" translate="no">

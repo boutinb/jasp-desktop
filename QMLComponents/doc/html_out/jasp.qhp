@@ -284,6 +284,8 @@
             <keyword name="VariablesList" id="QML.JASP.Controls1.VariablesList" ref="qml-jasp-controls-variableslist.html"/>
         </keywords>
         <files>
+            <file>images/CheckBox_example_1.png</file>
+            <file>images/CheckBox_example_2.png</file>
             <file>index.html</file>
             <file>jasp-controls-qmlmodule.html</file>
             <file>qml-jasp-controls-addcolumnfield-members.html</file>

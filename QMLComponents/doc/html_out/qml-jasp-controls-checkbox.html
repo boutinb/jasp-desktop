@@ -61,15 +61,16 @@
 <li><b>clicked()</b> - Emitted when user clicks the checkbox.</li>
 </ul>
 <h2 id="example">Example</h2>
-<pre class="qml" translate="no"><span class="type"><a href="qml-jasp-controls-checkbox.html" translate="no">CheckBox</a></span> {
-    <span class="name">name</span>: <span class="string">&quot;includeCI&quot;</span>
-    <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;Confidence interval&quot;</span>)
-    <span class="name">checked</span>: <span class="number">true</span>
-
-    <span class="type"><a href="qml-jasp-controls-cifield.html" translate="no">CIField</a></span> {
-        <span class="name">name</span>: <span class="string">&quot;ciWidth&quot;</span>
-    }
+<pre class="qml" translate="no"><span class="type"><a href="qml-jasp-controls-checkbox.html" translate="no">CheckBox</a></span> { <span class="name">name</span>: <span class="string">&quot;pearson&quot;</span>; <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;Pearson&quot;</span>); <span class="name">checked</span>: <span class="number">true</span> }</pre>
+<p class="centerAlign"><font color="red">[Missing image /Docs/development/img/qml-guide/CheckBox_example_1.png]</font></p><pre class="qml" translate="no"><span class="type"><a href="qml-jasp-controls-checkbox.html" translate="no">CheckBox</a></span>
+{
+        <span class="name">name</span>: <span class="string">&quot;homogeneityCorrections&quot;</span>
+        <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;Homogeneity corrections&quot;</span>)
+        <span class="name">columns</span>: <span class="number">3</span>
+        <span class="type"><a href="qml-jasp-controls-checkbox.html" translate="no">CheckBox</a></span> { <span class="name">name</span>: <span class="string">&quot;homogeneityNone&quot;</span>;   <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;None&quot;</span>)           ; <span class="name">checked</span>: <span class="number">true</span> }
+        <span class="type"><a href="qml-jasp-controls-checkbox.html" translate="no">CheckBox</a></span> { <span class="name">name</span>: <span class="string">&quot;homogeneityBrown&quot;</span>;    <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;Brown-Forsythe&quot;</span>) ; <span class="name">checked</span>: <span class="number">true</span> }
+        <span class="type"><a href="qml-jasp-controls-checkbox.html" translate="no">CheckBox</a></span> { <span class="name">name</span>: <span class="string">&quot;homogeneityWelch&quot;</span>;    <span class="name">label</span>: <span class="name">qsTr</span>(<span class="string">&quot;Welch&quot;</span>)          ; <span class="name">checked</span>: <span class="number">true</span> }
 }</pre>
-<!-- @@@CheckBox -->
+<p class="centerAlign"><font color="red">[Missing image /Docs/development/img/qml-guide/CheckBox_example_2.png]</font></p><!-- @@@CheckBox -->
 </body>
 </html>

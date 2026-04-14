@@ -1,33 +1,22 @@
 QML interfaces guide
 =============================================
 
-QML (Qt Modeling Language) is a user interface markup language that JASP uses to show the analysis input panel. In this panel the user can specify what options should be set to what values and thereby change the tables and plots that the analysis computes. QML is a very flexible language that allows us to easily generate checkboxes, dropdowns and other common interface components.  
-To create a more uniform layout and make it easier to add new analyses we have provided a number of standardized components. These components should satisfy most analyses, and are explained in this document.  
-One important pardigm in QML is containment: the implementation of a component is hidden, only public properties (specified by the component self) can be used to manipulate the component.  
-QML uses JavaScript expressions to set values of these properties. Another important paradigm in QML is property binding: this means that when you set a property of a component with a JavaScript expression that uses values of other elements, whenever the values of those elements change, the property value will change automatically:
-  ```qml
-  CheckBox { id: addFrequencyTable; label: "Frequency tables" }
-  IntegerField { label: "Maximum distinct values" ; enabled: addFrequencyTable.checked }
-  ```
-  In this example, the `enabled` property of the IntegerField is bound to the addFrequencyTable CheckBox `checked` property: whenever the `checked` property changes, the `enabled` property will change automatically. Here the expression `addFrequencyTable.checked` is simple, but it can be much more complex using several other propeties of other components.  
-For more explanation on QML, you can read [wikipedia on QML](https://en.wikipedia.org/wiki/QML) or the [official site](https://doc.qt.io/qt-5/qtqml-index.html)  
-To write a QML form you should follow the [styleguide](jasp-qml-style-example.qml).
-
 Table of Contents:
 - [Guide to writing an analysis interface in QML](#guide-to-writing-an-analysis-interface-in-qml)
+  - [Introduction](#introduction)
   - [Components](#components)
     - [General Input](#general-input)
-      - [CheckBox](#checkbox)
-      - [RadioButton](#radiobutton)
-      - [DropDown](#dropdown)
-      - [Slider](#slider)
-      - [DoubleField](#doublefield)
-      - [IntegerField](#integerfield)
-      - [PercentField](#percentfield)
-      - [CIField](#cifield)
-      - [TextField](#textfield)
-      - [FormulaField](#formulafield)
-      - [TextArea](#textarea)
+      - [CheckBox](qml-jasp-controls/qml-jasp-controls-checkbox.md)
+      - [RadioButton](qml-jasp-controls/qml-jasp-controls-radiobutton.md)
+      - [DropDown](qml-jasp-controls/qml-jasp-controls-dropdown.md)
+      - [Slider](qml-jasp-controls/qml-jasp-controls-slider.md)
+      - [DoubleField](qml-jasp-controls/qml-jasp-controls-doublefield.md)
+      - [IntegerField](qml-jasp-controls/qml-jasp-controls-integerfield.md)
+      - [PercentField](qml-jasp-controls/qml-jasp-controls-percentfield.md)
+      - [CIField](qml-jasp-controls/qml-jasp-controls-cifield.md)
+      - [TextField](qml-jasp-controls/qml-jasp-controls-textfield.md)
+      - [FormulaField](qml-jasp-controls/qml-jasp-controls-formulafield.md)
+      - [TextArea](qml-jasp-controls/qml-jasp-controls-textarea.md)
     - [Variable Specification](#variable-specification)
       - [AvailableVariablesList](#availablevariableslist)
       - [AssignedVariablesList](#assignedvariableslist)
@@ -52,6 +41,20 @@ Table of Contents:
   - [Advanced Usage](#advanced-usage)
   - [Custom Imports](#custom-imports)
 
+## Introduction
+
+QML (Qt Modeling Language) is a user interface markup language that JASP uses to show the analysis input panel. In this panel the user can specify what options should be set to what values and thereby change the tables and plots that the analysis computes. QML is a very flexible language that allows us to easily generate checkboxes, dropdowns and other common interface components.  
+To create a more uniform layout and make it easier to add new analyses we have provided a number of standardized components. These components should satisfy most analyses, and are explained in this document.  
+One important pardigm in QML is containment: the implementation of a component is hidden, only public properties (specified by the component self) can be used to manipulate the component.  
+QML uses JavaScript expressions to set values of these properties. Another important paradigm in QML is property binding: this means that when you set a property of a component with a JavaScript expression that uses values of other elements, whenever the values of those elements change, the property value will change automatically:
+  ```qml
+  CheckBox { id: addFrequencyTable; label: "Frequency tables" }
+  IntegerField { label: "Maximum distinct values" ; enabled: addFrequencyTable.checked }
+  ```
+  In this example, the `enabled` property of the IntegerField is bound to the addFrequencyTable CheckBox `checked` property: whenever the `checked` property changes, the `enabled` property will change automatically. Here the expression `addFrequencyTable.checked` is simple, but it can be much more complex using several other propeties of other components.  
+For more explanation on QML, you can read [wikipedia on QML](https://en.wikipedia.org/wiki/QML) or the [official site](https://doc.qt.io/qt-5/qtqml-index.html)  
+To write a QML form you should follow the [styleguide](jasp-qml-style-example.qml).
+
 
 ## Components
 The components can roughly be divided in three classes. One that deals with general inputs (e.g., checkboxes), one that deals with assigning variables and one that groups components together. Each will be covered in the following section.
@@ -75,6 +78,18 @@ The info will be combined with that of all the other components and displayed as
 
 ### General Input
 These components are quite common in questionnaires and input forms on websites, they include the checkbox, radiobutton, dropdown, slider and textfields where text may be entered.
+
+- [CheckBox](qml-jasp-controls/qml-jasp-controls-checkbox.md)
+- [RadioButton](qml-jasp-controls/qml-jasp-controls-radiobutton.md)
+- [DropDown](qml-jasp-controls/qml-jasp-controls-dropdown.md)
+- [Slider](qml-jasp-controls/qml-jasp-controls-slider.md)
+- [DoubleField](qml-jasp-controls/qml-jasp-controls-doublefield.md)
+- [IntegerField](qml-jasp-controls/qml-jasp-controls-integerfield.md)
+- [PercentField](qml-jasp-controls/qml-jasp-controls-percentfield.md)
+- [CIField](qml-jasp-controls/qml-jasp-controls-cifield.md)
+- [TextField](qml-jasp-controls/qml-jasp-controls-textfield.md)
+- [FormulaField](qml-jasp-controls/qml-jasp-controls-formulafield.md)
+- [TextArea](qml-jasp-controls/qml-jasp-controls-textarea.md)
 
 #### CheckBox
 Check button that can be toggled on and off. If some components are nested inside a CheckBox, they are automatically enabled or disabled when the CheckBox is set or not.

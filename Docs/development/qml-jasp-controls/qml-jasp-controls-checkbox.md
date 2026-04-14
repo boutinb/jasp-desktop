@@ -81,7 +81,7 @@ checked.
 CheckBox { name: "pearson"; label: qsTr("Pearson"); checked: true }
 ```
 
-\[Missing image /Docs/development/img/qml-guide/CheckBox_example_1.png\]
+![simple example](Images/CheckBox_example_1.png)
 
 ``` qml
 CheckBox
