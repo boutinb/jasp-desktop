@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QtHelpProject version="1.0">
+    <namespace>org.jasp-stats.qml.1.0</namespace>
+    <virtualFolder>jasp</virtualFolder>
+    <metaData name="version" value="1.0"/>
+    <filterSection>
+        <toc>
+            <section ref="index.html" title="JASP QML Controls">
+                <section ref="" title="">
+                    <section ref="qml-addcolumnfield.html" title="AddColumnField Type Reference">
+                        <section ref="qml-addcolumnfield-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-assignedpairsvariableslist.html" title="AssignedPairsVariablesList Type Reference">
+                        <section ref="qml-assignedpairsvariableslist-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-assignedrepeatedmeasurescells.html" title="AssignedRepeatedMeasuresCells Type Reference">
+                        <section ref="qml-assignedrepeatedmeasurescells-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-assignedvariableslist.html" title="AssignedVariablesList Type Reference">
+                        <section ref="qml-assignedvariableslist-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-availablevariableslist.html" title="AvailableVariablesList Type Reference">
+                        <section ref="qml-availablevariableslist-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-basicthreebuttontableview.html" title="BasicThreeButtonTableView Type Reference">
+                        <section ref="qml-basicthreebuttontableview-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-bayesfactortype.html" title="BayesFactorType Type Reference">
+                        <section ref="qml-bayesfactortype-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-button.html" title="Button Type Reference">
+                        <section ref="qml-button-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-cifield.html" title="CIField Type Reference">
+                        <section ref="qml-cifield-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-checkbox.html" title="CheckBox Type Reference">
+                        <section ref="qml-checkbox-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-checkcolumnisfreeorminefield.html" title="CheckColumnIsFreeOrMineField Type Reference">
+                        <section ref="qml-checkcolumnisfreeorminefield-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-chi2testtableview.html" title="Chi2TestTableView Type Reference">
+                        <section ref="qml-chi2testtableview-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-colorpalette.html" title="ColorPalette Type Reference">
+                        <section ref="qml-colorpalette-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-columnlayout.html" title="ColumnLayout Type Reference">
+                        <section ref="qml-columnlayout-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-componentslist.html" title="ComponentsList Type Reference">
+                        <section ref="qml-componentslist-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-computedcolumnfield.html" title="ComputedColumnField Type Reference">
+                        <section ref="qml-computedcolumnfield-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-contrastslist.html" title="ContrastsList Type Reference">
+                        <section ref="qml-contrastslist-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-controlerrormessage.html" title="ControlErrorMessage Type Reference">
+                        <section ref="qml-controlerrormessage-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-customcontraststableview.html" title="CustomContrastsTableView Type Reference">
+                        <section ref="qml-customcontraststableview-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-divider.html" title="Divider Type Reference">
+                        <section ref="qml-divider-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-doublefield.html" title="DoubleField Type Reference">
+                        <section ref="qml-doublefield-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-dropdown.html" title="DropDown Type Reference">
+                        <section ref="qml-dropdown-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-factorlevellist.html" title="FactorLevelList Type Reference">
+                        <section ref="qml-factorlevellist-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-factorsform.html" title="FactorsForm Type Reference">
+                        <section ref="qml-factorsform-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-factorslist.html" title="FactorsList Type Reference">
+                        <section ref="qml-factorslist-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-fileselector.html" title="FileSelector Type Reference">
+                        <section ref="qml-fileselector-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-form.html" title="Form Type Reference">
+                        <section ref="qml-form-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-formulafield.html" title="FormulaField Type Reference">
+                        <section ref="qml-formulafield-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-gridlayout.html" title="GridLayout Type Reference">
+                        <section ref="qml-gridlayout-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-group.html" title="Group Type Reference">
+                        <section ref="qml-group-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-inputlistview.html" title="InputListView Type Reference">
+                        <section ref="qml-inputlistview-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-integerfield.html" title="IntegerField Type Reference">
+                        <section ref="qml-integerfield-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-jagstextarea.html" title="JAGSTextArea Type Reference">
+                        <section ref="qml-jagstextarea-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-jagstableview.html" title="JagsTableView Type Reference">
+                        <section ref="qml-jagstableview-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-label.html" title="Label Type Reference">
+                        <section ref="qml-label-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-modeltermslist.html" title="ModelTermsList Type Reference">
+                        <section ref="qml-modeltermslist-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-percentfield.html" title="PercentField Type Reference">
+                        <section ref="qml-percentfield-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-radiobutton.html" title="RadioButton Type Reference">
+                        <section ref="qml-radiobutton-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-radiobuttongroup.html" title="RadioButtonGroup Type Reference">
+                        <section ref="qml-radiobuttongroup-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-rowlayout.html" title="RowLayout Type Reference">
+                        <section ref="qml-rowlayout-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-section.html" title="Section Type Reference">
+                        <section ref="qml-section-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-setseed.html" title="SetSeed Type Reference">
+                        <section ref="qml-setseed-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-simpletableview.html" title="SimpleTableView Type Reference">
+                        <section ref="qml-simpletableview-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-slider.html" title="Slider Type Reference">
+                        <section ref="qml-slider-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-subjectivepriors.html" title="SubjectivePriors Type Reference">
+                        <section ref="qml-subjectivepriors-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-switch.html" title="Switch Type Reference">
+                        <section ref="qml-switch-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-tabview.html" title="TabView Type Reference">
+                        <section ref="qml-tabview-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-tableview.html" title="TableView Type Reference">
+                        <section ref="qml-tableview-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-text.html" title="Text Type Reference">
+                        <section ref="qml-text-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-textarea.html" title="TextArea Type Reference">
+                        <section ref="qml-textarea-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-textfield.html" title="TextField Type Reference">
+                        <section ref="qml-textfield-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-variablesform.html" title="VariablesForm Type Reference">
+                        <section ref="qml-variablesform-members.html" title="List of all members"/>
+                    </section>
+                    <section ref="qml-variableslist.html" title="VariablesList Type Reference">
+                        <section ref="qml-variableslist-members.html" title="List of all members"/>
+                    </section>
+                </section>
+            </section>
+        </toc>
+        <keywords>
+            <keyword name="AddColumnField" id="QML.AddColumnField" ref="qml-addcolumnfield.html"/>
+            <keyword name="AssignedPairsVariablesList" id="QML.AssignedPairsVariablesList" ref="qml-assignedpairsvariableslist.html"/>
+            <keyword name="AssignedRepeatedMeasuresCells" id="QML.AssignedRepeatedMeasuresCells" ref="qml-assignedrepeatedmeasurescells.html"/>
+            <keyword name="AssignedVariablesList" id="QML.AssignedVariablesList" ref="qml-assignedvariableslist.html"/>
+            <keyword name="AvailableVariablesList" id="QML.AvailableVariablesList" ref="qml-availablevariableslist.html"/>
+            <keyword name="BasicThreeButtonTableView" id="QML.BasicThreeButtonTableView" ref="qml-basicthreebuttontableview.html"/>
+            <keyword name="BayesFactorType" id="QML.BayesFactorType" ref="qml-bayesfactortype.html"/>
+            <keyword name="Button" id="QML.Button" ref="qml-button.html"/>
+            <keyword name="CIField" id="QML.CIField" ref="qml-cifield.html"/>
+            <keyword name="CheckBox" id="QML.CheckBox" ref="qml-checkbox.html"/>
+            <keyword name="CheckColumnIsFreeOrMineField" id="QML.CheckColumnIsFreeOrMineField" ref="qml-checkcolumnisfreeorminefield.html"/>
+            <keyword name="Chi2TestTableView" id="QML.Chi2TestTableView" ref="qml-chi2testtableview.html"/>
+            <keyword name="ColorPalette" id="QML.ColorPalette" ref="qml-colorpalette.html"/>
+            <keyword name="ColumnLayout" id="QML.ColumnLayout" ref="qml-columnlayout.html"/>
+            <keyword name="ComponentsList" id="QML.ComponentsList" ref="qml-componentslist.html"/>
+            <keyword name="ComputedColumnField" id="QML.ComputedColumnField" ref="qml-computedcolumnfield.html"/>
+            <keyword name="ContrastsList" id="QML.ContrastsList" ref="qml-contrastslist.html"/>
+            <keyword name="ControlErrorMessage" id="QML.ControlErrorMessage" ref="qml-controlerrormessage.html"/>
+            <keyword name="CustomContrastsTableView" id="QML.CustomContrastsTableView" ref="qml-customcontraststableview.html"/>
+            <keyword name="Divider" id="QML.Divider" ref="qml-divider.html"/>
+            <keyword name="DoubleField" id="QML.DoubleField" ref="qml-doublefield.html"/>
+            <keyword name="DropDown" id="QML.DropDown" ref="qml-dropdown.html"/>
+            <keyword name="FactorLevelList" id="QML.FactorLevelList" ref="qml-factorlevellist.html"/>
+            <keyword name="FactorsForm" id="QML.FactorsForm" ref="qml-factorsform.html"/>
+            <keyword name="FactorsList" id="QML.FactorsList" ref="qml-factorslist.html"/>
+            <keyword name="FileSelector" id="QML.FileSelector" ref="qml-fileselector.html"/>
+            <keyword name="Form" id="QML.Form" ref="qml-form.html"/>
+            <keyword name="FormulaField" id="QML.FormulaField" ref="qml-formulafield.html"/>
+            <keyword name="GridLayout" id="QML.GridLayout" ref="qml-gridlayout.html"/>
+            <keyword name="Group" id="QML.Group" ref="qml-group.html"/>
+            <keyword name="InputListView" id="QML.InputListView" ref="qml-inputlistview.html"/>
+            <keyword name="IntegerField" id="QML.IntegerField" ref="qml-integerfield.html"/>
+            <keyword name="JAGSTextArea" id="QML.JAGSTextArea" ref="qml-jagstextarea.html"/>
+            <keyword name="JagsTableView" id="QML.JagsTableView" ref="qml-jagstableview.html"/>
+            <keyword name="Label" id="QML.Label" ref="qml-label.html"/>
+            <keyword name="ModelTermsList" id="QML.ModelTermsList" ref="qml-modeltermslist.html"/>
+            <keyword name="PercentField" id="QML.PercentField" ref="qml-percentfield.html"/>
+            <keyword name="RadioButton" id="QML.RadioButton" ref="qml-radiobutton.html"/>
+            <keyword name="RadioButtonGroup" id="QML.RadioButtonGroup" ref="qml-radiobuttongroup.html"/>
+            <keyword name="RowLayout" id="QML.RowLayout" ref="qml-rowlayout.html"/>
+            <keyword name="Section" id="QML.Section" ref="qml-section.html"/>
+            <keyword name="SetSeed" id="QML.SetSeed" ref="qml-setseed.html"/>
+            <keyword name="SimpleTableView" id="QML.SimpleTableView" ref="qml-simpletableview.html"/>
+            <keyword name="Slider" id="QML.Slider" ref="qml-slider.html"/>
+            <keyword name="SubjectivePriors" id="QML.SubjectivePriors" ref="qml-subjectivepriors.html"/>
+            <keyword name="Switch" id="QML.Switch" ref="qml-switch.html"/>
+            <keyword name="TabView" id="QML.TabView" ref="qml-tabview.html"/>
+            <keyword name="TableView" id="QML.TableView" ref="qml-tableview.html"/>
+            <keyword name="Text" id="QML.Text" ref="qml-text.html"/>
+            <keyword name="TextArea" id="QML.TextArea" ref="qml-textarea.html"/>
+            <keyword name="TextField" id="QML.TextField" ref="qml-textfield.html"/>
+            <keyword name="VariablesForm" id="QML.VariablesForm" ref="qml-variablesform.html"/>
+            <keyword name="VariablesList" id="QML.VariablesList" ref="qml-variableslist.html"/>
+        </keywords>
+        <files>
+            <file>images/CheckBox_example_1.png</file>
+            <file>images/CheckBox_example_2.png</file>
+            <file>qml-addcolumnfield-members.html</file>
+            <file>qml-addcolumnfield.html</file>
+            <file>qml-assignedpairsvariableslist-members.html</file>
+            <file>qml-assignedpairsvariableslist.html</file>
+            <file>qml-assignedrepeatedmeasurescells-members.html</file>
+            <file>qml-assignedrepeatedmeasurescells.html</file>
+            <file>qml-assignedvariableslist-members.html</file>
+            <file>qml-assignedvariableslist.html</file>
+            <file>qml-availablevariableslist-members.html</file>
+            <file>qml-availablevariableslist.html</file>
+            <file>qml-basicthreebuttontableview-members.html</file>
+            <file>qml-basicthreebuttontableview.html</file>
+            <file>qml-bayesfactortype-members.html</file>
+            <file>qml-bayesfactortype.html</file>
+            <file>qml-button-members.html</file>
+            <file>qml-button.html</file>
+            <file>qml-checkbox-members.html</file>
+            <file>qml-checkbox.html</file>
+            <file>qml-checkcolumnisfreeorminefield-members.html</file>
+            <file>qml-checkcolumnisfreeorminefield.html</file>
+            <file>qml-chi2testtableview-members.html</file>
+            <file>qml-chi2testtableview.html</file>
+            <file>qml-cifield-members.html</file>
+            <file>qml-cifield.html</file>
+            <file>qml-colorpalette-members.html</file>
+            <file>qml-colorpalette.html</file>
+            <file>qml-columnlayout-members.html</file>
+            <file>qml-columnlayout.html</file>
+            <file>qml-componentslist-members.html</file>
+            <file>qml-componentslist.html</file>
+            <file>qml-computedcolumnfield-members.html</file>
+            <file>qml-computedcolumnfield.html</file>
+            <file>qml-contrastslist-members.html</file>
+            <file>qml-contrastslist.html</file>
+            <file>qml-controlerrormessage-members.html</file>
+            <file>qml-controlerrormessage.html</file>
+            <file>qml-customcontraststableview-members.html</file>
+            <file>qml-customcontraststableview.html</file>
+            <file>qml-divider-members.html</file>
+            <file>qml-divider.html</file>
+            <file>qml-doublefield-members.html</file>
+            <file>qml-doublefield.html</file>
+            <file>qml-dropdown-members.html</file>
+            <file>qml-dropdown.html</file>
+            <file>qml-factorlevellist-members.html</file>
+            <file>qml-factorlevellist.html</file>
+            <file>qml-factorsform-members.html</file>
+            <file>qml-factorsform.html</file>
+            <file>qml-factorslist-members.html</file>
+            <file>qml-factorslist.html</file>
+            <file>qml-fileselector-members.html</file>
+            <file>qml-fileselector.html</file>
+            <file>qml-form-members.html</file>
+            <file>qml-form.html</file>
+            <file>qml-formulafield-members.html</file>
+            <file>qml-formulafield.html</file>
+            <file>qml-gridlayout-members.html</file>
+            <file>qml-gridlayout.html</file>
+            <file>qml-group-members.html</file>
+            <file>qml-group.html</file>
+            <file>qml-inputlistview-members.html</file>
+            <file>qml-inputlistview.html</file>
+            <file>qml-integerfield-members.html</file>
+            <file>qml-integerfield.html</file>
+            <file>qml-jagstableview-members.html</file>
+            <file>qml-jagstableview.html</file>
+            <file>qml-jagstextarea-members.html</file>
+            <file>qml-jagstextarea.html</file>
+            <file>qml-label-members.html</file>
+            <file>qml-label.html</file>
+            <file>qml-modeltermslist-members.html</file>
+            <file>qml-modeltermslist.html</file>
+            <file>qml-percentfield-members.html</file>
+            <file>qml-percentfield.html</file>
+            <file>qml-radiobutton-members.html</file>
+            <file>qml-radiobutton.html</file>
+            <file>qml-radiobuttongroup-members.html</file>
+            <file>qml-radiobuttongroup.html</file>
+            <file>qml-rowlayout-members.html</file>
+            <file>qml-rowlayout.html</file>
+            <file>qml-section-members.html</file>
+            <file>qml-section.html</file>
+            <file>qml-setseed-members.html</file>
+            <file>qml-setseed.html</file>
+            <file>qml-simpletableview-members.html</file>
+            <file>qml-simpletableview.html</file>
+            <file>qml-slider-members.html</file>
+            <file>qml-slider.html</file>
+            <file>qml-subjectivepriors-members.html</file>
+            <file>qml-subjectivepriors.html</file>
+            <file>qml-switch-members.html</file>
+            <file>qml-switch.html</file>
+            <file>qml-tableview-members.html</file>
+            <file>qml-tableview.html</file>
+            <file>qml-tabview-members.html</file>
+            <file>qml-tabview.html</file>
+            <file>qml-text-members.html</file>
+            <file>qml-text.html</file>
+            <file>qml-textarea-members.html</file>
+            <file>qml-textarea.html</file>
+            <file>qml-textfield-members.html</file>
+            <file>qml-textfield.html</file>
+            <file>qml-variablesform-members.html</file>
+            <file>qml-variablesform.html</file>
+            <file>qml-variableslist-members.html</file>
+            <file>qml-variableslist.html</file>
+        </files>
+    </filterSection>
+</QtHelpProject>

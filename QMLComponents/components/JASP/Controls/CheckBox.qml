@@ -22,7 +22,7 @@ import JASP.Controls
 
 /*!
     \qmltype CheckBox
-    \inqmlmodule JASP.Controls 1.0
+	\inqmlmodule JASP.Controls
     \brief A boolean toggle control that binds a true/false value to an R option.
 
     CheckBox can optionally contain child controls that become enabled when checked.
@@ -66,7 +66,7 @@ import JASP.Controls
 	CheckBox { name: "pearson"; label: qsTr("Pearson"); checked: true }
 	\endqml
 
-	\image {/Docs/development/img/qml-guide/CheckBox_example_1.png} {Simple CheckBox}
+	\image {CheckBox_example_1.png} {Simple CheckBox}
 
 	\qml
 	CheckBox
@@ -80,7 +80,7 @@ import JASP.Controls
 	}
 	\endqml
 
-	\image {/Docs/development/img/qml-guide/CheckBox_example_2.png} {CheckBox with sub CheckBoxes}
+	\inlineimage {CheckBox_example_2.png} {CheckBox with sub CheckBoxes}
 */
 CheckBoxBase
 {
