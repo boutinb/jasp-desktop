@@ -2,6 +2,7 @@
 #include "variableinfo.h"
 #include <QRegularExpression>
 #include "log.h"
+#include "datasetprovider.h"
 
 const char FormulaParser::interactionSeparator			= ':';
 const char FormulaParser::allInterationsSeparator		= '*';
@@ -120,6 +121,9 @@ Terms FormulaParser::parseTerms(const Json::Value& json, VariableInfoProvider * 
 bool FormulaParser::parse(const Json::Value& formula, bool isLhs, ParsedTerms& parsedTerms, QString& error, VariableInfoProvider * provider)
 {
 	error.clear();
+
+	if (!provider)
+		provider = DataSetProvider::getProvider(false, false);
 
 	if (formula.isNull())	return true;
 
